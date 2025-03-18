@@ -1,0 +1,16 @@
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\bin\Debug\net8.0\MojAtar.Infrastructure.deps.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\bin\Debug\net8.0\MojAtar.Infrastructure.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\bin\Debug\net8.0\MojAtar.Infrastructure.pdb
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\bin\Debug\net8.0\MojAtar.Core.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\bin\Debug\net8.0\MojAtar.Core.pdb
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.AssemblyInfo.cs
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.sourcelink.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar..C9067B1F.Up2Date
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\refint\MojAtar.Infrastructure.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\MojAtar.Infrastructure.pdb
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Infrastructure\obj\Debug\net8.0\ref\MojAtar.Infrastructure.dll

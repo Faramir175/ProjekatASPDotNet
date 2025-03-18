@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using MojAtar.Infrastructure.MojAtar;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddMudServices();
+
+builder.Services.AddDbContext<MojAtarDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

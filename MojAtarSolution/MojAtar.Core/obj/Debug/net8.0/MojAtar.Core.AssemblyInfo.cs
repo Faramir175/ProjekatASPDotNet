@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MojAtar.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e40f08dc8b38430771750efcc69e51cb1201854")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fdc0679cc426ac4113c5a2c16e07c647d9349dc7")]
 [assembly: System.Reflection.AssemblyProductAttribute("MojAtar.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MojAtar.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,13 @@
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\bin\Debug\net8.0\MojAtar.Core.deps.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\bin\Debug\net8.0\MojAtar.Core.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\bin\Debug\net8.0\MojAtar.Core.pdb
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.csproj.AssemblyReference.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.AssemblyInfoInputs.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.AssemblyInfo.cs
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.csproj.CoreCompileInputs.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.sourcelink.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\refint\MojAtar.Core.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\MojAtar.Core.pdb
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.Core\obj\Debug\net8.0\ref\MojAtar.Core.dll

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DbContext\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 
