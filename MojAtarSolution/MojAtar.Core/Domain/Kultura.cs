@@ -17,6 +17,8 @@ namespace MojAtar.Core.Domain
         public string Hibrid { get; set; }
         [Range(0.01,double.MaxValue,ErrorMessage = "Cena po jedinici mora biti veca od 0.")]
         public double AktuelnaCena { get; set; }
+        public ICollection<Zetva> Zetve { get; set; }
+        public ICollection<CenaKulture> CeneKulture { get; set; }
 
         public ICollection<Parcela_Kultura> ParceleKulture { get; set; }
     }

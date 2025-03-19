@@ -80,13 +80,41 @@ namespace MojAtar.Infrastructure.MojAtar
                 .WithMany()
                 .HasForeignKey(rr => rr.IdResurs);
 
-            // Dodatno podešavanje za Zetvu
-            modelBuilder.Entity<Zetva>().ToTable("Zetva");
+            modelBuilder.Entity<Parcela>()
+                .HasOne(p => p.KatastarskaOpstina)
+                .WithMany(k => k.Parcele)
+                .HasForeignKey(p => p.IdKatastarskaOpstina);
 
             modelBuilder.Entity<Parcela>()
-            .HasOne(p => p.KatastarskaOpstina)
-            .WithMany(k => k.Parcele)
-            .HasForeignKey(p => p.IdKatastarskaOpstina);
+                .HasOne(p => p.Korisnik)
+                .WithMany(k => k.Parcele)
+                .HasForeignKey(p => p.IdKorisnik);
+
+            modelBuilder.Entity<CenaKulture>()
+                .HasOne(ck => ck.Kultura)
+                .WithMany(k => k.CeneKulture)
+                .HasForeignKey(ck => ck.IdKultura);
+
+            modelBuilder.Entity<CenaResursa>()
+                .HasOne(cr => cr.Resurs)
+                .WithMany(k => k.CeneResursa)
+                .HasForeignKey(cr => cr.IdResurs);
+
+            modelBuilder.Entity<Radnja>()
+                .HasOne(r => r.Parcela)
+                .WithMany(p => p.Radnje)
+                .HasForeignKey(r => r.IdParcela);
+
+            modelBuilder.Entity<Zetva>()
+                .HasOne(z => z.Kultura)
+                .WithMany(k => k.Zetve)
+                .HasForeignKey(z => z.IdKultura);
+
+            //Radnja i Zetva
+            modelBuilder.Entity<Radnja>()
+                .HasDiscriminator<string>("RadnjaTip") 
+                .HasValue<Radnja>("Radnja")
+                .HasValue<Zetva>("Zetva");
 
         }
 

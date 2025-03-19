@@ -17,5 +17,7 @@ namespace MojAtar.Core.Domain
         public string Vrsta { get; set; }
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public double AktuelnaCena { get; set; }
+        public ICollection<CenaResursa> CeneResursa { get; set; }
+
     }
 }

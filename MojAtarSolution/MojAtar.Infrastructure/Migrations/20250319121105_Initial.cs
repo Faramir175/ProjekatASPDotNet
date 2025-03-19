@@ -32,7 +32,7 @@ namespace MojAtar.Infrastructure.Migrations
                     Ime = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Prezime = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Uloga = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    TipKorisnika = table.Column<int>(type: "int", maxLength: 40, nullable: false),
                     DatumRegistracije = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Lozinka = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
@@ -112,8 +112,7 @@ namespace MojAtar.Infrastructure.Migrations
                     Povrsina = table.Column<double>(type: "float", nullable: false),
                     Napomena = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false),
                     IdKatastarskaOpstina = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    KorisnikId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -124,11 +123,10 @@ namespace MojAtar.Infrastructure.Migrations
                         principalTable: "KatastarskeOpstine",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Parcele_Korisnici_KorisnikId",
-                        column: x => x.KorisnikId,
+                        name: "FK_Parcele_Korisnici_IdKorisnik",
+                        column: x => x.IdKorisnik,
                         principalTable: "Korisnici",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -137,7 +135,6 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    KulturaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CenaPojedinici = table.Column<double>(type: "float", nullable: false),
                     DatumVaznosti = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -145,11 +142,10 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_CeneKultura", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CeneKultura_Kulture_KulturaId",
-                        column: x => x.KulturaId,
+                        name: "FK_CeneKultura_Kulture_IdKultura",
+                        column: x => x.IdKultura,
                         principalTable: "Kulture",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -158,7 +154,6 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdResurs = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ResursId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CenaPojedinici = table.Column<double>(type: "float", nullable: false),
                     DatumVaznosti = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -166,11 +161,10 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_CeneResursa", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CeneResursa_Resursi_ResursId",
-                        column: x => x.ResursId,
+                        name: "FK_CeneResursa_Resursi_IdResurs",
+                        column: x => x.IdResurs,
                         principalTable: "Resursi",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -206,22 +200,28 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdParcela = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ParcelaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipRadnje = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     DatumIzvrsenja = table.Column<DateTime>(type: "datetime2", nullable: false),
                     VremenskiUslovi = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Napomena = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false),
-                    UkupanTrosak = table.Column<double>(type: "float", nullable: false)
+                    UkupanTrosak = table.Column<double>(type: "float", nullable: false),
+                    TipRadnje = table.Column<int>(type: "int", nullable: false),
+                    RadnjaTip = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Prinos = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Radnje", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Radnje_Parcele_ParcelaId",
-                        column: x => x.ParcelaId,
+                        name: "FK_Radnje_Kulture_IdKultura",
+                        column: x => x.IdKultura,
+                        principalTable: "Kulture",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Radnje_Parcele_IdParcela",
+                        column: x => x.IdParcela,
                         principalTable: "Parcele",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -300,41 +300,15 @@ namespace MojAtar.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Zetva",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    KulturaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Prinos = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Zetva", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Zetva_Kulture_KulturaId",
-                        column: x => x.KulturaId,
-                        principalTable: "Kulture",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Zetva_Radnje_Id",
-                        column: x => x.Id,
-                        principalTable: "Radnje",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
-                name: "IX_CeneKultura_KulturaId",
+                name: "IX_CeneKultura_IdKultura",
                 table: "CeneKultura",
-                column: "KulturaId");
+                column: "IdKultura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CeneResursa_ResursId",
+                name: "IX_CeneResursa_IdResurs",
                 table: "CeneResursa",
-                column: "ResursId");
+                column: "IdResurs");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Parcele_IdKatastarskaOpstina",
@@ -342,9 +316,9 @@ namespace MojAtar.Infrastructure.Migrations
                 column: "IdKatastarskaOpstina");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Parcele_KorisnikId",
+                name: "IX_Parcele_IdKorisnik",
                 table: "Parcele",
-                column: "KorisnikId");
+                column: "IdKorisnik");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ParceleKulture_IdKultura",
@@ -352,9 +326,14 @@ namespace MojAtar.Infrastructure.Migrations
                 column: "IdKultura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Radnje_ParcelaId",
+                name: "IX_Radnje_IdKultura",
                 table: "Radnje",
-                column: "ParcelaId");
+                column: "IdKultura");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Radnje_IdParcela",
+                table: "Radnje",
+                column: "IdParcela");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RadnjePrikljucneMasine_IdPrikljucnaMasina",
@@ -370,11 +349,6 @@ namespace MojAtar.Infrastructure.Migrations
                 name: "IX_RadnjeResursi_IdResurs",
                 table: "RadnjeResursi",
                 column: "IdResurs");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Zetva_KulturaId",
-                table: "Zetva",
-                column: "KulturaId");
         }
 
         /// <inheritdoc />
@@ -399,22 +373,19 @@ namespace MojAtar.Infrastructure.Migrations
                 name: "RadnjeResursi");
 
             migrationBuilder.DropTable(
-                name: "Zetva");
-
-            migrationBuilder.DropTable(
                 name: "PrikljucneMasine");
 
             migrationBuilder.DropTable(
                 name: "RadneMasine");
 
             migrationBuilder.DropTable(
+                name: "Radnje");
+
+            migrationBuilder.DropTable(
                 name: "Resursi");
 
             migrationBuilder.DropTable(
                 name: "Kulture");
-
-            migrationBuilder.DropTable(
-                name: "Radnje");
 
             migrationBuilder.DropTable(
                 name: "Parcele");

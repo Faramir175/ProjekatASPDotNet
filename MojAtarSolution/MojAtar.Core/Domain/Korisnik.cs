@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MojAtar.Core.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace MojAtar.Core.Domain
         [StringLength(40)]
         public string Email { get; set; }
         [StringLength(40)]
-        public string Uloga { get; set; }
+        public KorisnikTip TipKorisnika { get; set; }
         public DateTime DatumRegistracije { get; set; }
         [StringLength(100)]
         public string Lozinka { get; set; }
