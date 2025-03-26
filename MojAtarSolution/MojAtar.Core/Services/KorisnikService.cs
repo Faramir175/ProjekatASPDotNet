@@ -1,4 +1,5 @@
-﻿using MojAtar.Core.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using MojAtar.Core.Domain;
 using MojAtar.Core.Domain.RepositoryContracts;
 using MojAtar.Core.DTO;
 using MojAtar.Core.DTO.ExtensionKlase;
@@ -63,20 +64,53 @@ namespace MojAtar.Core.Services
             return true;
         }
 
-        public Task<List<KorisnikResponse>> GetAll()
+        public async Task<List<KorisnikResponse>> GetAll()
         {
-            throw new NotImplementedException();
+            List<Korisnik> korisnici = await _korisnikRepository.GetAll();
+            List<KorisnikResponse> korisniciR = new List<KorisnikResponse>();
+            foreach(Korisnik k in korisnici)
+            {
+                korisniciR.Add(k.ToKorisnikResponse());
+            }
+            return korisniciR;
         }
 
-        public Task<KorisnikResponse> GetById(Guid? id)
+        public async Task<KorisnikResponse> GetById(Guid? id)
         {
-            throw new NotImplementedException();
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            Korisnik? korisnik = await _korisnikRepository.GetById(id.Value);
+
+            if (korisnik == null) return null;
+
+            return korisnik.ToKorisnikResponse();
         }
 
-
-        public Task<KorisnikResponse> UpdateById(Guid? id, KorisnikRequest dto)
+        public async Task<KorisnikResponse> Update(Guid? id, KorisnikRequest dto)
         {
-            throw new NotImplementedException();
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            Korisnik? korisnik = new Korisnik()
+            {
+                Id = id.Value,
+                DatumRegistracije = dto.DatumRegistracije,
+                Email = dto.Email,
+                Ime = dto.Ime,
+                Prezime = dto.Prezime,
+                Parcele = dto.Parcele,
+                Lozinka = dto.Lozinka,
+                TipKorisnika = dto.TipKorisnika
+            };
+
+            await _korisnikRepository.Update(korisnik);
+
+            if (korisnik == null) return null;
+            return korisnik.ToKorisnikResponse();
         }
     }
 }

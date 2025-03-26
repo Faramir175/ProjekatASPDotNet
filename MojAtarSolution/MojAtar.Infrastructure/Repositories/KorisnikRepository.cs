@@ -24,7 +24,7 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Korisnici.ToListAsync();
         }
 
-        public async Task<Korisnik> GetById(Guid id)
+        public async Task<Korisnik> GetById(Guid? id)
         {
             return await _dbContext.Korisnici.FindAsync(id);
         }
@@ -46,14 +46,33 @@ namespace MojAtar.Infrastructure.Repositories
             return entity;
         }
 
-        Task<Korisnik> IRepository<Korisnik>.Update(Korisnik entity)
+        public async Task<Korisnik> Update(Korisnik entity)
         {
-            throw new NotImplementedException();
+            Korisnik? korisnikZaUpdate = await _dbContext.Korisnici.FirstOrDefaultAsync(temp => temp.Id == entity.Id);
+
+            if (korisnikZaUpdate == null)
+                return entity;
+
+            korisnikZaUpdate.Id = entity.Id;
+            korisnikZaUpdate.Ime = entity.Ime;
+            korisnikZaUpdate.Prezime = entity.Prezime;
+            korisnikZaUpdate.Email = entity.Email;
+            korisnikZaUpdate.TipKorisnika = entity.TipKorisnika;
+            korisnikZaUpdate.DatumRegistracije = entity.DatumRegistracije;
+            korisnikZaUpdate.Lozinka = entity.Lozinka;
+            korisnikZaUpdate.Parcele = entity.Parcele;
+
+            await _dbContext.SaveChangesAsync();
+
+            return korisnikZaUpdate;
         }
 
-        Task<bool> IRepository<Korisnik>.Delete(Korisnik entity)
+        public async Task<bool> Delete(Korisnik entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Korisnici.RemoveRange(_dbContext.Korisnici.Where(temp => temp == entity));
+            int rowsDeleted = await _dbContext.SaveChangesAsync();
+
+            return rowsDeleted > 0;
         }
 
         public async Task<bool> DeleteKorisnikById(Guid? id)

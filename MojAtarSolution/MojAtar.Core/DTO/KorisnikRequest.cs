@@ -21,7 +21,14 @@ namespace MojAtar.Core.DTO
 
         public Korisnik ToKorisnik()
         {
-            return new Korisnik() { Email = Email };
+            return new Korisnik() {                 
+                Ime = Ime,
+                Prezime = Prezime,
+                Email = Email,
+                TipKorisnika = TipKorisnika,
+                DatumRegistracije = DatumRegistracije,
+                Lozinka = Lozinka,
+                Parcele = Parcele };
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MojAtar.Core.ServiceContracts
         public Task<KorisnikResponse> Add(KorisnikRequest dto);
         public Task<List<KorisnikResponse>> GetAll();
         public Task<KorisnikResponse> GetById(Guid? id);
-        public Task<KorisnikResponse> UpdateById(Guid? id, KorisnikRequest dto);
+        public Task<KorisnikResponse> Update(Guid? id, KorisnikRequest dto);
         public Task<bool> DeleteById(Guid? id);
     }
 }
