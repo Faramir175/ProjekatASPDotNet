@@ -1,22 +1,123 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+﻿/* --------------------- Globalni stilovi --------------------- */
+:root {
+    --primary-color: #28a745; /* Zelena boja simbolizuje poljoprivredu */
+    --secondary-color: #6c757d;
+    --bg-color: #f8f9fa;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.2);
 }
 
 body {
-  margin-bottom: 60px;
+    /*background: ;*/
+    background-size: cover;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* --------------------- Stil za forme (Glassmorphism) --------------------- */
+.form-container {
+    max-width: 800px; /* Povećana širina forme */
+    width: 100%;
+    padding: 40px;
+    background: var(--glass-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    animation: fadeIn 0.6s ease-in-out;
+    margin: 20px; /* Dodato margina za bolji razmak */
+}
+
+/* Stil za input polja */
+.form-control {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+
+/* Stil za dugmad */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+/* Centriranje login/register forma */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --------------------- Navigacija --------------------- */
+.navbar {
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.navbar .nav-link {
+    color: white !important;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar .nav-link:hover {
+    color: #dbeafe !important;
+    transform: translateY(-2px);
+}
+
+/* --------------------- Sidebar (Glassmorphism) --------------------- */
+.sidebar {
+    width: 250px;
+    background: rgba(52, 58, 64, 0.8);
+    color: white;
+    height: 100vh;
+    padding-top: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 12px 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+    transform: translateX(5px);
+}
+
+/* --------------------- Animacije --------------------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

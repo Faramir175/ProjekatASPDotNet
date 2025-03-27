@@ -1,0 +1,33 @@
+﻿@using MojAtar.Core.DTO
+@model MojAtar.Core.DTO.KorisnikRequest
+
+@{
+    ViewData["Title"] = "Prijavite se";
+    Layout = "_AuthLayout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="~/css/auth.css" />
+
+    </head>
+    <body>
+        <div class="background">
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    <form asp-controller="Auth" asp-action="Login" method="post">
+            <h3>Prijava</h3>
+            <label for="username">Email</label>
+            <input type="text" placeholder="Unesite email" id="username" name="Email">
+            <label for="password">Lozinka</label>
+        <input type="password" placeholder="Unesite lozinku" id="password" name="Lozinka">
+        <button type="submit">Prijavite se</button>
+@*             <div class="social">
+                <div class="go"><i class="fab fa-google"></i> Google</div>
+            </div> *@
+        </form>
+    </body>
+</html>
+

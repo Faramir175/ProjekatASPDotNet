@@ -1,7 +1,4 @@
 is_global = true
-build_property.MudDebugAnalyzer = 
-build_property.MudAllowedAttributePattern = 
-build_property.MudAllowedAttributeList = 
 build_property.TargetFramework = net8.0
 build_property.TargetFramework = net8.0
 build_property.TargetPlatformMinVersion = 
@@ -29,16 +26,24 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_AuthLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_MainLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NYWluTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_ValidationScriptsPartial.cshtml]
@@ -52,7 +57,3 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-pnu3f1uq1z

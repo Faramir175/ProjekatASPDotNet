@@ -1,0 +1,130 @@
+﻿*, *:before, *:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #2d6a4f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+}
+
+.background {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .background .shape {
+        width: clamp(100px, 15vw, 200px); /* Prilagođava veličinu od 100px do 200px */
+        aspect-ratio: 1/1; /* Održava kvadratni odnos (krug) */
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.7;
+    }
+
+.shape:first-child {
+    background: linear-gradient(#40916c, #52b788);
+    left: -8%;
+    top: -10%;
+}
+
+.shape:last-child {
+    background: linear-gradient(to right, #74c69d, #b7e4c7);
+    right: -5%;
+    bottom: -8%;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+form {
+    width: 100%;
+    max-width: 450px;
+    min-height: 400px;
+    background-color: rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+    form h3 {
+        font-size: 28px;
+        font-weight: 500;
+        color: black;
+    }
+
+label {
+    font-size: 16px;
+    color: black;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-radius: 5px;
+    padding: 0 10px;
+    font-size: 14px;
+    color: black;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+::placeholder {
+    color: grey;
+}
+
+button {
+    width: 100%;
+    background-color: #52b788;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    button:hover {
+        background-color: #40916c;
+    }
+
+.social {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+    .social div {
+        width: 100%;
+        max-width: 180px;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.27);
+        color: black;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .social div:hover {
+            background-color: rgba(255, 255, 255, 0.47);
+        }
+

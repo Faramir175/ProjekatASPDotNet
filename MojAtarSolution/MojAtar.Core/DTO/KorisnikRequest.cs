@@ -11,13 +11,13 @@ namespace MojAtar.Core.DTO
 {
     public class KorisnikRequest
     {
-        public string Ime { get; set; }
-        public string Prezime { get; set; }
+        public string? Ime { get; set; }
+        public string? Prezime { get; set; }
         public string Email { get; set; }
-        public KorisnikTip TipKorisnika { get; set; }
-        public DateTime DatumRegistracije { get; set; }
+        public KorisnikTip? TipKorisnika { get; set; }
+        public DateTime? DatumRegistracije { get; set; }
         public string Lozinka { get; set; }
-        public ICollection<Parcela> Parcele { get; set; }
+        public ICollection<Parcela>? Parcele { get; set; }
 
         public Korisnik ToKorisnik()
         {
@@ -25,8 +25,8 @@ namespace MojAtar.Core.DTO
                 Ime = Ime,
                 Prezime = Prezime,
                 Email = Email,
-                TipKorisnika = TipKorisnika,
-                DatumRegistracije = DatumRegistracije,
+                TipKorisnika = (KorisnikTip)TipKorisnika,
+                DatumRegistracije = (DateTime)DatumRegistracije,
                 Lozinka = Lozinka,
                 Parcele = Parcele };
         }

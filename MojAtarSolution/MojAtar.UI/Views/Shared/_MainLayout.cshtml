@@ -1,0 +1,64 @@
+﻿<head>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<div class="d-flex">
+
+    <!-- Gornja navigacija -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
+        <a class="navbar-brand ms-4" href="#">Moj Atar</a>
+        <div class="ms-auto">
+            <button class="btn btn-outline-secondary" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Bočni meni -->
+    <div class="d-flex flex-column bg-light vh-100" style="width: 250px;">
+        <div class="p-3">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/" aria-current="page">
+                        <i class="bi bi-house-door"></i> Početna
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/parcele">
+                        <i class="bi bi-geo-alt"></i> Parcele
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/masine">
+                        <i class="bi bi-gear"></i> Mašine
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/resursi">
+                        <i class="bi bi-box"></i> Resursi
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/korisnici">
+                        <i class="bi bi-person"></i> Korisnici
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Glavni sadržaj -->
+    <div class="flex-grow-1 p-4">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function logout() {
+        // Implementiraj logiku za logout
+    }
+</script>

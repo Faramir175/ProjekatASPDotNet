@@ -4,13 +4,27 @@ using MojAtar.Core.ServiceContracts;
 using MojAtar.Core.Services;
 using MojAtar.Infrastructure.MojAtar;
 using MojAtar.Infrastructure.Repositories;
-using MudBlazor.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login"; // Stranica za prijavu
+        options.LogoutPath = "/logout"; // Stranica za odjavu
+        options.AccessDeniedPath = "/accessdenied"; // Stranica ako nema prava pristupa
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Samo ako koristiš HTTPS
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+
+builder.Services.AddAuthorization();
+
 //builder.Services.AddLogging();
 builder.Services.AddControllersWithViews();
-builder.Services.AddMudServices();
 
 builder.Services.AddDbContext<MojAtarDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -25,8 +39,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
 
 app.UseRouting();
 app.MapControllers();

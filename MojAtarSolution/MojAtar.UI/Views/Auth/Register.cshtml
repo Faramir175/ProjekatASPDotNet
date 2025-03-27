@@ -1,0 +1,46 @@
+﻿@using MojAtar.Core.DTO
+@model MojAtar.Core.DTO.KorisnikRequest
+
+@{
+    ViewData["Title"] = "Registracija";
+    Layout = "_AuthLayout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="~/css/auth.css" />
+    </head>
+    <body> 
+            <div class="background">
+                <div class="shape"></div>
+                <div class="shape"></div>
+            </div>
+
+                <form asp-controller="Auth" asp-action="Register" method="post">
+                <h3 class="text-center mb-4">Registrujte se u Moj Atar</h3>
+
+                    <label for="Ime">Ime</label>
+                    <input type="text" class="form-control" id="Ime" name="Ime" required>
+
+                    <label for="Prezime">Prezime</label>
+                    <input type="text" class="form-control" id="Prezime" name="Prezime" required>
+
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" required>
+
+                    <label for="TipKorisnika" class="form-label">Tip Korisnika</label>
+                    <select class="form-select" id="TipKorisnika" name="TipKorisnika" required>
+                        <option value="Standard">Korisnik</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+
+                    <label for="Lozinka">Lozinka</label>
+                    <input type="password" class="form-control" id="Lozinka" name="Lozinka" required>
+
+                    <input type="hidden" name="DatumRegistracije" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")">
+
+                    <button type="submit">Registruj se</button>
+                </form>
+    </body>
+</html>

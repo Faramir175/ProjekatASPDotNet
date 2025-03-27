@@ -22,6 +22,23 @@ namespace MojAtar.Core.Services
             _korisnikRepository = korisnikRepository;
         }
 
+        public async Task<KorisnikResponse> LogIn(string email, string lozinka)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(lozinka))
+            {
+                throw new ArgumentException("Email and password must be provided");
+            }
+
+            Korisnik? korisnik = await _korisnikRepository.GetByEmail(email);
+
+            if (korisnik == null || korisnik.Lozinka != lozinka)
+            {
+                throw new ArgumentException("Invalid email or password");
+            }
+
+            return korisnik.ToKorisnikResponse();
+        }
+
         public async Task<KorisnikResponse> Add(KorisnikRequest korisnikAdd)
         {
             if (korisnikAdd == null)
@@ -88,6 +105,19 @@ namespace MojAtar.Core.Services
 
             return korisnik.ToKorisnikResponse();
         }
+        public async Task<KorisnikResponse> GetByEmail(string? email)
+        {
+            if (email == null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            Korisnik? korisnik = await _korisnikRepository.GetByEmail(email);
+
+            if (korisnik == null) return null;
+
+            return korisnik.ToKorisnikResponse();
+        }
 
         public async Task<KorisnikResponse> Update(Guid? id, KorisnikRequest dto)
         {
@@ -98,13 +128,13 @@ namespace MojAtar.Core.Services
             Korisnik? korisnik = new Korisnik()
             {
                 Id = id.Value,
-                DatumRegistracije = dto.DatumRegistracije,
+                DatumRegistracije = (DateTime)dto.DatumRegistracije,
                 Email = dto.Email,
                 Ime = dto.Ime,
                 Prezime = dto.Prezime,
                 Parcele = dto.Parcele,
                 Lozinka = dto.Lozinka,
-                TipKorisnika = dto.TipKorisnika
+                TipKorisnika = (Domain.Enums.KorisnikTip)dto.TipKorisnika
             };
 
             await _korisnikRepository.Update(korisnik);
@@ -112,5 +142,6 @@ namespace MojAtar.Core.Services
             if (korisnik == null) return null;
             return korisnik.ToKorisnikResponse();
         }
+
     }
 }

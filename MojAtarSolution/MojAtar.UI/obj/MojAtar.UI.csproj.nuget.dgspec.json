@@ -209,10 +209,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.3, )"
-            },
-            "MudBlazor": {
-              "target": "Package",
-              "version": "[8.3.0, )"
             }
           },
           "imports": [
