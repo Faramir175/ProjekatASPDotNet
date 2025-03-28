@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/logout"; // Stranica za odjavu
         options.AccessDeniedPath = "/accessdenied"; // Stranica ako nema prava pristupa
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Samo ako koristiš HTTPS
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Samo ako koristiš HTTPS
         options.Cookie.SameSite = SameSiteMode.Lax;
     });
 
@@ -39,11 +39,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 
-app.UseRouting();
 app.MapControllers();
 
 

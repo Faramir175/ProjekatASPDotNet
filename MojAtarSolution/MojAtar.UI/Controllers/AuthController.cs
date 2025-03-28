@@ -47,7 +47,7 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(KorisnikRequest korisnikRequest)
+        public async Task<IActionResult> Login( KorisnikRequest korisnikRequest)
         {
             if (ModelState.IsValid)
             {
