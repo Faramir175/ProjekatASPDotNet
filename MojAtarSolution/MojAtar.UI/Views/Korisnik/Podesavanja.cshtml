@@ -1,0 +1,52 @@
+﻿@model MojAtar.Core.DTO.KorisnikRequest
+
+@{
+    ViewData["Title"] = "Podešavanja korisničkog profila";
+}
+
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <link rel="stylesheet" href="~/css/auth.css" />
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+
+    <form asp-controller="Korisnik" asp-action="Azuriraj" method="post">
+        <h3 class="text-center mb-4">Izmenite svoje podatke</h3>
+
+        <label for="Ime">Ime</label>
+        <input type="text" class="form-control" id="Ime" name="Ime" value="@Model.Ime" required>
+
+        <label for="Prezime">Prezime</label>
+        <input type="text" class="form-control" id="Prezime" name="Prezime" value="@Model.Prezime" required>
+
+        <label for="Email">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required>
+
+        <label for="TrenutnaLozinka">Trenutna lozinka</label>
+        <input type="password" class="form-control" id="TrenutnaLozinka" name="TrenutnaLozinka" required>
+
+        <label for="Lozinka">Nova lozinka (opciono)</label>
+        <input type="password" class="form-control" id="Lozinka" name="Lozinka">
+
+        <input type="hidden" name="DatumRegistracije" value="@Model.DatumRegistracije?.ToString("yyyy-MM-ddTHH:mm:ss")">
+        <input type="hidden" name="KorisnikId" id="KorisnikId" value="@ViewBag.KorisnikId">
+
+        <button type="submit">Sačuvaj izmene</button>
+    </form>
+
+    <form asp-controller="Korisnik" asp-action="Obrisi" method="post">
+        <button type="submit" class="btn btn-danger">Obriši nalog</button>
+    </form>
+</body>
+</html>

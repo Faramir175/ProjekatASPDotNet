@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MojAtar.Core.Domain.Enums;
 using MojAtar.Core.DTO;
 using System.Security.Claims;
@@ -9,11 +10,11 @@ namespace MojAtar.UI.Controllers
     public class PocetnaController : Controller
     {
         // GET: /
+        [Authorize]
         [HttpGet("")]
         public IActionResult Pocetna()
         {
-            if (User.Identity.IsAuthenticated)
-            {
+
                 // Kreiraj instancu svoje klase na osnovu podataka iz claim-ova.
                 var korisnik = new KorisnikResponse
                 {
@@ -25,10 +26,9 @@ namespace MojAtar.UI.Controllers
                 };
 
                 return View(korisnik);
-            }
+            
 
-            // Ako korisnik nije prijavljen, preusmeri ga na login
-            return RedirectToAction("Login", "Auth");
+
         }
     }
 }

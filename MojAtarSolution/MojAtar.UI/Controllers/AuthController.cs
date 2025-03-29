@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MojAtar.Core.DTO;
 using MojAtar.Core.ServiceContracts;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MojAtar.UI.Controllers
 {
@@ -20,18 +21,10 @@ namespace MojAtar.UI.Controllers
             _passwordHasher = new PasswordHasher<KorisnikRequest>();
         }
         // GET: /register
+        [Authorize(Roles = "Admin")]
         [HttpGet("register")]
         public IActionResult Register()
         {
-            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-            if(!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login");
-            }
-            if (userRole != "Admin") // Proveri da li je korisnik administrator
-            {
-                return RedirectToAction("Pocetna", "Pocetna");
-            }
             return View();
         }
 
@@ -52,6 +45,10 @@ namespace MojAtar.UI.Controllers
         [HttpGet("login")]
         public IActionResult Login()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Pocetna", "Pocetna");
+            }
             return View();
         }
 
