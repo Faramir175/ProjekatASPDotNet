@@ -69,9 +69,22 @@ namespace MojAtar.UI.Controllers
         {
             try
             {
-                KorisnikResponse? korisnik = await _korisnikService.Update(id, korisnikRequest);
-                if (korisnik == null) return NotFound();
-                return Ok(korisnik);
+                // Uzima se korisnik koji se menja iz baze
+                KorisnikResponse? originalniKorisnik = await _korisnikService.GetById(id);
+                if (originalniKorisnik == null) return NotFound($"Korisnik sa ID-em {id} ne postoji.");
+
+                // Atributi koji nisu prosledjeni upitom se popunjavaju
+                if (string.IsNullOrEmpty(korisnikRequest.Ime)) korisnikRequest.Ime = originalniKorisnik.Ime;
+                if (string.IsNullOrEmpty(korisnikRequest.Prezime)) korisnikRequest.Prezime = originalniKorisnik.Prezime;
+                if (string.IsNullOrEmpty(korisnikRequest.Email)) korisnikRequest.Email = originalniKorisnik.Email;
+                if (!korisnikRequest.TipKorisnika.HasValue) korisnikRequest.TipKorisnika = originalniKorisnik.TipKorisnika;
+                if (!korisnikRequest.DatumRegistracije.HasValue) korisnikRequest.DatumRegistracije = originalniKorisnik.DatumRegistracije;
+                if (string.IsNullOrEmpty(korisnikRequest.Lozinka)) korisnikRequest.Lozinka = originalniKorisnik.Lozinka;
+                if (korisnikRequest.Parcele == null) korisnikRequest.Parcele = originalniKorisnik.Parcele;
+
+                // Sačuvaj ažuriranog korisnika
+                KorisnikResponse? updatedKorisnik = await _korisnikService.Update(id, korisnikRequest);
+                return Ok(updatedKorisnik);
             }
             catch (Exception ex)
             {
