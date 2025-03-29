@@ -1,0 +1,24 @@
+﻿@model MojAtar.Core.DTO.KorisnikResponse
+
+@{
+    ViewData["Title"] = "Početna stranica";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Dobrodošli, @Model.Ime @Model.Prezime!</h1>
+    <p>Email: @Model.Email</p>
+    <p>Uloga: @Model.TipKorisnika</p>
+    <p>Datum registracije: @Model.DatumRegistracije.ToString("dd.MM.yyyy HH:mm")</p>
+
+    <form asp-controller="Auth" asp-action="Logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

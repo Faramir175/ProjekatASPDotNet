@@ -23,6 +23,15 @@ namespace MojAtar.UI.Controllers
         [HttpGet("register")]
         public IActionResult Register()
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            if(!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+            if (userRole != "Admin") // Proveri da li je korisnik administrator
+            {
+                return RedirectToAction("Pocetna", "Pocetna");
+            }
             return View();
         }
 
@@ -63,10 +72,13 @@ namespace MojAtar.UI.Controllers
                     {
                         // 3. Postaviti autentifikacioni cookie
                         var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, korisnik.Email),
-                    new Claim(ClaimTypes.Role, korisnik.TipKorisnika.ToString()) // Ako koristiš ulogu
-                };
+                    {
+                        new Claim(ClaimTypes.Name, korisnik.Email),
+                        new Claim(ClaimTypes.Role, korisnik.TipKorisnika.ToString()),
+                        new Claim("Ime", korisnik.Ime),
+                        new Claim("Prezime", korisnik.Prezime),
+                        new Claim("DatumRegistracije", korisnik.DatumRegistracije.ToString("o")) // ISO format
+                    };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var authProperties = new AuthenticationProperties
@@ -92,7 +104,8 @@ namespace MojAtar.UI.Controllers
                             Console.WriteLine($"Cookie: {cookie.Key} = {cookie.Value}");
                         }
 
-                        return RedirectToAction("Register", "Auth");
+                        return RedirectToAction("Pocetna", "Pocetna");
+
 
                     }
                     else

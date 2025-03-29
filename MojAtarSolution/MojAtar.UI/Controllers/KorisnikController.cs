@@ -6,6 +6,7 @@ using MojAtar.Core.ServiceContracts;
 
 namespace MojAtar.UI.Controllers
 {
+    [Route("korisnici")]
     public class KorisnikController : Controller
     {
         private readonly IKorisnikService _korisnikService;
@@ -27,7 +28,7 @@ namespace MojAtar.UI.Controllers
 
         //// GET: api/korisnici/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<KorisnikResponse>> GetById([FromQuery] Guid id)
+        public async Task<ActionResult<KorisnikResponse>> GetById([FromRoute] Guid id)
         {
             //_logger.LogInformation("Fetching user with ID: {id}", id);
 
@@ -48,7 +49,7 @@ namespace MojAtar.UI.Controllers
         }
 
         //POST: api/korisnici
-        [HttpPost("")]
+        [HttpPost("post")]
         public async Task<ActionResult<KorisnikResponse>> Add([FromBody] KorisnikRequest korisnikRequest)
         {
             try
@@ -63,8 +64,8 @@ namespace MojAtar.UI.Controllers
         }
 
         // PUT: api/korisnici/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult<KorisnikResponse>> Update([FromQuery]Guid id, [FromBody] KorisnikRequest korisnikRequest)
+        [HttpPut("put/{id}")]
+        public async Task<ActionResult<KorisnikResponse>> Update([FromRoute]Guid id, [FromBody] KorisnikRequest korisnikRequest)
         {
             try
             {
@@ -79,8 +80,8 @@ namespace MojAtar.UI.Controllers
         }
 
         // DELETE: api/korisnici/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete([FromQuery]Guid id)
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult<bool>> Delete([FromRoute]Guid id)
         {
             try
             {
