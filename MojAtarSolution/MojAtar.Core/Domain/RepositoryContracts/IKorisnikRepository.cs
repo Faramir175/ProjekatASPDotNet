@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MojAtar.Core.Domain.RepositoryContracts
 {
-    public interface IKorisnikRepository:IRepository<Korisnik>
+    public interface IKorisnikRepository : IRepository<Korisnik>
     {
         public Task<Korisnik> GetByTipKorisnika(KorisnikTip tipKorisnika);
         public Task<Korisnik> GetByEmail(string email);

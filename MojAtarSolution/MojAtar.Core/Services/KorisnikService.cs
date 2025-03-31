@@ -22,23 +22,6 @@ namespace MojAtar.Core.Services
             _korisnikRepository = korisnikRepository;
         }
 
-        public async Task<KorisnikResponse> LogIn(string email, string lozinka)
-        {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(lozinka))
-            {
-                throw new ArgumentException("Email and password must be provided");
-            }
-
-            Korisnik? korisnik = await _korisnikRepository.GetByEmail(email);
-
-            if (korisnik == null || korisnik.Lozinka != lozinka)
-            {
-                throw new ArgumentException("Invalid email or password");
-            }
-
-            return korisnik.ToKorisnikResponse();
-        }
-
         public async Task<KorisnikResponse> Add(KorisnikRequest korisnikAdd)
         {
             if (korisnikAdd == null)
