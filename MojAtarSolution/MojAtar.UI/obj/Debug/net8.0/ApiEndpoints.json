@@ -2,7 +2,7 @@
   {
     "ContainingType": "MojAtar.UI.Controllers.KatastarskaOpstinaController",
     "Method": "GetById",
-    "RelativePath": "katastarske-opstine/{id}",
+    "RelativePath": "api/katastarske-opstine/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -28,7 +28,7 @@
   {
     "ContainingType": "MojAtar.UI.Controllers.KatastarskaOpstinaController",
     "Method": "Delete",
-    "RelativePath": "katastarske-opstine/delete/{id}",
+    "RelativePath": "api/katastarske-opstine/delete/{id}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -43,8 +43,8 @@
   },
   {
     "ContainingType": "MojAtar.UI.Controllers.KatastarskaOpstinaController",
-    "Method": "Create",
-    "RelativePath": "katastarske-opstine/post",
+    "Method": "Add",
+    "RelativePath": "api/katastarske-opstine/post",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -70,7 +70,7 @@
   {
     "ContainingType": "MojAtar.UI.Controllers.KatastarskaOpstinaController",
     "Method": "Update",
-    "RelativePath": "katastarske-opstine/put/{id}",
+    "RelativePath": "api/katastarske-opstine/put/{id}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -91,7 +91,7 @@
   {
     "ContainingType": "MojAtar.UI.Controllers.KatastarskaOpstinaController",
     "Method": "GetAll",
-    "RelativePath": "katastarske-opstine/svi",
+    "RelativePath": "api/katastarske-opstine/svi",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

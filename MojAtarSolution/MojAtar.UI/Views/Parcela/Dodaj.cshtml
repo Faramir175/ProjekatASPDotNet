@@ -1,0 +1,21 @@
+﻿<select id="katastarskaOpstina" name="ID_KatastarskaOpstina" class="form-control">
+    <option value="" disabled selected>Izaberite opštinu</option>
+</select>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('api/katastarske-opstine/svi')
+            .then(response => response.json())
+            .then(data => {
+                let select = document.getElementById("katastarskaOpstina");
+                data.forEach(opstina => {
+                    let option = document.createElement("option");
+                    option.value = opstina.id;
+                    option.textContent = opstina.naziv;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Greška prilikom učitavanja opština:', error));
+    });
+</script>
+
