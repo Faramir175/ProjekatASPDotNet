@@ -7,7 +7,7 @@ namespace MojAtar.UI.Controllers
 {
     [Route("api/katastarske-opstine")]
     [ApiController]
-    public class KatastarskaOpstinaController : ControllerBase
+    public class KatastarskaOpstinaController : Controller
     {
         private readonly IKatastarskaOpstinaService _katastarskaOpstinaService;
 

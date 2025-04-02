@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MojAtar.Core.DTO
 {
-    public class KorisnikResponse
+    public class KorisnikResponseDTO
     {
         public Guid? Id { get; set; }
         public string Ime { get; set; }

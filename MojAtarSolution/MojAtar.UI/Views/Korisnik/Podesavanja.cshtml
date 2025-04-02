@@ -1,4 +1,4 @@
-﻿@model MojAtar.Core.DTO.KorisnikRequest
+﻿@model MojAtar.Core.DTO.KorisnikRequestDTO
 
 @{
     ViewData["Title"] = "Podešavanja korisničkog profila";
@@ -42,11 +42,11 @@
         <input type="hidden" name="DatumRegistracije" value="@Model.DatumRegistracije?.ToString("yyyy-MM-ddTHH:mm:ss")">
         <input type="hidden" name="KorisnikId" id="KorisnikId" value="@ViewBag.KorisnikId">
 
-        <button type="submit">Sačuvaj izmene</button>
+        <button type="submit" onclick="return confirm('Da li ste sigurni?');">Sačuvaj izmene</button>
     </form>
 
     <form asp-controller="Korisnik" asp-action="Obrisi" method="post">
-        <button type="submit" class="btn btn-danger">Obriši nalog</button>
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši nalog</button>
     </form>
 </body>
 </html>

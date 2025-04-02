@@ -14,11 +14,11 @@ namespace MojAtar.UI.Controllers
     public class AuthController : Controller
     {
         private readonly IKorisnikService _korisnikService;
-        private readonly PasswordHasher<KorisnikRequest> _passwordHasher;
+        private readonly PasswordHasher<KorisnikRequestDTO> _passwordHasher;
         public AuthController(IKorisnikService korisnikService)
         {
             _korisnikService = korisnikService;
-            _passwordHasher = new PasswordHasher<KorisnikRequest>();
+            _passwordHasher = new PasswordHasher<KorisnikRequestDTO>();
         }
         // GET: /register
         [Authorize(Roles = "Admin")]
@@ -31,7 +31,7 @@ namespace MojAtar.UI.Controllers
         // POST: /register
         [Authorize(Roles = "Admin")]
         [HttpPost("register")]
-        public async Task<IActionResult> Register(KorisnikRequest korisnikRequest)
+        public async Task<IActionResult> Register(KorisnikRequestDTO korisnikRequest)
         {
             if (ModelState.IsValid)
             {
@@ -54,12 +54,12 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login( KorisnikRequest korisnikRequest)
+        public async Task<IActionResult> Login( KorisnikRequestDTO korisnikRequest)
         {
             if (ModelState.IsValid)
             {
                 // 1. Pronaći korisnika po emailu
-                KorisnikResponse? korisnik = await _korisnikService.GetByEmail(korisnikRequest.Email);
+                KorisnikResponseDTO? korisnik = await _korisnikService.GetByEmail(korisnikRequest.Email);
 
                 if (korisnik != null)
                 {
@@ -71,6 +71,7 @@ namespace MojAtar.UI.Controllers
                         // 3. Postaviti autentifikacioni cookie
                         var claims = new List<Claim>
                     {
+                        new Claim(ClaimTypes.NameIdentifier, korisnik.Id.ToString()),
                         new Claim(ClaimTypes.Name, korisnik.Email),
                         new Claim(ClaimTypes.Role, korisnik.TipKorisnika.ToString()),
                         new Claim("Ime", korisnik.Ime),
@@ -128,12 +129,12 @@ namespace MojAtar.UI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("api/login")]
-        public async Task<IActionResult> ApiLogin(KorisnikRequest korisnikRequest)
+        public async Task<IActionResult> ApiLogin(KorisnikRequestDTO korisnikRequest)
         {
             if (ModelState.IsValid)
             {
                 // 1. Pronaći korisnika po emailu
-                KorisnikResponse? korisnik = await _korisnikService.GetByEmail(korisnikRequest.Email);
+                KorisnikResponseDTO? korisnik = await _korisnikService.GetByEmail(korisnikRequest.Email);
 
                 if (korisnik != null)
                 {
@@ -195,7 +196,7 @@ namespace MojAtar.UI.Controllers
         
         [Authorize(Roles = "Admin")]
         [HttpPost("api/register")]
-        public async Task<IActionResult> ApiRegister(KorisnikRequest korisnikRequest)
+        public async Task<IActionResult> ApiRegister(KorisnikRequestDTO korisnikRequest)
         {
             if (ModelState.IsValid)
             {

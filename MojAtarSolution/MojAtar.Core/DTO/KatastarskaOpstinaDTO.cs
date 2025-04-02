@@ -20,16 +20,13 @@ namespace MojAtar.Core.DTO
         public ICollection<Parcela>? Parcele { get; set; }
 
 
-        public KatastarskaOpstina ToKatastarskaOpstina()
+        public KatastarskaOpstina ToKatastarskaOpstina() => new KatastarskaOpstina()
         {
-            return new KatastarskaOpstina()
-            {
-                Id = Id,
-                GradskaOpstina = GradskaOpstina,
-                Naziv = Naziv,
-                Parcele = Parcele,
-            };
-        }
+            Id = Id,
+            GradskaOpstina = GradskaOpstina,
+            Naziv = Naziv,
+            Parcele = Parcele,
+        };
     }
 
 }

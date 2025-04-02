@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MojAtar.Core.DTO
 {
-    public class KorisnikRequest
+    public class KorisnikRequestDTO
     {
         public string? Ime { get; set; } 
         public string? Prezime { get; set; } 
@@ -21,16 +21,14 @@ namespace MojAtar.Core.DTO
         public string Lozinka { get; set; }
         public ICollection<Parcela>? Parcele { get; set; }
 
-        public Korisnik ToKorisnik()
+        public Korisnik ToKorisnik() => new Korisnik()
         {
-            return new Korisnik() {                 
-                Ime = Ime,
-                Prezime = Prezime,
-                Email = Email,
-                TipKorisnika = (KorisnikTip)TipKorisnika,
-                DatumRegistracije = (DateTime)DatumRegistracije,
-                Lozinka = Lozinka,
-                Parcele = Parcele };
-        }
+            Ime = Ime,
+            Prezime = Prezime,
+            Email = Email,
+            TipKorisnika = (KorisnikTip)TipKorisnika,
+            DatumRegistracije = (DateTime)DatumRegistracije,
+            Lozinka = Lozinka,
+        };
     }
 }

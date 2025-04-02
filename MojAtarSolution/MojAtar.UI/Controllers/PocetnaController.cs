@@ -16,7 +16,7 @@ namespace MojAtar.UI.Controllers
         {
 
                 // Kreiraj instancu svoje klase na osnovu podataka iz claim-ova.
-                var korisnik = new KorisnikResponse
+                var korisnik = new KorisnikResponseDTO
                 {
                     Ime = User.FindFirst("Ime")?.Value,
                     Prezime = User.FindFirst("Prezime")?.Value,

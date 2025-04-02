@@ -9,14 +9,14 @@ namespace MojAtar.Core.DTO.ExtensionKlase
 {
     public static class KorisnikExtensions
     {
-        public static KorisnikResponse? ToKorisnikResponse(this Korisnik korisnik)
+        public static KorisnikResponseDTO? ToKorisnikResponse(this Korisnik korisnik)
         {
             if (korisnik == null)
             {
                 return null; 
             }
 
-            return new KorisnikResponse()
+            return new KorisnikResponseDTO()
             {
                 Id = korisnik.Id,
                 Ime = korisnik.Ime,

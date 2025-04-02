@@ -31,8 +31,12 @@ builder.Services.AddDbContext<MojAtarDbContext>(options =>
 
 builder.Services.AddScoped<IKorisnikRepository, KorisnikRepository>();
 builder.Services.AddScoped<IKorisnikService, KorisnikService>();
+
 builder.Services.AddScoped<IKatastarskaOpstinaRepository, KatastarskaOpstinaRepository>();
 builder.Services.AddScoped<IKatastarskaOpstinaService, KatastarskaOpstinaService>();
+
+builder.Services.AddScoped<IParcelaRepository, ParcelaRepository>();
+builder.Services.AddScoped<IParcelaService, ParcelaService>();
 
 
 var app = builder.Build();

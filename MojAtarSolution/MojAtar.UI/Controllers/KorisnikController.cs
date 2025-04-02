@@ -15,34 +15,34 @@ namespace MojAtar.UI.Controllers
     public class KorisnikController : Controller
     {
         private readonly IKorisnikService _korisnikService;
-        private readonly PasswordHasher<KorisnikRequest> _passwordHasher;
+        private readonly PasswordHasher<KorisnikRequestDTO> _passwordHasher;
 
         //private readonly ILogger<KorisnikController> _logger;
 
         public KorisnikController(IKorisnikService korisnikService, ILogger<KorisnikController> logger)
         {
             _korisnikService = korisnikService;
-            _passwordHasher = new PasswordHasher<KorisnikRequest>();
+            _passwordHasher = new PasswordHasher<KorisnikRequestDTO>();
             //_logger = logger;
         }
 
         //// GET: api/korisnici/svi
         [HttpGet("svi")]
-        public async Task<ActionResult<List<KorisnikResponse>>> GetAll()
+        public async Task<ActionResult<List<KorisnikResponseDTO>>> GetAll()
         {
-            List<KorisnikResponse?> korisnici = await _korisnikService.GetAll();
+            List<KorisnikResponseDTO?> korisnici = await _korisnikService.GetAll();
             return Ok(korisnici);
         }
 
         //// GET: api/korisnici/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<KorisnikResponse>> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<KorisnikResponseDTO>> GetById([FromRoute] Guid id)
         {
             //_logger.LogInformation("Fetching user with ID: {id}", id);
 
             try
             {
-                KorisnikResponse? korisnik = await _korisnikService.GetById(id);
+                KorisnikResponseDTO? korisnik = await _korisnikService.GetById(id);
                 if (korisnik == null)
                 {
                     return NotFound($"Person with id {id} does not exist.");
@@ -58,12 +58,12 @@ namespace MojAtar.UI.Controllers
 
         //POST: api/korisnici
         [HttpPost("post")]
-        public async Task<ActionResult<KorisnikResponse>> Add([FromBody] KorisnikRequest korisnikRequest)
+        public async Task<ActionResult<KorisnikResponseDTO>> Add([FromBody] KorisnikRequestDTO korisnikRequest)
         {
             try
             {
                 korisnikRequest.Lozinka = _passwordHasher.HashPassword(korisnikRequest, korisnikRequest.Lozinka);
-                KorisnikResponse? korisnik = await _korisnikService.Add(korisnikRequest);
+                KorisnikResponseDTO? korisnik = await _korisnikService.Add(korisnikRequest);
                 return Ok(korisnik);
             }
             catch (Exception ex)
@@ -74,12 +74,12 @@ namespace MojAtar.UI.Controllers
 
         // PUT: api/korisnici/{id}
         [HttpPut("put/{id}")]
-        public async Task<ActionResult<KorisnikResponse>> Update([FromRoute]Guid id, [FromBody] KorisnikRequest korisnikRequest)
+        public async Task<ActionResult<KorisnikResponseDTO>> Update([FromRoute]Guid id, [FromBody] KorisnikRequestDTO korisnikRequest)
         {
             try
             {
                 // Uzima se korisnik koji se menja iz baze
-                KorisnikResponse? originalniKorisnik = await _korisnikService.GetById(id);
+                KorisnikResponseDTO? originalniKorisnik = await _korisnikService.GetById(id);
                 if (originalniKorisnik == null) return NotFound($"Korisnik sa ID-em {id} ne postoji.");
 
                 // Atributi koji nisu prosledjeni upitom se popunjavaju
@@ -92,7 +92,7 @@ namespace MojAtar.UI.Controllers
                 if (korisnikRequest.Parcele == null) korisnikRequest.Parcele = originalniKorisnik.Parcele;
 
                 // Sačuvaj ažuriranog korisnika
-                KorisnikResponse? updatedKorisnik = await _korisnikService.Update(id, korisnikRequest);
+                KorisnikResponseDTO? updatedKorisnik = await _korisnikService.Update(id, korisnikRequest);
                 return Ok(updatedKorisnik);
             }
             catch (Exception ex)
@@ -120,7 +120,7 @@ namespace MojAtar.UI.Controllers
         [HttpGet("podesavanja")]
         public async Task<IActionResult> Podesavanja()
         {
-            KorisnikResponse? korisnik = new KorisnikResponse
+            KorisnikResponseDTO? korisnik = new KorisnikResponseDTO
             {
                 Email = User.FindFirst(ClaimTypes.Name)?.Value,
             };
@@ -131,7 +131,7 @@ namespace MojAtar.UI.Controllers
                 return NotFound("Korisnik nije pronađen.");
             }
 
-            var model = new KorisnikRequest
+            var model = new KorisnikRequestDTO
             {
                 Ime = korisnik.Ime,
                 Prezime = korisnik.Prezime,
@@ -143,14 +143,14 @@ namespace MojAtar.UI.Controllers
             return View(model);
         }
         [HttpPost("azuriraj")]
-        public async Task<IActionResult> Azuriraj(KorisnikRequest korisnik)
+        public async Task<IActionResult> Azuriraj(KorisnikRequestDTO korisnik)
         {
             string? trenutnaLozinka = Request.Form["TrenutnaLozinka"];
 
             Guid korisnikId = Guid.Parse(Request.Form["KorisnikId"]);
 
 
-            KorisnikResponse? logovaniKorisnik = new KorisnikResponse
+            KorisnikResponseDTO? logovaniKorisnik = new KorisnikResponseDTO
             {
                 Email = User.FindFirst(ClaimTypes.Name)?.Value,
             };
@@ -163,7 +163,7 @@ namespace MojAtar.UI.Controllers
                 try
                 {
                     // Uzima se korisnik koji se menja iz baze
-                    KorisnikResponse? originalniKorisnik = await _korisnikService.GetById(korisnikId);
+                    KorisnikResponseDTO? originalniKorisnik = await _korisnikService.GetById(korisnikId);
                     if (originalniKorisnik == null)
                     {
                         ModelState.AddModelError("", $"Korisnik sa ID-em {korisnikId} ne postoji.");
@@ -202,7 +202,7 @@ namespace MojAtar.UI.Controllers
                     authProperties);
 
                     // Sačuvaj ažuriranog korisnika
-                    KorisnikResponse? updatedKorisnik = await _korisnikService.Update(korisnikId, korisnik);
+                    KorisnikResponseDTO? updatedKorisnik = await _korisnikService.Update(korisnikId, korisnik);
                     TempData["SuccessMessage"] = "Podaci su uspešno ažurirani.";
                     return RedirectToAction("Podesavanja");
                 }
@@ -220,7 +220,7 @@ namespace MojAtar.UI.Controllers
         {
             try
             {
-                KorisnikResponse korisnik = new KorisnikResponse
+                KorisnikResponseDTO korisnik = new KorisnikResponseDTO
                 {
                     Email = User.FindFirst(ClaimTypes.Name)?.Value,
                 };

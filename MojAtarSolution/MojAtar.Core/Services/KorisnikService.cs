@@ -22,7 +22,7 @@ namespace MojAtar.Core.Services
             _korisnikRepository = korisnikRepository;
         }
 
-        public async Task<KorisnikResponse> Add(KorisnikRequest korisnikAdd)
+        public async Task<KorisnikResponseDTO> Add(KorisnikRequestDTO korisnikAdd)
         {
             if (korisnikAdd == null)
             {
@@ -64,10 +64,10 @@ namespace MojAtar.Core.Services
             return true;
         }
 
-        public async Task<List<KorisnikResponse>> GetAll()
+        public async Task<List<KorisnikResponseDTO>> GetAll()
         {
             List<Korisnik> korisnici = await _korisnikRepository.GetAll();
-            List<KorisnikResponse> korisniciR = new List<KorisnikResponse>();
+            List<KorisnikResponseDTO> korisniciR = new List<KorisnikResponseDTO>();
             foreach(Korisnik k in korisnici)
             {
                 korisniciR.Add(k.ToKorisnikResponse());
@@ -75,7 +75,7 @@ namespace MojAtar.Core.Services
             return korisniciR;
         }
 
-        public async Task<KorisnikResponse> GetById(Guid? id)
+        public async Task<KorisnikResponseDTO> GetById(Guid? id)
         {
             if (id == null)
             {
@@ -88,7 +88,7 @@ namespace MojAtar.Core.Services
 
             return korisnik.ToKorisnikResponse();
         }
-        public async Task<KorisnikResponse> GetByEmail(string? email)
+        public async Task<KorisnikResponseDTO> GetByEmail(string? email)
         {
             if (email == null)
             {
@@ -102,7 +102,7 @@ namespace MojAtar.Core.Services
             return korisnik.ToKorisnikResponse();
         }
 
-        public async Task<KorisnikResponse> Update(Guid? id, KorisnikRequest dto)
+        public async Task<KorisnikResponseDTO> Update(Guid? id, KorisnikRequestDTO dto)
         {
             if (id == null)
             {

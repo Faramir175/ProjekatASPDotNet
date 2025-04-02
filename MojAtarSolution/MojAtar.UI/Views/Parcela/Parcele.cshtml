@@ -1,0 +1,38 @@
+﻿@model List<MojAtar.Core.DTO.ParcelaDTO>
+
+@{
+    ViewData["Title"] = "Moje Parcele";
+}
+
+<h2>Moje Parcele</h2>
+
+<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu parcelu</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Broj parcele</th>
+            <th>Površina</th>
+            <th>Katastarska Opština</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var parcela in Model)
+        {
+            <tr>
+                <td>@parcela.Naziv</td>
+                <td>@parcela.BrojParcele</td>
+                <td>@parcela.Povrsina ha</td>
+                <td>@parcela.Napomena</td>
+                <td>@parcela.KatastarskaOpstinaNaziv</td>
+                <td>
+                    <a asp-action="Izmeni" asp-route-id="@parcela.Id" class="btn btn-warning">Izmeni</a>
+                    <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

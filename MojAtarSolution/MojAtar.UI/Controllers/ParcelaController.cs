@@ -1,13 +1,98 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using MojAtar.Core.Domain;
+using MojAtar.Core.Domain.Enums;
+using MojAtar.Core.DTO;
+using MojAtar.Core.ServiceContracts;
+using MojAtar.Core.Services;
+using System.Security.Claims;
 
 namespace MojAtar.UI.Controllers
 {
+    [Route("parcele")]
     public class ParcelaController : Controller
     {
-        [HttpGet("parcele")]
-        public IActionResult Dodaj()
+        private readonly IParcelaService _parcelaService;
+        private readonly IKatastarskaOpstinaService _katastarskaOpstinaService;
+
+        public ParcelaController(IParcelaService parcelaService, IKatastarskaOpstinaService katastarskaOpstinaService)
         {
-            return View();
+            _parcelaService = parcelaService;
+            _katastarskaOpstinaService = katastarskaOpstinaService;
         }
+
+        [HttpGet("")]
+        public async Task<IActionResult> Parcele()
+        {
+            List<ParcelaDTO> parcele = await _parcelaService.GetAll();
+            foreach (ParcelaDTO parcela in parcele)
+            {
+                KatastarskaOpstinaDTO k = await _katastarskaOpstinaService.GetById(parcela.IdKatastarskaOpstina);
+                parcela.KatastarskaOpstinaNaziv = k.Naziv;
+            }
+
+            return View(parcele);
+        }
+
+        [HttpGet("dodaj")]
+        public async Task<IActionResult> Dodaj()
+        {
+            ViewBag.KatastarskeOpstine = new SelectList(await _katastarskaOpstinaService.GetAll(), "Id", "Naziv");
+            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(new ParcelaDTO()); // Prazan model za dodavanje
+        }
+
+        [HttpPost("dodaj")]
+        public async Task<IActionResult> Dodaj(ParcelaDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Korisnik nije prijavljen.");
+            }
+            dto.IdKorisnik = Guid.Parse(userId);
+            await _parcelaService.Add(dto);
+            return RedirectToAction("Parcele");
+        }
+
+        [HttpGet("izmeni/{id}")]
+        public async Task<IActionResult> Izmeni(Guid id)
+        {
+            var parcela = await _parcelaService.GetById(id);
+            if (parcela == null) return NotFound();
+
+            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.KatastarskeOpstine = new SelectList(await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", parcela.IdKatastarskaOpstina);
+            return View("Dodaj", parcela);
+        }
+
+        [HttpPost("izmeni/{id}")]
+        public async Task<IActionResult> Izmeni(Guid id, ParcelaDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return View("Dodaj", dto);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Korisnik nije prijavljen.");
+            }
+            dto.IdKorisnik = Guid.Parse(userId);
+            dto.Id = id;
+            await _parcelaService.Update(dto.Id,dto);
+            return RedirectToAction("Parcele");
+        }
+
+        [HttpPost("obrisi/{id}")]
+        public async Task<IActionResult> Obrisi(Guid id)
+        {
+            await _parcelaService.DeleteById(id);
+            return RedirectToAction("Parcele");
+        }
+
     }
 }

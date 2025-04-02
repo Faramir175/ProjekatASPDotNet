@@ -1,5 +1,5 @@
 ﻿@using MojAtar.Core.DTO
-@model MojAtar.Core.DTO.KorisnikRequest
+@model MojAtar.Core.DTO.KorisnikRequestDTO
 
 @{
     ViewData["Title"] = "Registracija";
@@ -40,7 +40,7 @@
 
                     <input type="hidden" name="DatumRegistracije" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")">
 
-                    <button type="submit">Registruj se</button>
+        <button type="submit" onclick="return confirm('Da li ste sigurni?');">Registruj se</button>
                 </form>
     </body>
 </html>

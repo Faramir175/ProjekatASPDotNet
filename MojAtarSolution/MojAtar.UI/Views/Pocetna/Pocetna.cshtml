@@ -1,4 +1,4 @@
-﻿@model MojAtar.Core.DTO.KorisnikResponse
+﻿@model MojAtar.Core.DTO.KorisnikResponseDTO
 
 @{
     ViewData["Title"] = "Početna stranica";
@@ -18,7 +18,7 @@
     <p>Datum registracije: @Model.DatumRegistracije.ToString("dd.MM.yyyy HH:mm")</p>
 
     <form asp-controller="Auth" asp-action="Logout" method="post">
-        <button type="submit">Logout</button>
+        <button type="submit" onclick="return confirm('Da li ste sigurni?');">Logout</button>
     </form>
 </body>
 </html>
