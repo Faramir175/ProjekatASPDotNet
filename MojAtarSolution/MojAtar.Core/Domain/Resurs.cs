@@ -19,5 +19,8 @@ namespace MojAtar.Core.Domain
         public double AktuelnaCena { get; set; }
         public ICollection<CenaResursa> CeneResursa { get; set; }
 
+        //Za filtriranje
+        public Guid IdKorisnik { get; set; }
+
     }
 }

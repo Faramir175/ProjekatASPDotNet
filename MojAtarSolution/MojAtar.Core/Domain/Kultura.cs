@@ -21,5 +21,9 @@ namespace MojAtar.Core.Domain
         public ICollection<CenaKulture> CeneKulture { get; set; }
 
         public ICollection<Parcela_Kultura> ParceleKulture { get; set; }
+
+        //Za filtriranje
+        public Guid IdKorisnik { get; set; }
+
     }
 }

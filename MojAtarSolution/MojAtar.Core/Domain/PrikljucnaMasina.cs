@@ -19,5 +19,9 @@ namespace MojAtar.Core.Domain
         public DateTime PoslednjiServis { get; set; }
         [StringLength(175,ErrorMessage =$"Duzina stringa mora biti manja od 175 karaktera")]
         public string OpisServisa { get; set; }
+
+        //Za filtriranje
+        public Guid IdKorisnik { get; set; }
+
     }
 }

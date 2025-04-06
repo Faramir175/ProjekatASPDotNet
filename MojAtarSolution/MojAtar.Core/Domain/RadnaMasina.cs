@@ -22,5 +22,9 @@ namespace MojAtar.Core.Domain
         public string OpisServisa { get; set; }
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public int UkupanBrojRadnihSati { get; set; }
+
+        //Za filtriranje
+        public Guid IdKorisnik { get; set; }
+
     }
 }
