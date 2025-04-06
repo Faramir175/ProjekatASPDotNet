@@ -41,6 +41,12 @@ builder.Services.AddScoped<IParcelaService, ParcelaService>();
 builder.Services.AddScoped<IKulturaRepository, KulturaRepository>();
 builder.Services.AddScoped<IKulturaService, KulturaService>();
 
+builder.Services.AddScoped<IResursRepository, ResursRepository>();
+builder.Services.AddScoped<IResursService, ResursService>();
+
+builder.Services.AddScoped<IRadnaMasinaRepository, RadnaMasinaRepository>();
+builder.Services.AddScoped<IRadnaMasinaService, RadnaMasinaService>();
+
 
 var app = builder.Build();
 

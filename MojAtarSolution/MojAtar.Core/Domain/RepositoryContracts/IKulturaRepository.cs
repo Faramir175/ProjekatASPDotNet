@@ -10,7 +10,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
     public interface IKulturaRepository : IRepository<Kultura>
     {
         public Task<Kultura> GetByNaziv(string naziv);
-        public Task<bool> DeleteParcelaById(Guid? id);
+        public Task<bool> DeleteKulturaById(Guid? id);
         public Task<List<Kultura>> GetAllByKorisnik(Guid idKorisnik);
 
     }

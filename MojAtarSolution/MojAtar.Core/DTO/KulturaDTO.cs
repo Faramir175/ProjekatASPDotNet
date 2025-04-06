@@ -18,7 +18,7 @@ namespace MojAtar.Core.DTO
         //Za filtriranje
         public Guid IdKorisnik { get; set; }
 
-        public Kultura ToParcela() => new Kultura()
+        public Kultura ToKultura() => new Kultura()
         {
             Id = Id,
             Naziv = Naziv,

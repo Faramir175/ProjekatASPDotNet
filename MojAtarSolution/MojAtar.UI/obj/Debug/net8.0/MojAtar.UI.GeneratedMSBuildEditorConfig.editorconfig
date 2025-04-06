@@ -58,6 +58,22 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9jZXRuYVxQb2NldG5hLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/Dodaj.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmFNYXNpbmFcRG9kYWouY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/RadneMasine.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmFNYXNpbmFcUmFkbmVNYXNpbmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Dodaj.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdXJzXERvZGFqLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Resursi.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdXJzXFJlc3Vyc2kuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

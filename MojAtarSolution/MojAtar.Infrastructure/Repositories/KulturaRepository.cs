@@ -76,7 +76,7 @@ namespace MojAtar.Infrastructure.Repositories
             return rowsDeleted > 0;
         }
 
-        public async Task<bool> DeleteParcelaById(Guid? id)
+        public async Task<bool> DeleteKulturaById(Guid? id)
         {
             _dbContext.Kulture.RemoveRange(_dbContext.Kulture.Where(temp => temp.Id == id));
             int rowsDeleted = await _dbContext.SaveChangesAsync();

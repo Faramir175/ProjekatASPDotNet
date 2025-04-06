@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\controllers\\kulturacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\kulturacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.infrastructure\\repositories\\radnamasinarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|solutionrelative:mojatar.infrastructure\\repositories\\radnamasinarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\controllers\\radnamasinacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\radnamasinacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\dto\\kulturadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\dto\\kulturadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnamasina\\radnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnamasina\\radnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\services\\kulturaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\services\\kulturaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.infrastructure\\repositories\\kulturarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|solutionrelative:mojatar.infrastructure\\repositories\\kulturarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnamasina\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnamasina\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,28 +74,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Program.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
-              "RelativeToolTip": "MojAtar.UI\\Program.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAAACkAAAA+AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T12:16:45.327Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "KulturaController.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\KulturaController.cs",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\KulturaController.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\KulturaController.cs",
-              "RelativeToolTip": "MojAtar.UI\\Controllers\\KulturaController.cs",
-              "ViewState": "AQIAAB8AAAAAAAAAAAAIwCYAAAAmAAAA",
+              "Title": "RadnaMasinaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\RadnaMasinaRepository.cs",
+              "RelativeDocumentMoniker": "MojAtar.Infrastructure\\Repositories\\RadnaMasinaRepository.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\RadnaMasinaRepository.cs",
+              "RelativeToolTip": "MojAtar.Infrastructure\\Repositories\\RadnaMasinaRepository.cs",
+              "ViewState": "AQIAAEYAAAAAAAAAAAAjwFQAAABCAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T12:09:14.701Z",
+              "WhenOpened": "2025-04-06T14:11:14.868Z",
               "EditorCaption": ""
             },
             {
@@ -102,35 +93,61 @@
               "RelativeDocumentMoniker": "MojAtar.Core\\Services\\KulturaService.cs",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\KulturaService.cs",
               "RelativeToolTip": "MojAtar.Core\\Services\\KulturaService.cs",
-              "ViewState": "AQIAAGMAAAAAAAAAAAAmwHgAAAAnAAAA",
+              "ViewState": "AQIAAC0AAAAAAAAAAAAowD4AAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T12:04:28.606Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "KulturaDTO.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\DTO\\KulturaDTO.cs",
-              "RelativeDocumentMoniker": "MojAtar.Core\\DTO\\KulturaDTO.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\DTO\\KulturaDTO.cs",
-              "RelativeToolTip": "MojAtar.Core\\DTO\\KulturaDTO.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAowB4AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T12:00:32.958Z",
+              "WhenOpened": "2025-04-06T14:03:31.055Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "KulturaRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
-              "RelativeDocumentMoniker": "MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
-              "RelativeToolTip": "MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
-              "ViewState": "AQIAAEEAAAAAAAAAAAAuwFAAAAA9AAAA",
+              "Title": "Dodaj.cshtml",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\Dodaj.cshtml",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\RadnaMasina\\Dodaj.cshtml",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\Dodaj.cshtml",
+              "RelativeToolTip": "MojAtar.UI\\Views\\RadnaMasina\\Dodaj.cshtml",
+              "ViewState": "AQIAACUAAAAAAAAAAAAAADAAAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-06T13:59:31.164Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RadneMasine.cshtml",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
+              "RelativeToolTip": "MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAAA8AAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-06T13:55:45.08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RadnaMasinaController.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\RadnaMasinaController.cs",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\RadnaMasinaController.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\RadnaMasinaController.cs",
+              "RelativeToolTip": "MojAtar.UI\\Controllers\\RadnaMasinaController.cs",
+              "ViewState": "AQIAAEoAAAAAAAAAAAAAAFcAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T11:57:08.213Z",
+              "WhenOpened": "2025-04-06T13:52:44.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Program.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
+              "RelativeToolTip": "MojAtar.UI\\Program.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAYwC8AAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-06T12:16:45.327Z",
               "EditorCaption": ""
             }
           ]

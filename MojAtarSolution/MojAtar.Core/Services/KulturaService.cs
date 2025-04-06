@@ -40,7 +40,7 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException("Uneti naziv kulture vec postoji");
             }
 
-            Kultura kultura = kulturaAdd.ToParcela();
+            Kultura kultura = kulturaAdd.ToKultura();
 
             kultura.Id = Guid.NewGuid();
 
@@ -60,7 +60,7 @@ namespace MojAtar.Core.Services
             if (kultura == null)
                 return false;
 
-            await _kulturaRepository.DeleteParcelaById(id.Value);
+            await _kulturaRepository.DeleteKulturaById(id.Value);
 
             return true;
         }
