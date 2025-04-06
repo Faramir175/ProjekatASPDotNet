@@ -1,0 +1,39 @@
+﻿@model List<MojAtar.Core.DTO.PrikljucnaMasinaDTO>
+
+@{
+    ViewData["Title"] = "Moje Prikljucne Masine";
+}
+
+<h2>Moje Prikljucne Masine</h2>
+
+<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu prikljucnu masinu</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Tip masine</th>
+            <th>Sirina obrade prikljucne masine</th>
+            <th>Datum poslednjeg servisa</th>
+            <th>Opis servisa</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prikljucnaMasina in Model)
+        {
+            <tr>
+                <td>@prikljucnaMasina.Naziv</td>
+                <td>@prikljucnaMasina.TipMasine</td>
+                <td>@prikljucnaMasina.SirinaObrade</td>
+                <td>@prikljucnaMasina.PoslednjiServis</td>
+                <td>@prikljucnaMasina.OpisServisa</td>
+                <td>
+                    <a asp-action="Izmeni" asp-route-id="@prikljucnaMasina.Id" class="btn btn-warning">Izmeni</a>
+                    <form asp-action="Obrisi" asp-route-id="@prikljucnaMasina.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
