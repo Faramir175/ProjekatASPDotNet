@@ -46,6 +46,17 @@ namespace MojAtar.Core.Services
 
             await _kulturaRepository.Add(kultura);
 
+            // Dodavanje cene
+            CenaKulture cena = new CenaKulture
+            {
+                Id = Guid.NewGuid(),
+                IdKultura = kultura.Id.Value,
+                CenaPojedinici = kultura.AktuelnaCena,
+                DatumVaznosti = DateTime.Now
+            };
+            await _kulturaRepository.DodajCenu(cena); // ovo trebaš da dodaš u interfejs i implementaciju
+
+
             return kultura.ToKulturaDTO();
         }
 
@@ -106,19 +117,32 @@ namespace MojAtar.Core.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            Kultura? kultura = new Kultura()
+
+            var staraKultura = await _kulturaRepository.GetById(id.Value);
+            if (staraKultura == null)
+                return null;
+
+            if (staraKultura.AktuelnaCena != dto.AktuelnaCena)
             {
-                Id = id.Value,
-                Naziv = dto.Naziv,
-                Hibrid = dto.Hibrid,
-                AktuelnaCena = dto.AktuelnaCena,
-                IdKorisnik = dto.IdKorisnik
-            };
+                CenaKulture novaCena = new CenaKulture
+                {
+                    Id = Guid.NewGuid(),
+                    IdKultura = id.Value,
+                    CenaPojedinici = dto.AktuelnaCena,
+                    DatumVaznosti = DateTime.Now
+                };
 
-            await _kulturaRepository.Update(kultura);
+                await _kulturaRepository.DodajCenu(novaCena);
+            }
 
-            if (kultura == null) return null;
-            return kultura.ToKulturaDTO();
+            staraKultura.Naziv = dto.Naziv;
+            staraKultura.Hibrid = dto.Hibrid;
+            staraKultura.AktuelnaCena = dto.AktuelnaCena;
+            staraKultura.IdKorisnik = dto.IdKorisnik;
+
+            await _kulturaRepository.Update(staraKultura);
+
+            return staraKultura.ToKulturaDTO();
         }
 
     }

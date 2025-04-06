@@ -83,5 +83,12 @@ namespace MojAtar.Infrastructure.Repositories
 
             return rowsDeleted > 0;
         }
+
+        public async Task DodajCenu(CenaKulture cena)
+        {
+            _dbContext.CeneKultura.AddAsync(cena);
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }
