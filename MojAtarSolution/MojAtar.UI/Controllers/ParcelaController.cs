@@ -25,7 +25,12 @@ namespace MojAtar.UI.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Parcele()
         {
-            List<ParcelaDTO> parcele = await _parcelaService.GetAll();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            Guid idKorisnik = Guid.Parse(userId);
+            var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+
             foreach (ParcelaDTO parcela in parcele)
             {
                 KatastarskaOpstinaDTO k = await _katastarskaOpstinaService.GetById(parcela.IdKatastarskaOpstina);

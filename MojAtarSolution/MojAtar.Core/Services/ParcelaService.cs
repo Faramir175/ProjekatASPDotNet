@@ -65,16 +65,13 @@ namespace MojAtar.Core.Services
             return true;
         }
 
-        public async Task<List<ParcelaDTO>> GetAll()
+        public async Task<List<ParcelaDTO>> GetAllForUser(Guid idKorisnika)
         {
-            List<Parcela> parcele = await _parcelaRepository.GetAll();
-            List<ParcelaDTO> dto = new List<ParcelaDTO>();
-            foreach (Parcela p in parcele)
-            {
-                dto.Add(p.ToParcelaDTO());
-            }
-            return dto;
+            List<Parcela> parcele = await _parcelaRepository.GetAllByKorisnik(idKorisnika);
+            return parcele.Select(p => p.ToParcelaDTO()).ToList();
         }
+
+
 
         public async Task<ParcelaDTO> GetById(Guid? id)
         {

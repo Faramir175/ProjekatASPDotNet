@@ -24,6 +24,14 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Parcele.ToListAsync();
         }
 
+        public async Task<List<Parcela>> GetAllByKorisnik(Guid idKorisnik)
+        {
+            return await _dbContext.Parcele
+                .Where(p => p.IdKorisnik == idKorisnik)
+                .ToListAsync();
+        }
+
+
         public async Task<Parcela> GetById(Guid? id)
         {
             return await _dbContext.Parcele.FindAsync(id);

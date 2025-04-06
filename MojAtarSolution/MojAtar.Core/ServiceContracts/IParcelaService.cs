@@ -10,7 +10,7 @@ namespace MojAtar.Core.ServiceContracts
     public interface IParcelaService
     {
         public Task<ParcelaDTO> Add(ParcelaDTO dto);
-        public Task<List<ParcelaDTO>> GetAll();
+        public Task<List<ParcelaDTO>> GetAllForUser(Guid idKorisnika);
         public Task<ParcelaDTO> GetById(Guid? id);
         public Task<ParcelaDTO> GetByNaziv(string? naziv);
         public Task<ParcelaDTO> Update(Guid? id, ParcelaDTO dto);
