@@ -3,32 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\servicecontracts\\iparcelaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\servicecontracts\\iparcelaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\controllers\\kulturacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\kulturacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\controllers\\parcelacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\parcelacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\services\\parcelaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\services\\parcelaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\dto\\kulturadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\dto\\kulturadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\shared\\_mainlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\shared\\_mainlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\services\\kulturaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\services\\kulturaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\parcela\\parcele.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\parcela\\parcele.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.infrastructure\\repositories\\kulturarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|solutionrelative:mojatar.infrastructure\\repositories\\kulturarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,92 +70,68 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IParcelaService.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\ServiceContracts\\IParcelaService.cs",
-              "RelativeDocumentMoniker": "MojAtar.Core\\ServiceContracts\\IParcelaService.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\ServiceContracts\\IParcelaService.cs",
-              "RelativeToolTip": "MojAtar.Core\\ServiceContracts\\IParcelaService.cs",
-              "ViewState": "AQIAAAEAAAAAAAAAAAAIwAwAAABGAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T11:15:29.855Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "MojAtar.UI\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAC8AAAAAAAAAAAAYwEcAAAAYAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T14:09:40.927Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
               "RelativeDocumentMoniker": "MojAtar.UI\\Program.cs",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Program.cs",
               "RelativeToolTip": "MojAtar.UI\\Program.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAACUAAABEAAAA",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAACkAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T13:40:48.61Z",
+              "WhenOpened": "2025-04-06T12:16:45.327Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ParcelaController.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\ParcelaController.cs",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\ParcelaController.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\ParcelaController.cs",
-              "RelativeToolTip": "MojAtar.UI\\Controllers\\ParcelaController.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAwwBwAAABEAAAA",
+              "DocumentIndex": 0,
+              "Title": "KulturaController.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\KulturaController.cs",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\KulturaController.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\KulturaController.cs",
+              "RelativeToolTip": "MojAtar.UI\\Controllers\\KulturaController.cs",
+              "ViewState": "AQIAAB8AAAAAAAAAAAAIwCYAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T18:38:45.724Z",
+              "WhenOpened": "2025-04-06T12:09:14.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "KulturaService.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\KulturaService.cs",
+              "RelativeDocumentMoniker": "MojAtar.Core\\Services\\KulturaService.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\KulturaService.cs",
+              "RelativeToolTip": "MojAtar.Core\\Services\\KulturaService.cs",
+              "ViewState": "AQIAAGMAAAAAAAAAAAAmwHgAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-06T12:04:28.606Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ParcelaService.cs",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\ParcelaService.cs",
-              "RelativeDocumentMoniker": "MojAtar.Core\\Services\\ParcelaService.cs",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\ParcelaService.cs",
-              "RelativeToolTip": "MojAtar.Core\\Services\\ParcelaService.cs",
-              "ViewState": "AQIAADYAAAAAAAAAAAAqwEgAAAAAAAAA",
+              "Title": "KulturaDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\DTO\\KulturaDTO.cs",
+              "RelativeDocumentMoniker": "MojAtar.Core\\DTO\\KulturaDTO.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\DTO\\KulturaDTO.cs",
+              "RelativeToolTip": "MojAtar.Core\\DTO\\KulturaDTO.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAowB4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-06T11:04:25.285Z",
+              "WhenOpened": "2025-04-06T12:00:32.958Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Parcele.cshtml",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
-              "RelativeToolTip": "MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAB0AAABoAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-01T13:35:32.071Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "_MainLayout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
-              "RelativeToolTip": "MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
-              "ViewState": "AQIAAB8AAAAAAAAAAAAAADEAAABTAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-29T14:59:20.049Z"
+              "DocumentIndex": 4,
+              "Title": "KulturaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
+              "RelativeDocumentMoniker": "MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
+              "RelativeToolTip": "MojAtar.Infrastructure\\Repositories\\KulturaRepository.cs",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAuwFAAAAA9AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-06T11:57:08.213Z",
+              "EditorCaption": ""
             }
           ]
         }

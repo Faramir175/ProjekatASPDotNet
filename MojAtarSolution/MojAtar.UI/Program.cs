@@ -38,6 +38,9 @@ builder.Services.AddScoped<IKatastarskaOpstinaService, KatastarskaOpstinaService
 builder.Services.AddScoped<IParcelaRepository, ParcelaRepository>();
 builder.Services.AddScoped<IParcelaService, ParcelaService>();
 
+builder.Services.AddScoped<IKulturaRepository, KulturaRepository>();
+builder.Services.AddScoped<IKulturaService, KulturaService>();
+
 
 var app = builder.Build();
 

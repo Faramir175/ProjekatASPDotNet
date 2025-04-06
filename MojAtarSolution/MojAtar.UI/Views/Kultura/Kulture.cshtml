@@ -1,0 +1,36 @@
+﻿@model List<MojAtar.Core.DTO.KulturaDTO>
+
+@{
+    ViewData["Title"] = "Moje Kulture";
+}
+
+<h2>Moje Kulture</h2>
+
+<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu kulturu</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Hibrid</th>
+            <th>Aktuelna cena (RSD/kg)</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kultura in Model)
+        {
+            <tr>
+                <td>@kultura.Naziv</td>
+                <td>@kultura.Hibrid</td>
+                <td>@kultura.AktuelnaCena</td>
+                <td>
+                    <a asp-action="Izmeni" asp-route-id="@kultura.Id" class="btn btn-warning">Izmeni</a>
+                    <form asp-action="Obrisi" asp-route-id="@kultura.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
