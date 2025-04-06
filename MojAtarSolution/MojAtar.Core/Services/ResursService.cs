@@ -40,13 +40,22 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException("Uneti naziv kulture vec postoji");
             }
 
-            Resurs rersurs = resursAdd.ToResurs();
+            Resurs resurs = resursAdd.ToResurs();
 
-            rersurs.Id = Guid.NewGuid();
+            resurs.Id = Guid.NewGuid();
 
-            await _resursRepository.Add(rersurs);
+            await _resursRepository.Add(resurs);
 
-            return rersurs.ToResursDTO();
+            CenaResursa cena = new CenaResursa
+            {
+                Id = Guid.NewGuid(),
+                IdResurs = resurs.Id.Value,
+                CenaPojedinici = resurs.AktuelnaCena,
+                DatumVaznosti = DateTime.Now
+            };
+            await _resursRepository.DodajCenu(cena);
+
+            return resurs.ToResursDTO();
         }
 
         public async Task<bool> DeleteById(Guid? id)
@@ -106,19 +115,32 @@ namespace MojAtar.Core.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            Resurs? resurs = new Resurs()
+
+            var stariResurs = await _resursRepository.GetById(id.Value);
+            if (stariResurs == null)
+                return null;
+
+            if (stariResurs.AktuelnaCena != dto.AktuelnaCena)
             {
-                Id = id.Value,
-                Naziv = dto.Naziv,
-                Vrsta = dto.Vrsta,
-                AktuelnaCena = dto.AktuelnaCena,
-                IdKorisnik = dto.IdKorisnik
-            };
+                CenaResursa novaCena = new CenaResursa
+                {
+                    Id = Guid.NewGuid(),
+                    IdResurs = id.Value,
+                    CenaPojedinici = dto.AktuelnaCena,
+                    DatumVaznosti = DateTime.Now
+                };
 
-            await _resursRepository.Update(resurs);
+                await _resursRepository.DodajCenu(novaCena);
+            }
 
-            if (resurs == null) return null;
-            return resurs.ToResursDTO();
+            stariResurs.Naziv = dto.Naziv;
+            stariResurs.Vrsta = dto.Vrsta;
+            stariResurs.AktuelnaCena = dto.AktuelnaCena;
+            stariResurs.IdKorisnik = dto.IdKorisnik;
+
+            await _resursRepository.Update(stariResurs);
+
+            return stariResurs.ToResursDTO();
         }
 
     }

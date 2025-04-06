@@ -12,6 +12,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         public Task<Resurs> GetByNaziv(string naziv);
         public Task<bool> DeleteResursById(Guid? id);
         public Task<List<Resurs>> GetAllByKorisnik(Guid idKorisnik);
+        public Task DodajCenu(CenaResursa cena);
 
     }
 }

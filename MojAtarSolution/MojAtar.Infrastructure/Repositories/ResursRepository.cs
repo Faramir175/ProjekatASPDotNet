@@ -83,5 +83,11 @@ namespace MojAtar.Infrastructure.Repositories
 
             return rowsDeleted > 0;
         }
+
+        public async Task DodajCenu(CenaResursa cena)
+        {
+            _dbContext.CeneResursa.AddAsync(cena);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

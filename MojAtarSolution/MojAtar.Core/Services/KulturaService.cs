@@ -46,7 +46,6 @@ namespace MojAtar.Core.Services
 
             await _kulturaRepository.Add(kultura);
 
-            // Dodavanje cene
             CenaKulture cena = new CenaKulture
             {
                 Id = Guid.NewGuid(),
@@ -54,7 +53,7 @@ namespace MojAtar.Core.Services
                 CenaPojedinici = kultura.AktuelnaCena,
                 DatumVaznosti = DateTime.Now
             };
-            await _kulturaRepository.DodajCenu(cena); // ovo trebaš da dodaš u interfejs i implementaciju
+            await _kulturaRepository.DodajCenu(cena); 
 
 
             return kultura.ToKulturaDTO();
