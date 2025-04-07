@@ -24,5 +24,7 @@ namespace MojAtar.Core.Domain
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public double UkupanTrosak { get; set; }
         public RadnjaTip TipRadnje { get; set; }
+        public Guid? IdKultura { get; set; } 
+        public Kultura? Kultura { get; set; }
     }
 }

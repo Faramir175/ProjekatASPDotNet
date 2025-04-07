@@ -100,21 +100,25 @@ namespace MojAtar.Infrastructure.MojAtar
                 .WithMany(k => k.CeneResursa)
                 .HasForeignKey(cr => cr.IdResurs);
 
+            // Relacija Radnja - Parcela
             modelBuilder.Entity<Radnja>()
                 .HasOne(r => r.Parcela)
                 .WithMany(p => p.Radnje)
                 .HasForeignKey(r => r.IdParcela);
 
-            modelBuilder.Entity<Zetva>()
-                .HasOne(z => z.Kultura)
-                .WithMany(k => k.Zetve)
-                .HasForeignKey(z => z.IdKultura);
-
-            //Radnja i Zetva
+            // Relacija Radnja - Kultura (pošto više nije u Zetvi)
             modelBuilder.Entity<Radnja>()
-                .HasDiscriminator<string>("RadnjaTip") 
+                .HasOne(r => r.Kultura)
+                .WithMany(k => k.Radnje)
+                .HasForeignKey(r => r.IdKultura)
+                .IsRequired(false); // jer nije obavezna za sve radnje
+
+            // Nasleđivanje Radnja - Zetva
+            modelBuilder.Entity<Radnja>()
+                .HasDiscriminator<string>("RadnjaTip")
                 .HasValue<Radnja>("Radnja")
                 .HasValue<Zetva>("Zetva");
+
 
         }
 

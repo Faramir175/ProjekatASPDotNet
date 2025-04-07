@@ -8,7 +8,12 @@ namespace MojAtar.Core.Domain.Enums
 {
     public enum RadnjaTip
     {
-        Radnja = 0,
-        Zetva = 1
+        Oranje,
+        Priprema,
+        Djubrenje,
+        Setva,
+        ZastitaOdBolesti,
+        ZastitaOdKorova,
+        Zetva
     }
 }
