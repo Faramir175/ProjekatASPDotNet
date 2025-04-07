@@ -1,0 +1,49 @@
+﻿@model List<MojAtar.Core.DTO.RadnjaDTO>
+
+@{
+    ViewData["Title"] = "Radnje";
+}
+
+<h2>Radnje za parcelu</h2>
+
+<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu radnju</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Datum izvršenja</th>
+            <th>Tip radnje</th>
+            <th>Ukupan trošak</th>
+            <th>Vremenski uslovi</th>
+            <th>Napomena</th>
+            <th>Kultura</th>
+            <th>Prinos (ako je žetva)</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var radnja in Model)
+        {
+            <tr>
+                <td>@radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</td>
+                <td>@radnja.TipRadnje</td>
+                <td>@radnja.UkupanTrosak €</td>
+                <td>@radnja.VremenskiUslovi</td>
+                <td>@radnja.Napomena</td>
+                <td>@radnja.KulturaNaziv</td>
+                <td>
+                    @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                    {
+                        @radnja.Prinos
+                    }
+                </td>
+                <td>
+                    <a asp-action="Izmeni" asp-route-id="@radnja.Id" class="btn btn-warning">Izmeni</a>
+                    <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

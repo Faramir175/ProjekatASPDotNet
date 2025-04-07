@@ -50,6 +50,9 @@ builder.Services.AddScoped<IRadnaMasinaService, RadnaMasinaService>();
 builder.Services.AddScoped<IPrikljucnaMasinaRepository, PrikljucnaMasinaRepository>();
 builder.Services.AddScoped<IPrikljucnaMasinaService, PrikljucnaMasinaService>();
 
+builder.Services.AddScoped<IRadnjaRepository, RadnjaRepository>();
+builder.Services.AddScoped<IRadnjaService, RadnjaService>();
+
 
 var app = builder.Build();
 

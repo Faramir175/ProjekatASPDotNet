@@ -31,6 +31,7 @@
                     <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
                     </form>
+                    <a asp-controller="Radnja" asp-action="RadnjePoParceli" asp-route-idParcela="@parcela.Id" class="btn btn-info">Radnje</a>
                 </td>
             </tr>
         }

@@ -60,7 +60,6 @@ namespace MojAtar.Infrastructure.Repositories
             korisnikZaUpdate.TipKorisnika = entity.TipKorisnika;
             korisnikZaUpdate.DatumRegistracije = entity.DatumRegistracije;
             korisnikZaUpdate.Lozinka = entity.Lozinka;
-            korisnikZaUpdate.Parcele = entity.Parcele;
 
             await _dbContext.SaveChangesAsync();
 

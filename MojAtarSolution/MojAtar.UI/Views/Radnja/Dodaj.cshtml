@@ -1,0 +1,69 @@
+﻿@model MojAtar.Core.DTO.RadnjaDTO
+
+@{
+    ViewData["Title"] = "Dodaj / Izmeni Radnju";
+}
+
+<h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
+
+<form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")">
+    @if (Model.Id != null)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <input type="hidden" asp-for="IdParcela" />
+
+    <div class="form-group">
+        <label asp-for="DatumIzvrsenja">Datum izvršenja</label>
+        <input asp-for="DatumIzvrsenja" class="form-control" type="date" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TipRadnje">Tip radnje</label>
+        <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UkupanTrosak">Ukupan trošak (€)</label>
+        <input asp-for="UkupanTrosak" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VremenskiUslovi">Vremenski uslovi</label>
+        <input asp-for="VremenskiUslovi" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Napomena">Napomena</label>
+        <textarea asp-for="Napomena" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IdKultura">Kultura</label>
+        <select asp-for="IdKultura" class="form-control" ></select>
+    </div>
+
+    <div class="form-group" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
+        <label asp-for="Prinos">Prinos (t)</label>
+        <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
+    <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary mt-3">Nazad</a>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById("TipRadnje").addEventListener("change", function () {
+            var selectedValue = this.value;
+            var prinosDiv = document.getElementById("prinosDiv");
+
+            if (selectedValue == "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)") {
+                prinosDiv.style.display = "block";
+            } else {
+                prinosDiv.style.display = "none";
+            }
+        });
+    </script>
+}

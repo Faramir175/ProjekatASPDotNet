@@ -1,0 +1,61 @@
+﻿using MojAtar.Core.Domain.Enums;
+using MojAtar.Core.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MojAtar.Core.DTO
+{
+    public class RadnjaDTO
+    {
+        public Guid? Id { get; set; }
+        public Guid? IdParcela { get; set; }
+        public Guid? IdKultura { get; set; }
+        public DateTime DatumIzvrsenja { get; set; }
+        public string? VremenskiUslovi { get; set; }
+        public string? Napomena { get; set; }
+        public double UkupanTrosak { get; set; }
+        public RadnjaTip TipRadnje { get; set; }
+
+        // Dodatno ako je zetva
+        public double? Prinos { get; set; }
+
+        public string? ParcelaNaziv { get; set; }
+        public string? KulturaNaziv { get; set; }
+
+        public Radnja ToRadnja()
+        {
+            if (this.TipRadnje == RadnjaTip.Zetva)
+            {
+                return new Zetva()
+                {
+                    Id = this.Id ?? Guid.NewGuid(),
+                    IdParcela = this.IdParcela,
+                    IdKultura = this.IdKultura,
+                    DatumIzvrsenja = this.DatumIzvrsenja,
+                    VremenskiUslovi = this.VremenskiUslovi,
+                    Napomena = this.Napomena,
+                    UkupanTrosak = this.UkupanTrosak,
+                    TipRadnje = this.TipRadnje,
+                    Prinos = this.Prinos ?? 0
+                };
+            }
+            else
+            {
+                return new Radnja()
+                {
+                    Id = this.Id ?? Guid.NewGuid(),
+                    IdParcela = this.IdParcela,
+                    IdKultura = this.IdKultura,
+                    DatumIzvrsenja = this.DatumIzvrsenja,
+                    VremenskiUslovi = this.VremenskiUslovi,
+                    Napomena = this.Napomena,
+                    UkupanTrosak = this.UkupanTrosak,
+                    TipRadnje = this.TipRadnje
+                };
+            }
+        }
+    }
+}
