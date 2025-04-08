@@ -14,10 +14,11 @@ namespace MojAtar.UI.Controllers
     public class RadnjaController : Controller
     {
         private readonly IRadnjaService _radnjaService;
-
-        public RadnjaController(IRadnjaService radnjaService)
+        private readonly IKulturaService _kulturaService;
+        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService)
         {
             _radnjaService = radnjaService;
+            _kulturaService = kulturaService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -54,7 +55,15 @@ namespace MojAtar.UI.Controllers
         [HttpGet("dodaj")]
         public async Task<IActionResult> Dodaj()
         {
-            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            Guid idKorisnik = Guid.Parse(userId);
+
+            var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+
+            ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
+
             return View(new RadnjaDTO());
         }
 
@@ -76,8 +85,16 @@ namespace MojAtar.UI.Controllers
 
             if (radnja == null)
                 return NotFound();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            return View(radnja);
+            Guid idKorisnik = Guid.Parse(userId);
+
+            var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+
+            ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
+
+            return View("Dodaj",radnja);
         }
 
         [HttpPost("izmeni/{id}")]

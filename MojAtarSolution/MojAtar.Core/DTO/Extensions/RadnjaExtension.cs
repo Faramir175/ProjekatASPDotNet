@@ -21,8 +21,8 @@ namespace MojAtar.Core.DTO.Extensions
                 Napomena = radnja.Napomena,
                 UkupanTrosak = radnja.UkupanTrosak,
                 TipRadnje = radnja.TipRadnje,
-                ParcelaNaziv = radnja.Parcela?.Naziv,
-                KulturaNaziv = radnja.Kultura?.Naziv
+                Parcela = radnja.Parcela,
+                Kultura = radnja.Kultura
             };
 
             if (radnja is Zetva zetva)

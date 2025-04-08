@@ -30,11 +30,19 @@ namespace MojAtar.Infrastructure.Repositories
 
         public async Task<Radnja> GetById(Guid? id)
         {
-            return await _dbContext.Radnje
+            var radnja = await _dbContext.Radnje
                 .Include(r => r.Parcela)
                 .Include(r => r.Kultura)
                 .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (radnja?.TipRadnje == RadnjaTip.Zetva)
+            {
+                return radnja as Zetva;
+            }
+
+            return radnja;
         }
+
 
         public async Task<Radnja> GetByTipRadnje(RadnjaTip tipRadnje)
         {
@@ -133,6 +141,8 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return await _dbContext.Radnje
                 .Where(x => x.IdParcela == idParcela)
+                .Include(r => r.Parcela) // <-- dodaj ovo
+                .Include(r => r.Kultura) // (opciono, ako koristiš Kultura)
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)
@@ -143,6 +153,8 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return await _dbContext.Radnje
                 .Where(x => x.Parcela.IdKorisnik == idKorisnik)
+                .Include(r => r.Parcela) // <-- dodaj ovo
+                .Include(r => r.Kultura) // (opciono)
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)

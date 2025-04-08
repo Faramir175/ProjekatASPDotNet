@@ -40,9 +40,12 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="IdKultura">Kultura</label>
-        <select asp-for="IdKultura" class="form-control" ></select>
+        <label for="IdKultura">Kultura</label>
+        <select asp-for="IdKultura" class="form-control" asp-items="ViewBag.KultureSelectList">
+            <option value="">-- Izaberite kulturu --</option>
+        </select>
     </div>
+
 
     <div class="form-group" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
         <label asp-for="Prinos">Prinos (t)</label>

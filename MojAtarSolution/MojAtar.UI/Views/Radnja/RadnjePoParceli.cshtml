@@ -2,9 +2,10 @@
 
 @{
     ViewData["Title"] = "Radnje";
+    var nazivParcele = Model.FirstOrDefault()?.Parcela?.Naziv; // Uzima naziv prve parcele
 }
 
-<h2>Radnje za parcelu</h2>
+<h2>Radnje za parcelu @nazivParcele</h2>
 
 <a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu radnju</a>
 
@@ -30,7 +31,7 @@
                 <td>@radnja.UkupanTrosak €</td>
                 <td>@radnja.VremenskiUslovi</td>
                 <td>@radnja.Napomena</td>
-                <td>@radnja.KulturaNaziv</td>
+                <td>@radnja.Kultura.Naziv</td>
                 <td>
                     @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
                     {

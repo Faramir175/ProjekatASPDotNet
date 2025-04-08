@@ -18,12 +18,11 @@ namespace MojAtar.Core.DTO
         public string? Napomena { get; set; }
         public double UkupanTrosak { get; set; }
         public RadnjaTip TipRadnje { get; set; }
+        public Parcela? Parcela { get; set; }
+        public Kultura? Kultura { get; set; }
 
         // Dodatno ako je zetva
         public double? Prinos { get; set; }
-
-        public string? ParcelaNaziv { get; set; }
-        public string? KulturaNaziv { get; set; }
 
         public Radnja ToRadnja()
         {
@@ -39,7 +38,9 @@ namespace MojAtar.Core.DTO
                     Napomena = this.Napomena,
                     UkupanTrosak = this.UkupanTrosak,
                     TipRadnje = this.TipRadnje,
-                    Prinos = this.Prinos ?? 0
+                    Prinos = this.Prinos ?? 0,
+                    Parcela = this.Parcela,
+                    Kultura = this.Kultura
                 };
             }
             else
@@ -53,7 +54,9 @@ namespace MojAtar.Core.DTO
                     VremenskiUslovi = this.VremenskiUslovi,
                     Napomena = this.Napomena,
                     UkupanTrosak = this.UkupanTrosak,
-                    TipRadnje = this.TipRadnje
+                    TipRadnje = this.TipRadnje,
+                    Parcela = this.Parcela,
+                    Kultura = this.Kultura
                 };
             }
         }
