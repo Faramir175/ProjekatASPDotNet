@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\services\\radnjaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\services\\radnjaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.infrastructure\\dbcontext\\mojatardbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CE57577-E13E-4A50-8126-B5A5D4CB9401}|MojAtar.Infrastructure\\MojAtar.Infrastructure.csproj|solutionrelative:mojatar.infrastructure\\dbcontext\\mojatardbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\controllers\\radnjacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\controllers\\radnjacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -15,20 +27,8 @@
       "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\servicecontracts\\iradnjaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.core\\services\\radnjaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|solutionrelative:mojatar.core\\services\\radnjaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\parcela\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\parcela\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4431B7D2-3ACA-4900-AF7C-B9506A719995}|MojAtar.Core\\MojAtar.Core.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.core\\domain\\repositorycontracts\\iradnjarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -50,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 15,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -91,6 +91,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "MojAtarDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\DbContext\\MojAtarDbContext.cs",
+              "RelativeDocumentMoniker": "MojAtar.Infrastructure\\DbContext\\MojAtarDbContext.cs",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Infrastructure\\DbContext\\MojAtarDbContext.cs",
+              "RelativeToolTip": "MojAtar.Infrastructure\\DbContext\\MojAtarDbContext.cs",
+              "ViewState": "AQIAAGcAAAAAAAAAAAAAAHMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:00:47.534Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "IRadnjaService.cs",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\ServiceContracts\\IRadnjaService.cs",
               "RelativeDocumentMoniker": "MojAtar.Core\\ServiceContracts\\IRadnjaService.cs",
@@ -103,7 +116,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "RadnjaService.cs",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.Core\\Services\\RadnjaService.cs",
               "RelativeDocumentMoniker": "MojAtar.Core\\Services\\RadnjaService.cs",
@@ -116,20 +129,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Dodaj.cshtml",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Parcela\\Dodaj.cshtml",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Parcela\\Dodaj.cshtml",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Parcela\\Dodaj.cshtml",
-              "RelativeToolTip": "MojAtar.UI\\Views\\Parcela\\Dodaj.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAABiAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-08T14:52:55.419Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "RadnjePoParceli.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
@@ -142,20 +142,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "Dodaj.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
-              "ViewState": "AQIAADAAAAAAAAAAAAAAAAwAAAAFAAAA",
+              "ViewState": "AQIAAC8AAAAAAAAAAAAUwCAAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-04-07T18:13:56.395Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Radnje.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Radnje.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\Radnje.cshtml",
@@ -168,13 +168,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "RadnjaController.cs",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\RadnjaController.cs",
               "RelativeDocumentMoniker": "MojAtar.UI\\Controllers\\RadnjaController.cs",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Controllers\\RadnjaController.cs",
               "RelativeToolTip": "MojAtar.UI\\Controllers\\RadnjaController.cs",
-              "ViewState": "AQIAAGcAAAAAAAAAAAAQwHgAAAAwAAAA",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAuwH0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-07T15:19:36.041Z",
               "EditorCaption": ""

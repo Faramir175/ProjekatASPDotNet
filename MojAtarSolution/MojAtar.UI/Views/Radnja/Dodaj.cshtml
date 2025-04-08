@@ -24,10 +24,22 @@
         <input asp-for="DatumIzvrsenja" class="form-control" type="date" />
     </div>
 
-    <div class="form-group">
-        <label asp-for="TipRadnje">Tip radnje</label>
-        <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
-    </div>
+    @if (Model.Id == null)
+    {
+        <div class="form-group">
+            <label asp-for="TipRadnje">Tip radnje</label>
+            <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="TipRadnje" />
+        <div class="form-group">
+            <label>Tip radnje</label>
+            <input class="form-control" value="@Model.TipRadnje" disabled />
+        </div>
+    }
+
 
     <div class="form-group">
         <label asp-for="UkupanTrosak">Ukupan trošak (€)</label>
