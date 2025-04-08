@@ -12,7 +12,7 @@ namespace MojAtar.Core.ServiceContracts
     {
         Task<RadnjaDTO> Add(RadnjaDTO dto);
         Task<RadnjaDTO> Update(Guid id, RadnjaDTO dto);
-        Task<bool> Delete(Guid id);
+        Task<bool> DeleteById(Guid id);
         Task<RadnjaDTO> GetById(Guid id);
         Task<List<RadnjaDTO>> GetAllByParcela(Guid idParcela);
         Task<List<RadnjaDTO>> GetAll();

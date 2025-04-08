@@ -14,11 +14,13 @@ namespace MojAtar.UI.Controllers
     public class RadnjaController : Controller
     {
         private readonly IRadnjaService _radnjaService;
-        private readonly IKulturaService _kulturaService;
-        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService)
+        private readonly IKulturaService _kulturaService; 
+        private readonly IParcelaService _parcelaService;
+        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,IParcelaService parcelaService)
         {
             _radnjaService = radnjaService;
             _kulturaService = kulturaService;
+            _parcelaService = parcelaService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -61,21 +63,24 @@ namespace MojAtar.UI.Controllers
             Guid idKorisnik = Guid.Parse(userId);
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+            var parcele = await _parcelaService.GetAllForUser(idKorisnik);
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
+            ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
 
             return View(new RadnjaDTO());
         }
 
 
-        [HttpPost("dodaj/{idParcela}")]
+        [HttpPost("dodaj")]
         public async Task<IActionResult> Dodaj(RadnjaDTO dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
 
             await _radnjaService.Add(dto);
-            return RedirectToAction("RadnjePoParceli", new { idParcela = dto.IdParcela });
+            return RedirectToAction("Radnje");
+
         }
 
         [HttpGet("izmeni/{id}")]
@@ -91,8 +96,10 @@ namespace MojAtar.UI.Controllers
             Guid idKorisnik = Guid.Parse(userId);
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+            var parcele = await _parcelaService.GetAllForUser(idKorisnik);
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
+            ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
 
             return View("Dodaj",radnja);
         }
@@ -105,8 +112,14 @@ namespace MojAtar.UI.Controllers
 
             await _radnjaService.Update(id, dto);
 
-            return RedirectToAction("RadnjePoParceli", new { idParcela = dto.IdParcela });
+            return RedirectToAction("Radnje");
         }
 
+        [HttpPost("obrisi/{id}")]
+        public async Task<IActionResult> Obrisi(Guid id)
+        {
+            await _radnjaService.DeleteById(id);
+            return RedirectToAction("Radnje");
+        }
     }
 }

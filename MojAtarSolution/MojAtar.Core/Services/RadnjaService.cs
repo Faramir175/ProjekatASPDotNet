@@ -39,7 +39,7 @@ namespace MojAtar.Core.Services
             return updated.ToRadnjaDTO();
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> DeleteById(Guid id)
         {
             var radnja = await _radnjaRepository.GetById(id);
             if (radnja == null) return false;
