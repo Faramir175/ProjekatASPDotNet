@@ -16,11 +16,15 @@ namespace MojAtar.UI.Controllers
         private readonly IRadnjaService _radnjaService;
         private readonly IKulturaService _kulturaService; 
         private readonly IParcelaService _parcelaService;
-        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,IParcelaService parcelaService)
+        private readonly IRadnaMasinaService _radnaMasinaService;
+        private readonly IRadnjaRadnaMasinaService _radnjaRadnaMasinaService;
+        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,IParcelaService parcelaService, IRadnjaRadnaMasinaService radnjaRadnaMasinaService, IRadnaMasinaService radnaMasinaService)
         {
             _radnjaService = radnjaService;
             _kulturaService = kulturaService;
             _parcelaService = parcelaService;
+            _radnjaRadnaMasinaService = radnjaRadnaMasinaService;
+            _radnaMasinaService = radnaMasinaService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -64,7 +68,9 @@ namespace MojAtar.UI.Controllers
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+            var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
 
+            ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
 
@@ -78,7 +84,14 @@ namespace MojAtar.UI.Controllers
             if (!ModelState.IsValid)
                 return View(dto);
 
-            await _radnjaService.Add(dto);
+            var novaRadnja = await _radnjaService.Add(dto);
+
+            foreach (var radnjaMasina in dto.RadneMasine)
+            {
+                radnjaMasina.IdRadnja = (Guid)novaRadnja.Id;
+                await _radnjaRadnaMasinaService.Add(radnjaMasina);
+            }
+
             return RedirectToAction("Radnje");
 
         }
@@ -90,6 +103,7 @@ namespace MojAtar.UI.Controllers
 
             if (radnja == null)
                 return NotFound();
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
@@ -97,9 +111,14 @@ namespace MojAtar.UI.Controllers
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+            var sveMasine = await _radnjaRadnaMasinaService.GetAllByUser(idKorisnik);
+            var povezaneMasine = await _radnjaRadnaMasinaService.GetAllByRadnjaId(id);
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
+            ViewBag.RadneMasineSelectList = new SelectList(sveMasine, "Id", "Naziv");
+
+            radnja.RadneMasine = await _radnjaRadnaMasinaService.GetAllByRadnjaId(id);
 
             return View("Dodaj",radnja);
         }
@@ -110,6 +129,23 @@ namespace MojAtar.UI.Controllers
             if (!ModelState.IsValid)
                 return View(dto);
 
+            foreach (var masina in dto.RadneMasine)
+            {
+                await _radnjaRadnaMasinaService.Delete(id, masina.IdRadnaMasina);
+            }
+
+            foreach (var masina in dto.RadneMasine)
+            {
+                var dtoMasina = new RadnjaRadnaMasinaDTO
+                {
+                    IdRadnja = id,
+                    IdRadnaMasina = masina.IdRadnaMasina,
+                    BrojRadnihSati = masina.BrojRadnihSati
+                };
+                await _radnjaRadnaMasinaService.Add(dtoMasina);
+            }
+
+            // Ažuriraj radnju sa novim podacima
             await _radnjaService.Update(id, dto);
 
             return RedirectToAction("Radnje");

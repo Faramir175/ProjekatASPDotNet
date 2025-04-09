@@ -1,4 +1,5 @@
 ﻿@model MojAtar.Core.DTO.RadnjaDTO
+@using Newtonsoft.Json
 
 @{
     ViewData["Title"] = "Dodaj / Izmeni Radnju";
@@ -40,7 +41,6 @@
         </div>
     }
 
-
     <div class="form-group">
         <label asp-for="UkupanTrosak">Ukupan trošak (€)</label>
         <input asp-for="UkupanTrosak" class="form-control" type="number" step="0.01" />
@@ -63,11 +63,28 @@
         </select>
     </div>
 
-
     <div class="form-group" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
         <label asp-for="Prinos">Prinos (t)</label>
         <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
     </div>
+
+    <div id="listaMasina">
+        <label class="form-check-label">Izaberi radne masine koje koristis na ovoj radnji</label>
+
+        @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
+        {
+            <div class="form-check">
+                <input class="form-check-input masina-checkbox" type="checkbox"
+                       id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text" />
+                <label class="form-check-label" for="masinaCheckbox_@masina.Value">
+                    @masina.Text
+                </label>
+            </div>
+        }
+    </div>
+
+    <div id="masineDetaljiContainer"></div>
+
 
     <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
     <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary mt-3">Nazad</a>
@@ -75,15 +92,37 @@
 
 @section Scripts {
     <script>
-        document.getElementById("TipRadnje").addEventListener("change", function () {
-            var selectedValue = this.value;
-            var prinosDiv = document.getElementById("prinosDiv");
+        let masineBrojac = 0;
+        const masineMap = new Map();
 
-            if (selectedValue == "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)") {
-                prinosDiv.style.display = "block";
-            } else {
-                prinosDiv.style.display = "none";
-            }
+        document.querySelectorAll('.masina-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const id = this.value;
+                const naziv = this.getAttribute('data-naziv');
+                const container = document.getElementById("masineDetaljiContainer");
+
+                if (this.checked) {
+                    if (!masineMap.has(id)) {
+                        const index = masineBrojac++;
+                        masineMap.set(id, index);
+
+                        const div = document.createElement("div");
+                        div.classList.add("form-group");
+                        div.id = `unos-masina-${id}`;
+                        div.innerHTML = `
+                            <label>Radna mašina: ${naziv} – broj sati</label>
+                            <input type="hidden" name="RadneMasine[${index}].IdRadnaMasina" value="${id}" />
+                            <input type="number" name="RadneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
+                        `;
+                        container.appendChild(div);
+                    }
+                } else {
+                    if (masineMap.has(id)) {
+                        container.removeChild(document.getElementById(`unos-masina-${id}`));
+                        masineMap.delete(id);
+                    }
+                }
+            });
         });
     </script>
 }

@@ -169,3 +169,4 @@ C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\r
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.pdb
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.genruntimeconfig.cache
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\ref\MojAtar.UI.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\Newtonsoft.Json.dll

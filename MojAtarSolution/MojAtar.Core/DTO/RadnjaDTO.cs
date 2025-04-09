@@ -24,6 +24,8 @@ namespace MojAtar.Core.DTO
         // Dodatno ako je zetva
         public double? Prinos { get; set; }
 
+        public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
+
         public Radnja ToRadnja()
         {
             if (this.TipRadnje == RadnjaTip.Zetva)
