@@ -25,6 +25,7 @@ namespace MojAtar.Core.DTO
         public double? Prinos { get; set; }
 
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
+        public List<RadnjaPrikljucnaMasinaDTO> PrikljucneMasine { get; set; } = new();
 
         public Radnja ToRadnja()
         {

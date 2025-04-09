@@ -103,6 +103,40 @@
 
     <div id="masineDetaljiContainer"></div>
 
+    <div id="listaPrikljucnihMasina">
+        <label class="form-check-label">Izaberi priključne mašine koje koristis na ovoj radnji</label>
+
+        @{
+            var povezanePrikljucne = Model.PrikljucneMasine?.ToDictionary(pm => pm.IdPrikljucnaMasina, pm => (double)pm.BrojRadnihSati)
+            ?? new Dictionary<Guid, double>();
+
+            int indexPrik = 0;
+        }
+
+        @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.PrikljucneMasineSelectList)
+        {
+            var isChecked = povezanePrikljucne.ContainsKey(Guid.Parse(masina.Value));
+            <div class="form-check">
+                <input class="form-check-input prikljucna-checkbox" type="checkbox"
+                       id="prikljucnaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
+                @(isChecked ? "checked" : "") />
+                <label class="form-check-label" for="prikljucnaCheckbox_@masina.Value">
+                    @masina.Text
+                </label>
+            </div>
+            if (isChecked)
+            {
+                <div class="form-group" id="unos-prikljucna-@masina.Value">
+                    <label>Priključna mašina: @masina.Text – broj sati</label>
+                    <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
+                    <input type="number" name="PrikljucneMasine[@indexPrik].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezanePrikljucne[Guid.Parse(masina.Value)]" required />
+                </div>
+                indexPrik++;
+            }
+        }
+    </div>
+
+    <div id="prikljucneDetaljiContainer"></div>
 
     <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
     <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary mt-3">Nazad</a>
@@ -110,6 +144,27 @@
 
 @section Scripts {
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tipRadnjeSelect = document.getElementById("TipRadnje");
+            const prinosDiv = document.getElementById("prinosDiv");
+
+            if (tipRadnjeSelect) {
+                if (tipRadnjeSelect.value == "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)") {
+                    prinosDiv.style.display = "block";
+                } else {
+                    prinosDiv.style.display = "none";
+                }
+
+                tipRadnjeSelect.addEventListener("change", function () {
+                    if (this.value == "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)") {
+                        prinosDiv.style.display = "block";
+                    } else {
+                        prinosDiv.style.display = "none";
+                    }
+                });
+            }
+        });
+
         let masineBrojac = 0;
         const masineMap = new Map();
 
@@ -144,6 +199,41 @@
         });
 
         masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;
+
+        let prikljucneBrojac = 0;
+        const prikljucneMap = new Map();
+
+        document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const id = this.value;
+                const naziv = this.getAttribute('data-naziv');
+                const container = document.getElementById("prikljucneDetaljiContainer");
+
+                if (this.checked) {
+                    if (!prikljucneMap.has(id)) {
+                        const index = prikljucneBrojac++;
+                        prikljucneMap.set(id, index);
+
+                        const div = document.createElement("div");
+                        div.classList.add("form-group");
+                        div.id = `unos-prikljucna-${id}`;
+                        div.innerHTML = `
+                            <label>Priključna mašina: ${naziv} – broj sati</label>
+                            <input type="hidden" name="PrikljucneMasine[${index}].IdPrikljucnaMasina" value="${id}" />
+                            <input type="number" name="PrikljucneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
+                        `;
+                        container.appendChild(div);
+                    }
+                } else {
+                    if (prikljucneMap.has(id)) {
+                        container.removeChild(document.getElementById(`unos-prikljucna-${id}`));
+                        prikljucneMap.delete(id);
+                    }
+                }
+            });
+        });
+
+        prikljucneBrojac = document.querySelectorAll('#listaPrikljucnihMasina input[name^="PrikljucneMasine["]').length;
 
     </script>
 }

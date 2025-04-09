@@ -18,13 +18,21 @@ namespace MojAtar.UI.Controllers
         private readonly IParcelaService _parcelaService;
         private readonly IRadnaMasinaService _radnaMasinaService;
         private readonly IRadnjaRadnaMasinaService _radnjaRadnaMasinaService;
-        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,IParcelaService parcelaService, IRadnjaRadnaMasinaService radnjaRadnaMasinaService, IRadnaMasinaService radnaMasinaService)
+        private readonly IRadnjaPrikljucnaMasinaService _radnjaPrikljucnaMasinaService;
+        private readonly IPrikljucnaMasinaService _prikljucnaMasinaService;
+
+        public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,
+            IParcelaService parcelaService, IRadnjaRadnaMasinaService radnjaRadnaMasinaService, 
+            IRadnaMasinaService radnaMasinaService, IRadnjaPrikljucnaMasinaService radnjaPrikljucnaMasinaService,
+            IPrikljucnaMasinaService prikljucnaMasinaService)
         {
             _radnjaService = radnjaService;
             _kulturaService = kulturaService;
             _parcelaService = parcelaService;
             _radnjaRadnaMasinaService = radnjaRadnaMasinaService;
             _radnaMasinaService = radnaMasinaService;
+            _radnjaPrikljucnaMasinaService = radnjaPrikljucnaMasinaService;
+            _prikljucnaMasinaService = prikljucnaMasinaService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -69,10 +77,13 @@ namespace MojAtar.UI.Controllers
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
             var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
+            var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
 
-            ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
+
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
+            ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
+            ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
 
             return View(new RadnjaDTO());
         }
@@ -91,6 +102,12 @@ namespace MojAtar.UI.Controllers
                 radnjaMasina.IdRadnja = (Guid)novaRadnja.Id;
                 await _radnjaRadnaMasinaService.Add(radnjaMasina);
             }
+            foreach (var prikljucna in dto.PrikljucneMasine)
+            {
+                prikljucna.IdRadnja = (Guid)novaRadnja.Id;
+                await _radnjaPrikljucnaMasinaService.Add(prikljucna);
+            }
+
 
             return RedirectToAction("Radnje");
 
@@ -111,14 +128,21 @@ namespace MojAtar.UI.Controllers
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+
             var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
             var povezaneMasine = await _radnjaRadnaMasinaService.GetAllByRadnjaId(id);
+
+            var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
+            var povezanePrikljucne = await _radnjaPrikljucnaMasinaService.GetAllByRadnjaId(id);
+
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
             ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
+            ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
 
             radnja.RadneMasine = povezaneMasine;
+            radnja.PrikljucneMasine = povezanePrikljucne;
 
             return View("Dodaj",radnja);
         }
@@ -145,7 +169,16 @@ namespace MojAtar.UI.Controllers
                 await _radnjaRadnaMasinaService.Add(dtoMasina);
             }
 
-            // Ažuriraj radnju sa novim podacima
+            foreach (var prikljucna in dto.PrikljucneMasine)
+            {
+                await _radnjaPrikljucnaMasinaService.Delete(id, prikljucna.IdPrikljucnaMasina);
+            }
+            foreach (var prikljucna in dto.PrikljucneMasine)
+            {
+                prikljucna.IdRadnja = id;
+                await _radnjaPrikljucnaMasinaService.Add(prikljucna);
+            }
+
             await _radnjaService.Update(id, dto);
 
             return RedirectToAction("Radnje");
