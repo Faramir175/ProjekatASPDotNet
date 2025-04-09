@@ -111,14 +111,14 @@ namespace MojAtar.UI.Controllers
 
             var kulture = await _kulturaService.GetAllForUser(idKorisnik);
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
-            var sveMasine = await _radnjaRadnaMasinaService.GetAllByUser(idKorisnik);
+            var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
             var povezaneMasine = await _radnjaRadnaMasinaService.GetAllByRadnjaId(id);
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
-            ViewBag.RadneMasineSelectList = new SelectList(sveMasine, "Id", "Naziv");
+            ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
 
-            radnja.RadneMasine = await _radnjaRadnaMasinaService.GetAllByRadnjaId(id);
+            radnja.RadneMasine = povezaneMasine;
 
             return View("Dodaj",radnja);
         }

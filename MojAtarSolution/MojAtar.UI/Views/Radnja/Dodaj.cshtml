@@ -71,15 +71,33 @@
     <div id="listaMasina">
         <label class="form-check-label">Izaberi radne masine koje koristis na ovoj radnji</label>
 
+        @{
+            var povezaneMasine = Model.RadneMasine?.ToDictionary(rm => rm.IdRadnaMasina, rm => (double)rm.BrojRadnihSati)
+            ?? new Dictionary<Guid, double>();
+
+            int index = 0;
+        }
+
         @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
         {
+            var isChecked = povezaneMasine.ContainsKey(Guid.Parse(masina.Value));
             <div class="form-check">
                 <input class="form-check-input masina-checkbox" type="checkbox"
-                       id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text" />
+                       id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
+                @(isChecked ? "checked" : "") />
                 <label class="form-check-label" for="masinaCheckbox_@masina.Value">
                     @masina.Text
                 </label>
             </div>
+            if (isChecked)
+            {
+                <div class="form-group" id="unos-masina-@masina.Value">
+                    <label>Radna mašina: @masina.Text – broj sati</label>
+                    <input type="hidden" name="RadneMasine[@index].IdRadnaMasina" value="@masina.Value" />
+                    <input type="number" name="RadneMasine[@index].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezaneMasine[Guid.Parse(masina.Value)]" required />
+                </div>
+                index++;
+            }
         }
     </div>
 
@@ -124,5 +142,8 @@
                 }
             });
         });
+
+        masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;
+
     </script>
 }
