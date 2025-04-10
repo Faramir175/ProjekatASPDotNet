@@ -17,14 +17,17 @@ namespace MojAtar.UI.Controllers
         private readonly IKulturaService _kulturaService; 
         private readonly IParcelaService _parcelaService;
         private readonly IRadnaMasinaService _radnaMasinaService;
+        private readonly IPrikljucnaMasinaService _prikljucnaMasinaService;
+        private readonly IResursService _resursService;
         private readonly IRadnjaRadnaMasinaService _radnjaRadnaMasinaService;
         private readonly IRadnjaPrikljucnaMasinaService _radnjaPrikljucnaMasinaService;
-        private readonly IPrikljucnaMasinaService _prikljucnaMasinaService;
+        private readonly IRadnjaResursService _radnjaResursService;
+
 
         public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,
             IParcelaService parcelaService, IRadnjaRadnaMasinaService radnjaRadnaMasinaService, 
             IRadnaMasinaService radnaMasinaService, IRadnjaPrikljucnaMasinaService radnjaPrikljucnaMasinaService,
-            IPrikljucnaMasinaService prikljucnaMasinaService)
+            IPrikljucnaMasinaService prikljucnaMasinaService, IResursService resursService, IRadnjaResursService radnjaResursService)
         {
             _radnjaService = radnjaService;
             _kulturaService = kulturaService;
@@ -33,6 +36,8 @@ namespace MojAtar.UI.Controllers
             _radnaMasinaService = radnaMasinaService;
             _radnjaPrikljucnaMasinaService = radnjaPrikljucnaMasinaService;
             _prikljucnaMasinaService = prikljucnaMasinaService;
+            _resursService = resursService;
+            _radnjaResursService = radnjaResursService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -78,12 +83,14 @@ namespace MojAtar.UI.Controllers
             var parcele = await _parcelaService.GetAllForUser(idKorisnik);
             var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
             var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
+            var resursi = await _resursService.GetAllForUser(idKorisnik);
 
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
             ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
             ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
+            ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
             return View(new RadnjaDTO());
         }
@@ -107,6 +114,12 @@ namespace MojAtar.UI.Controllers
                 prikljucna.IdRadnja = (Guid)novaRadnja.Id;
                 await _radnjaPrikljucnaMasinaService.Add(prikljucna);
             }
+            foreach (var resurs in dto.Resursi)
+            {
+                resurs.IdRadnja = (Guid)novaRadnja.Id;
+                await _radnjaResursService.Add(resurs); 
+            }
+
 
 
             return RedirectToAction("Radnje");
@@ -135,14 +148,20 @@ namespace MojAtar.UI.Controllers
             var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
             var povezanePrikljucne = await _radnjaPrikljucnaMasinaService.GetAllByRadnjaId(id);
 
+            var resursi = await _resursService.GetAllForUser(idKorisnik);
+            var povezaniResursi = await _radnjaResursService.GetAllByRadnjaId(id);
+
+
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
             ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
             ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
+            ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
             radnja.RadneMasine = povezaneMasine;
             radnja.PrikljucneMasine = povezanePrikljucne;
+            radnja.Resursi = povezaniResursi;
 
             return View("Dodaj",radnja);
         }
@@ -160,13 +179,8 @@ namespace MojAtar.UI.Controllers
 
             foreach (var masina in dto.RadneMasine)
             {
-                var dtoMasina = new RadnjaRadnaMasinaDTO
-                {
-                    IdRadnja = id,
-                    IdRadnaMasina = masina.IdRadnaMasina,
-                    BrojRadnihSati = masina.BrojRadnihSati
-                };
-                await _radnjaRadnaMasinaService.Add(dtoMasina);
+                masina.IdRadnja = id;
+                await _radnjaRadnaMasinaService.Add(masina);
             }
 
             foreach (var prikljucna in dto.PrikljucneMasine)
@@ -177,6 +191,16 @@ namespace MojAtar.UI.Controllers
             {
                 prikljucna.IdRadnja = id;
                 await _radnjaPrikljucnaMasinaService.Add(prikljucna);
+            }
+
+            foreach (var resurs in dto.Resursi)
+            {
+                await _radnjaResursService.Delete(id, resurs.IdResurs);
+            }
+            foreach (var resurs in dto.Resursi)
+            {
+                resurs.IdRadnja = id;
+                await _radnjaResursService.Add(resurs);
             }
 
             await _radnjaService.Update(id, dto);
