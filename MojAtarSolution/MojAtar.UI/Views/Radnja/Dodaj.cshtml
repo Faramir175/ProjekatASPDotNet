@@ -7,6 +7,15 @@
 
 <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="alert alert-danger">@modelError.ErrorMessage</div>
+    }
+}
+
+
 <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Radnja">
     @if (Model.Id != null)
     {
