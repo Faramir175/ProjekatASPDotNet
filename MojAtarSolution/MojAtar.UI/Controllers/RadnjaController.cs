@@ -250,7 +250,7 @@ namespace MojAtar.UI.Controllers
                         IdParcela = parcelaId,
                         IdKultura = kulturaId,
                         DatumSetve = dto.DatumIzvrsenja,
-                        Povrsina = dto.Parcela?.Povrsina ?? 0,
+                        Povrsina = dto.Povrsina ?? 0,
                         IdKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
                     };
 

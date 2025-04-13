@@ -72,6 +72,12 @@
         </select>
     </div>
 
+    <div class="form-group" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
+        <label asp-for="Povrsina">Površina za setvu (ha)</label>
+        <input asp-for="Povrsina" class="form-control" type="number" step="0.01" min="0.01" />
+    </div>
+
+
     <div class="form-group" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
         <label asp-for="Prinos">Prinos (t)</label>
         <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
@@ -209,6 +215,27 @@
                         prinosDiv.style.display = "none";
                     }
                 });
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tipSelect = document.querySelector("#TipRadnje");
+            const povrsinaDiv = document.querySelector("#povrsinaDiv");
+
+            // Razor vrednost enum-a (npr. ako je Setva = 0, ovo će se zameniti u 0)
+            const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
+
+            function togglePovrsina() {
+                if (tipSelect.value === SETVA_VALUE) {
+                    povrsinaDiv.style.display = "block";
+                } else {
+                    povrsinaDiv.style.display = "none";
+                }
+            }
+
+            if (tipSelect && povrsinaDiv) {
+                tipSelect.addEventListener("change", togglePovrsina);
+                togglePovrsina(); // poziv odmah kad se učita stranica
             }
         });
 
