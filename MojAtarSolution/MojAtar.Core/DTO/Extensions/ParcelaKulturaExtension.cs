@@ -13,6 +13,7 @@ namespace MojAtar.Core.DTO.Extensions
         {
             return new ParcelaKulturaDTO()
             {
+                Id = parcelaKultura.Id,
                 IdKultura = parcelaKultura.IdKultura,
                 IdParcela = parcelaKultura.IdParcela,
                 Povrsina = parcelaKultura.Povrsina,

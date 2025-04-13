@@ -9,6 +9,7 @@ namespace MojAtar.Core.Domain
 {
     public class Parcela_Kultura
     {
+        public Guid? Id { get; set; }
         public Guid? IdParcela { get; set; }
         public Parcela Parcela { get; set; }
 

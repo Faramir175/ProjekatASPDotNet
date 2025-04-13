@@ -11,10 +11,10 @@ namespace MojAtar.Core.ServiceContracts
     public interface IParcelaKulturaService
     {
         Task<ParcelaKulturaDTO> Add(ParcelaKulturaDTO dto);
-        Task<bool> Delete(Guid idParcela, Guid idKultura);
+        Task<bool> Delete(Guid id);
         Task<List<ParcelaKulturaDTO>> GetAll();
         Task<List<ParcelaKulturaDTO>> GetAllByParcelaId(Guid idParcela);
         Task<ParcelaKulturaDTO?> GetByParcelaAndKulturaId(Guid idParcela, Guid idKultura);
-        Task<ParcelaKulturaDTO?> Update(Guid idParcela, Guid idKultura, ParcelaKulturaDTO dto);
+        Task<ParcelaKulturaDTO?> Update(ParcelaKulturaDTO dto);
     }
 }

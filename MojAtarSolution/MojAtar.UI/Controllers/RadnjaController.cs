@@ -245,8 +245,9 @@ namespace MojAtar.UI.Controllers
 
                 if (dto.TipRadnje == RadnjaTip.Setva)
                 {
-                    var novaVeza = new ParcelaKulturaDTO
+                    var unosSetva = new ParcelaKulturaDTO
                     {
+                        Id = new Guid(),
                         IdParcela = parcelaId,
                         IdKultura = kulturaId,
                         DatumSetve = dto.DatumIzvrsenja,
@@ -254,15 +255,15 @@ namespace MojAtar.UI.Controllers
                         IdKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
                     };
 
-                    await _parcelaKulturaService.Add(novaVeza);
+                    await _parcelaKulturaService.Add(unosSetva);
                 }
                 else if (dto.TipRadnje == RadnjaTip.Zetva)
                 {
-                    var postojecaVeza = await _parcelaKulturaService.GetByParcelaAndKulturaId(parcelaId, kulturaId);
-                    if (postojecaVeza != null)
+                    var unosZetva = await _parcelaKulturaService.GetByParcelaAndKulturaId(parcelaId, kulturaId);
+                    if (unosZetva != null && unosZetva.DatumZetve == null)
                     {
-                        postojecaVeza.DatumZetve = dto.DatumIzvrsenja;
-                        await _parcelaKulturaService.Update(parcelaId,kulturaId,postojecaVeza);
+                        unosZetva.DatumZetve = dto.DatumIzvrsenja;
+                        await _parcelaKulturaService.Update(unosZetva);
                     }
                     else
                     {
@@ -276,5 +277,3 @@ namespace MojAtar.UI.Controllers
 
     }
 }
-
-

@@ -40,7 +40,8 @@ namespace MojAtar.Infrastructure.MojAtar
             modelBuilder.Entity<CenaResursa>().Property(cr => cr.Id).ValueGeneratedOnAdd();
 
             // Podešavanje relacija M:N
-            modelBuilder.Entity<Parcela_Kultura>().HasKey(pk => new { pk.IdParcela, pk.IdKultura });
+            modelBuilder.Entity<Parcela_Kultura>()
+                .HasKey(pk => pk.Id);
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasOne(pk => pk.Parcela)
                 .WithMany(p => p.ParceleKulture)
@@ -50,7 +51,8 @@ namespace MojAtar.Infrastructure.MojAtar
                 .WithMany(k => k.ParceleKulture)
                 .HasForeignKey(pk => pk.IdKultura);
 
-            modelBuilder.Entity<Radnja_PrikljucnaMasina>().HasKey(rpm => new { rpm.IdRadnja, rpm.IdPrikljucnaMasina });
+            modelBuilder.Entity<Radnja_PrikljucnaMasina>()
+                .HasKey(rpm => new { rpm.IdRadnja, rpm.IdPrikljucnaMasina });
             modelBuilder.Entity<Radnja_PrikljucnaMasina>()
                 .HasOne(rpm => rpm.Radnja)
                 .WithMany()
@@ -60,7 +62,8 @@ namespace MojAtar.Infrastructure.MojAtar
                 .WithMany()
                 .HasForeignKey(rpm => rpm.IdPrikljucnaMasina);
 
-            modelBuilder.Entity<Radnja_RadnaMasina>().HasKey(rrm => new { rrm.IdRadnja, rrm.IdRadnaMasina });
+            modelBuilder.Entity<Radnja_RadnaMasina>()
+                .HasKey(rrm => new { rrm.IdRadnja, rrm.IdRadnaMasina });
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasOne(rrm => rrm.Radnja)
                 .WithMany()
@@ -70,7 +73,8 @@ namespace MojAtar.Infrastructure.MojAtar
                 .WithMany()
                 .HasForeignKey(rrm => rrm.IdRadnaMasina);
 
-            modelBuilder.Entity<Radnja_Resurs>().HasKey(rr => new { rr.IdRadnja, rr.IdResurs });
+            modelBuilder.Entity<Radnja_Resurs>()
+                .HasKey(rr => new { rr.IdRadnja, rr.IdResurs });
             modelBuilder.Entity<Radnja_Resurs>()
                 .HasOne(rr => rr.Radnja)
                 .WithMany()

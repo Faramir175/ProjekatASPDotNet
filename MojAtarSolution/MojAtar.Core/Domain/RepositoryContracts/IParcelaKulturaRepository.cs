@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace MojAtar.Core.Domain.RepositoryContracts
 {
-    public interface IParcelaKulturaRepository
+    public interface IParcelaKulturaRepository: IRepository<Parcela_Kultura>
     {
         Task<Parcela_Kultura> GetByParcelaAndKulturaId(Guid idParcela, Guid idKultura);
-        Task<bool> DeleteByParcelaAndKulturaId(Guid idParcela, Guid idKultura);
         Task<List<Parcela_Kultura>> GetAllByParcelaId(Guid idParcela);
-        Task<List<Parcela_Kultura>> GetAll();
-        Task<Parcela_Kultura> Add(Parcela_Kultura entity);
-        Task<Parcela_Kultura> Update(Parcela_Kultura entity);
-        Task<bool> Delete(Parcela_Kultura entity);
+        Task<bool> DeleteById(Guid id);
 
     }
 }

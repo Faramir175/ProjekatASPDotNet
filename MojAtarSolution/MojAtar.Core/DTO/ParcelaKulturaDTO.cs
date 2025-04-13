@@ -10,6 +10,7 @@ namespace MojAtar.Core.DTO
 {
     public class ParcelaKulturaDTO
     {
+        public Guid? Id { get; set; }
         public Guid? IdParcela { get; set; }
         public Guid? IdKultura { get; set; }
         public double Povrsina { get; set; }
@@ -21,6 +22,7 @@ namespace MojAtar.Core.DTO
 
         public Parcela_Kultura ToParcelaKultura() => new Parcela_Kultura()
         {
+            Id = Id,
             IdKultura = IdKultura,
             IdParcela = IdParcela,
             Povrsina = Povrsina,

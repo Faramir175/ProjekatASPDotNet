@@ -63,6 +63,7 @@ namespace MojAtar.Infrastructure.Repositories
             var existing = await GetByParcelaAndKulturaId(entity.IdParcela.Value, entity.IdKultura.Value);
             if (existing == null) return null;
 
+            existing.Id = entity.Id;
             existing.Povrsina = entity.Povrsina;
             existing.DatumSetve = entity.DatumSetve;
             existing.DatumZetve = entity.DatumZetve;
@@ -70,14 +71,20 @@ namespace MojAtar.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return existing;
         }
-        public async Task<bool> DeleteByParcelaAndKulturaId(Guid idParcela, Guid idKultura)
+        public async Task<bool> DeleteById(Guid id)
         {
-            var entity = await GetByParcelaAndKulturaId(idParcela, idKultura);
+            var entity = await GetById(id);
             if (entity == null) return false;
 
             _dbContext.ParceleKulture.Remove(entity);
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<Parcela_Kultura> GetById(Guid? id)
+        {
+            return await _dbContext.ParceleKulture
+            .Include(pk => pk.Kultura)
+            .FirstOrDefaultAsync(pk => pk.Id == id);
+        }
     }
 }
