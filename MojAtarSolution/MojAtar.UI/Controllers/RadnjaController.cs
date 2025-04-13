@@ -247,7 +247,7 @@ namespace MojAtar.UI.Controllers
                 {
                     var unosSetva = new ParcelaKulturaDTO
                     {
-                        Id = new Guid(),
+                        Id = Guid.NewGuid(),
                         IdParcela = parcelaId,
                         IdKultura = kulturaId,
                         DatumSetve = dto.DatumIzvrsenja,

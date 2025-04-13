@@ -193,10 +193,8 @@ namespace MojAtar.Infrastructure.Migrations
 
             modelBuilder.Entity("MojAtar.Core.Domain.Parcela_Kultura", b =>
                 {
-                    b.Property<Guid>("IdParcela")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdKultura")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DatumSetve")
@@ -205,12 +203,20 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<DateTime?>("DatumZetve")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("IdKultura")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("IdParcela")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("Povrsina")
                         .HasColumnType("float");
 
-                    b.HasKey("IdParcela", "IdKultura");
+                    b.HasKey("Id");
 
                     b.HasIndex("IdKultura");
+
+                    b.HasIndex("IdParcela");
 
                     b.ToTable("ParceleKulture");
                 });
@@ -467,15 +473,11 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     b.HasOne("MojAtar.Core.Domain.Kultura", "Kultura")
                         .WithMany("ParceleKulture")
-                        .HasForeignKey("IdKultura")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdKultura");
 
                     b.HasOne("MojAtar.Core.Domain.Parcela", "Parcela")
                         .WithMany("ParceleKulture")
-                        .HasForeignKey("IdParcela")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdParcela");
 
                     b.Navigation("Kultura");
 

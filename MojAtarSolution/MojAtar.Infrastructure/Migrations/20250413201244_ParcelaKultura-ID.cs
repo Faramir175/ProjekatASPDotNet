@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MojAtar.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class ParcelaKulturaID : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,8 @@ namespace MojAtar.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Naziv = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Hibrid = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    AktuelnaCena = table.Column<double>(type: "float", nullable: false)
+                    AktuelnaCena = table.Column<double>(type: "float", nullable: false),
+                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,7 +65,8 @@ namespace MojAtar.Infrastructure.Migrations
                     TipMasine = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SirinaObrade = table.Column<double>(type: "float", nullable: false),
                     PoslednjiServis = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OpisServisa = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false)
+                    OpisServisa = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false),
+                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,7 +83,8 @@ namespace MojAtar.Infrastructure.Migrations
                     RadniSatiServis = table.Column<int>(type: "int", nullable: false),
                     PoslednjiServis = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OpisServisa = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false),
-                    UkupanBrojRadnihSati = table.Column<int>(type: "int", nullable: false)
+                    UkupanBrojRadnihSati = table.Column<int>(type: "int", nullable: false),
+                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,7 +98,8 @@ namespace MojAtar.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Naziv = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Vrsta = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    AktuelnaCena = table.Column<double>(type: "float", nullable: false)
+                    AktuelnaCena = table.Column<double>(type: "float", nullable: false),
+                    IdKorisnik = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,27 +175,26 @@ namespace MojAtar.Infrastructure.Migrations
                 name: "ParceleKulture",
                 columns: table => new
                 {
-                    IdParcela = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdParcela = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Povrsina = table.Column<double>(type: "float", nullable: false),
                     DatumSetve = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DatumZetve = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ParceleKulture", x => new { x.IdParcela, x.IdKultura });
+                    table.PrimaryKey("PK_ParceleKulture", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ParceleKulture_Kulture_IdKultura",
                         column: x => x.IdKultura,
                         principalTable: "Kulture",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ParceleKulture_Parcele_IdParcela",
                         column: x => x.IdParcela,
                         principalTable: "Parcele",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -205,8 +208,8 @@ namespace MojAtar.Infrastructure.Migrations
                     Napomena = table.Column<string>(type: "nvarchar(175)", maxLength: 175, nullable: false),
                     UkupanTrosak = table.Column<double>(type: "float", nullable: false),
                     TipRadnje = table.Column<int>(type: "int", nullable: false),
-                    RadnjaTip = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     IdKultura = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RadnjaTip = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     Prinos = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
@@ -324,6 +327,11 @@ namespace MojAtar.Infrastructure.Migrations
                 name: "IX_ParceleKulture_IdKultura",
                 table: "ParceleKulture",
                 column: "IdKultura");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ParceleKulture_IdParcela",
+                table: "ParceleKulture",
+                column: "IdParcela");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Radnje_IdKultura",

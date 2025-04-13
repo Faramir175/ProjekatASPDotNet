@@ -12,8 +12,8 @@ using MojAtar.Infrastructure.MojAtar;
 namespace MojAtar.Infrastructure.Migrations
 {
     [DbContext(typeof(MojAtarDbContext))]
-    [Migration("20250406102903_Filtriranje")]
-    partial class Filtriranje
+    [Migration("20250413201244_ParcelaKultura-ID")]
+    partial class ParcelaKulturaID
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,10 +196,8 @@ namespace MojAtar.Infrastructure.Migrations
 
             modelBuilder.Entity("MojAtar.Core.Domain.Parcela_Kultura", b =>
                 {
-                    b.Property<Guid>("IdParcela")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdKultura")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DatumSetve")
@@ -208,12 +206,20 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<DateTime?>("DatumZetve")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("IdKultura")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("IdParcela")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("Povrsina")
                         .HasColumnType("float");
 
-                    b.HasKey("IdParcela", "IdKultura");
+                    b.HasKey("Id");
 
                     b.HasIndex("IdKultura");
+
+                    b.HasIndex("IdParcela");
 
                     b.ToTable("ParceleKulture");
                 });
@@ -299,6 +305,9 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<DateTime>("DatumIzvrsenja")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("IdKultura")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("IdParcela")
                         .HasColumnType("uniqueidentifier");
 
@@ -324,6 +333,8 @@ namespace MojAtar.Infrastructure.Migrations
                         .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdKultura");
 
                     b.HasIndex("IdParcela");
 
@@ -422,13 +433,8 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     b.HasBaseType("MojAtar.Core.Domain.Radnja");
 
-                    b.Property<Guid?>("IdKultura")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<double>("Prinos")
                         .HasColumnType("float");
-
-                    b.HasIndex("IdKultura");
 
                     b.HasDiscriminator().HasValue("Zetva");
                 });
@@ -470,15 +476,11 @@ namespace MojAtar.Infrastructure.Migrations
                 {
                     b.HasOne("MojAtar.Core.Domain.Kultura", "Kultura")
                         .WithMany("ParceleKulture")
-                        .HasForeignKey("IdKultura")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdKultura");
 
                     b.HasOne("MojAtar.Core.Domain.Parcela", "Parcela")
                         .WithMany("ParceleKulture")
-                        .HasForeignKey("IdParcela")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdParcela");
 
                     b.Navigation("Kultura");
 
@@ -487,9 +489,15 @@ namespace MojAtar.Infrastructure.Migrations
 
             modelBuilder.Entity("MojAtar.Core.Domain.Radnja", b =>
                 {
+                    b.HasOne("MojAtar.Core.Domain.Kultura", "Kultura")
+                        .WithMany("Radnje")
+                        .HasForeignKey("IdKultura");
+
                     b.HasOne("MojAtar.Core.Domain.Parcela", "Parcela")
                         .WithMany("Radnje")
                         .HasForeignKey("IdParcela");
+
+                    b.Navigation("Kultura");
 
                     b.Navigation("Parcela");
                 });
@@ -551,15 +559,6 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Navigation("Resurs");
                 });
 
-            modelBuilder.Entity("MojAtar.Core.Domain.Zetva", b =>
-                {
-                    b.HasOne("MojAtar.Core.Domain.Kultura", "Kultura")
-                        .WithMany("Zetve")
-                        .HasForeignKey("IdKultura");
-
-                    b.Navigation("Kultura");
-                });
-
             modelBuilder.Entity("MojAtar.Core.Domain.KatastarskaOpstina", b =>
                 {
                     b.Navigation("Parcele");
@@ -576,7 +575,7 @@ namespace MojAtar.Infrastructure.Migrations
 
                     b.Navigation("ParceleKulture");
 
-                    b.Navigation("Zetve");
+                    b.Navigation("Radnje");
                 });
 
             modelBuilder.Entity("MojAtar.Core.Domain.Parcela", b =>

@@ -37,7 +37,7 @@ namespace MojAtar.Core.Services
 
             if (await _resursRepository.GetByNaziv(resursAdd.Naziv) != null)
             {
-                throw new ArgumentException("Uneti naziv kulture vec postoji");
+                throw new ArgumentException("Uneti naziv resursa vec postoji");
             }
 
             Resurs resurs = resursAdd.ToResurs();
