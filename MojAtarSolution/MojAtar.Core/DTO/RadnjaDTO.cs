@@ -29,6 +29,10 @@ namespace MojAtar.Core.DTO
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
         public List<RadnjaPrikljucnaMasinaDTO> PrikljucneMasine { get; set; } = new();
         public List<RadnjaResursDTO> Resursi { get; set; } = new();
+        public List<Guid>? ObrisaneRadneMasineId { get; set; }
+        public List<Guid>? ObrisanePrikljucneMasineId { get; set; }
+        public List<Guid>? ObrisaniResursiId { get; set; }
+
 
         public Radnja ToRadnja()
         {

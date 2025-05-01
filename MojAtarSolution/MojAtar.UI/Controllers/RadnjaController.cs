@@ -188,8 +188,28 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpPost("izmeni/{id}")]
-        public async Task<IActionResult> Izmeni(Guid id, RadnjaDTO dto)
+        public async Task<IActionResult> Izmeni(Guid id, RadnjaDTO dto, List<Guid> ObrisaneRadneMasineId, List<Guid> ObrisanePrikljucneMasineId, List<Guid> ObrisaniResursiId)
         {
+            if (ObrisaneRadneMasineId != null)
+            {
+                foreach (var idOM in ObrisaneRadneMasineId)
+                {
+                    await _radnjaRadnaMasinaService.Delete(dto.Id.Value, idOM);
+                }
+            }
+
+            if (ObrisanePrikljucneMasineId != null)
+            {
+                foreach (var idPM in ObrisanePrikljucneMasineId)
+                    await _radnjaPrikljucnaMasinaService.Delete(dto.Id.Value, idPM);
+            }
+
+            if (ObrisaniResursiId != null)
+            {
+                foreach (var idR in ObrisaniResursiId)
+                    await _radnjaResursService.Delete(dto.Id.Value, idR);
+            }
+
             if (!ModelState.IsValid)
                 return View(dto);
 
