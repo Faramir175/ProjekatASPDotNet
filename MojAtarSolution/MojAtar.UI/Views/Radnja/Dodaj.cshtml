@@ -289,7 +289,7 @@
             document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
                 const id = checkbox.value;
                 const existing = document.getElementById(`unos-prikljucna-${id}`);
-                if (existing && !checkbox.checked) {
+                if (existing && !prikljucneMap.has(id)) {
                     prikljucneMap.set(id, prikljucneBrojac++);
                 }
             });
@@ -347,7 +347,7 @@
             document.querySelectorAll('.resurs-checkbox').forEach(checkbox => {
                 const id = checkbox.value;
                 const existing = document.getElementById(`unos-resurs-${id}`);
-                if (existing && !checkbox.checked) {
+                if (existing && !resursMap.has(id)) {
                     resursMap.set(id, resursBrojac++);
                 }
             });
