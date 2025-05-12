@@ -88,6 +88,9 @@ namespace MojAtar.UI.Controllers
             var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
             var resursi = await _resursService.GetAllForUser(idKorisnik);
 
+            var ceneResursa = resursi.ToDictionary(r => r.Id.ToString(), r => r.AktuelnaCena);
+            ViewBag.CeneResursa = ceneResursa;
+
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");

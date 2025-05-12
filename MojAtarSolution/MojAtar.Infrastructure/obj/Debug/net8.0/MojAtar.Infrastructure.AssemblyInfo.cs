@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MojAtar.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+152a51080ea07f5a6e270e221724cce870bb3541")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca520e93b7eff0ea89bed17e7266c2ac96fee63c")]
 [assembly: System.Reflection.AssemblyProductAttribute("MojAtar.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MojAtar.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

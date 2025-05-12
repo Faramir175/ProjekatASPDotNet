@@ -54,11 +54,6 @@
     }
 
     <div class="form-group">
-        <label asp-for="UkupanTrosak">Ukupan trošak (€)</label>
-        <input asp-for="UkupanTrosak" class="form-control" type="number" step="0.01" />
-    </div>
-
-    <div class="form-group">
         <label asp-for="VremenskiUslovi">Vremenski uslovi</label>
         <input asp-for="VremenskiUslovi" class="form-control" />
     </div>
@@ -192,6 +187,16 @@
 
     <div id="resursDetaljiContainer"></div>
 
+    <div id="ukupanTrosakPrikaz" class="mt-3">
+        <strong>
+            Ukupan trošak:
+            <span id="ukupanTrosak">
+                @(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")
+            </span> RSD
+        </strong>
+    </div>
+
+    <input type="hidden" name="UkupanTrosak" value="@(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")" />
 
     <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
     <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary mt-3">Nazad</a>
@@ -398,6 +403,68 @@
                     }
                 });
             });
+        });
+
+        const ceneResursa = @Html.Raw(Json.Serialize(ViewBag.CeneResursa));
+
+        function izracunajUkupanTrosak() {
+            let ukupno = 0;
+
+            document.querySelectorAll('.resurs-checkbox:checked').forEach(checkbox => {
+                const resursId = checkbox.value;
+                const cena = parseFloat(ceneResursa[resursId]) || 0;
+
+                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
+                if (unosDiv && unosDiv.style.display !== "none") {
+                    const kolicinaInput = unosDiv.querySelector(`input[name$='Kolicina']`);
+                    const kolicina = parseFloat(kolicinaInput?.value) || 0;
+                    ukupno += kolicina * cena;
+                }
+            });
+
+            // Ažuriraj prikaz i hidden input
+            document.getElementById("ukupanTrosak").innerText = ukupno.toFixed(2);
+            const hiddenInput = document.querySelector('input[name="UkupanTrosak"]');
+            if (hiddenInput) hiddenInput.value = ukupno.toFixed(2);
+        }
+
+        function dodajEventListenereZaKolicine() {
+            document.querySelectorAll('.resurs-checkbox:checked').forEach(checkbox => {
+                const resursId = checkbox.value;
+                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
+                if (unosDiv) {
+                    const kolicinaInput = unosDiv.querySelector(`input[name$='Kolicina']`);
+                    if (kolicinaInput) {
+                        kolicinaInput.removeEventListener("input", izracunajUkupanTrosak); // ukloni stari
+                        kolicinaInput.addEventListener("input", izracunajUkupanTrosak);    // dodaj novi
+                    }
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.resurs-checkbox').forEach(checkbox => {
+                const resursId = checkbox.value;
+
+                // Postavi početno vidljiv unos
+                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
+                if (unosDiv) {
+                    unosDiv.style.display = checkbox.checked ? "block" : "none";
+                }
+
+                // Listener za prikaz/skrivanje + update
+                checkbox.addEventListener("change", () => {
+                    const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
+                    if (unosDiv) {
+                        unosDiv.style.display = checkbox.checked ? "block" : "none";
+                    }
+                    dodajEventListenereZaKolicine();
+                    izracunajUkupanTrosak();
+                });
+            });
+
+            dodajEventListenereZaKolicine(); // registruj za već čekirane
+            izracunajUkupanTrosak(); // inicijalno
         });
     </script>
 }
