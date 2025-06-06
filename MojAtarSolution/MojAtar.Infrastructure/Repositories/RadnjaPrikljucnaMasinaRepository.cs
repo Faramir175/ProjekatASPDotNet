@@ -33,8 +33,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             if (entitetIzBaze == null) return entity;
 
-            entitetIzBaze.BrojRadnihSati = entity.BrojRadnihSati;
-
             await _dbContext.SaveChangesAsync();
             return entitetIzBaze;
         }

@@ -350,9 +350,6 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<Guid>("IdPrikljucnaMasina")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("BrojRadnihSati")
-                        .HasColumnType("int");
-
                     b.HasKey("IdRadnja", "IdPrikljucnaMasina");
 
                     b.HasIndex("IdPrikljucnaMasina");

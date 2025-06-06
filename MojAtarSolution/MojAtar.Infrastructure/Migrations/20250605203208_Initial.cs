@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MojAtar.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ParcelaKulturaID : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,8 +232,7 @@ namespace MojAtar.Infrastructure.Migrations
                 columns: table => new
                 {
                     IdRadnja = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdPrikljucnaMasina = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BrojRadnihSati = table.Column<int>(type: "int", nullable: false)
+                    IdPrikljucnaMasina = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

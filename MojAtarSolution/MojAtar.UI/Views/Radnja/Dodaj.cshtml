@@ -120,15 +120,17 @@
         <label class="form-check-label">Izaberi priključne mašine koje koristis na ovoj radnji</label>
 
         @{
-            var povezanePrikljucne = Model.PrikljucneMasine?.ToDictionary(pm => pm.IdPrikljucnaMasina, pm => (double)pm.BrojRadnihSati)
-            ?? new Dictionary<Guid, double>();
+            var povezanePrikljucne = Model.PrikljucneMasine?
+            .Select(pm => pm.IdPrikljucnaMasina)
+            .ToHashSet()
+            ?? new HashSet<Guid>();
 
             int indexPrik = 0;
         }
 
         @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.PrikljucneMasineSelectList)
         {
-            var isChecked = povezanePrikljucne.ContainsKey(Guid.Parse(masina.Value));
+            var isChecked = povezanePrikljucne.Contains(Guid.Parse(masina.Value));
             <div class="form-check">
                 <input class="form-check-input prikljucna-checkbox" type="checkbox"
                        id="prikljucnaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
@@ -139,14 +141,11 @@
             </div>
             if (isChecked)
             {
-                <div class="form-group" id="unos-prikljucna-@masina.Value">
-                    <label>Priključna mašina: @masina.Text – broj sati</label>
-                    <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
-                    <input type="number" name="PrikljucneMasine[@indexPrik].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezanePrikljucne[Guid.Parse(masina.Value)]" required />
-                </div>
+                <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
                 indexPrik++;
             }
         }
+
     </div>
 
     <div id="prikljucneDetaljiContainer"></div>
@@ -157,7 +156,6 @@
         @{
             var povezaniResursi = Model.Resursi?.ToDictionary(r => r.IdResurs, r => (r.Kolicina, r.DatumKoriscenja))
             ?? new Dictionary<Guid, (double, DateTime)>();
-            int indexResurs = 0;
         }
 
         @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
@@ -171,21 +169,30 @@
                     @resurs.Text
                 </label>
             </div>
+        }
+    </div>
+
+    <div id="resursDetaljiContainer">
+        @{
+            int indexResurs = 0; 
+        }
+        @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
+        {
+            var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
             if (isChecked)
             {
                 var resData = povezaniResursi[Guid.Parse(resurs.Value)];
-                <div class="form-group" id="unos-resurs-@resurs.Value">
+
+                <div class="form-group" id="unos-resurs-@resurs.Value" style="display: block;">
                     <label>Resurs: @resurs.Text – količina i datum</label>
                     <input type="hidden" name="Resursi[@indexResurs].IdResurs" value="@resurs.Value" />
-                    <input type="number" name="Resursi[@indexResurs].Kolicina" class="form-control mb-2" step="0.1" min="0" value="@resData.Item1" required />
+                    <input type="number" name="Resursi[@indexResurs].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" value="@resData.Item1" required />
                     <input type="date" name="Resursi[@indexResurs].DatumKoriscenja" class="form-control" value="@resData.Item2.ToString("yyyy-MM-dd")" required />
                 </div>
                 indexResurs++;
             }
         }
     </div>
-
-    <div id="resursDetaljiContainer"></div>
 
     <div id="ukupanTrosakPrikaz" class="mt-3">
         <strong>
@@ -212,24 +219,32 @@
             const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
 
             function toggleZetvaSetva() {
-                if (tipRadnjeSelect.value === SETVA_VALUE) {
-                    povrsinaDiv.style.display = "block";
-                    prinosDiv.style.display = "none";
-                } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
-                    povrsinaDiv.style.display = "none";
-                    prinosDiv.style.display = "block";
-                } else {
-                    povrsinaDiv.style.display = "none";
-                    prinosDiv.style.display = "none";
+                if (tipRadnjeSelect) { // Check if tipRadnjeSelect exists (it won't on edit if Model.Id is not null)
+                    if (tipRadnjeSelect.value === SETVA_VALUE) {
+                        povrsinaDiv.style.display = "block";
+                        prinosDiv.style.display = "none";
+                    } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
+                        povrsinaDiv.style.display = "none";
+                        prinosDiv.style.display = "block";
+                    } else {
+                        povrsinaDiv.style.display = "none";
+                        prinosDiv.style.display = "none";
+                    }
+                } else { // Handle the case where TipRadnje is a disabled input on edit
+                     if ("@Model.TipRadnje" === "@MojAtar.Core.Domain.Enums.RadnjaTip.Setva") {
+                        povrsinaDiv.style.display = "block";
+                        prinosDiv.style.display = "none";
+                    } else if ("@Model.TipRadnje" === "@MojAtar.Core.Domain.Enums.RadnjaTip.Zetva") {
+                        povrsinaDiv.style.display = "none";
+                        prinosDiv.style.display = "block";
+                    }
                 }
             }
 
-            if (tipRadnjeSelect) {
-                tipRadnjeSelect.addEventListener("change", toggleZetvaSetva);
-                toggleZetvaSetva();
-            }
+            // Initial call for toggling display based on action type
+            toggleZetvaSetva();
 
-            // RADNE MAŠINE
+            // RADNE MAŠINE (Your existing logic for machines is fine for showing/hiding)
             let masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;
             const masineMap = new Map();
 
@@ -260,10 +275,10 @@
                             div.classList.add("form-group");
                             div.id = `unos-masina-${id}`;
                             div.innerHTML = `
-                                        <label>Radna mašina: ${naziv} – broj sati</label>
-                                        <input type="hidden" name="RadneMasine[${index}].IdRadnaMasina" value="${id}" />
-                                        <input type="number" name="RadneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
-                                    `;
+                                <label>Radna mašina: ${naziv} – broj sati</label>
+                                <input type="hidden" name="RadneMasine[${index}].IdRadnaMasina" value="${id}" />
+                                <input type="number" name="RadneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
+                            `;
                             container.appendChild(div);
                         }
                         const removed = document.getElementById(`obrisana-masina-${id}`);
@@ -287,8 +302,8 @@
                 });
             });
 
-            // PRIKLJUČNE MAŠINE
-            prikljucneBrojac = document.querySelectorAll('#prikljucneDetaljiContainer input[name^="PrikljucneMasine["]').length;
+            // PRIKLJUČNE MAŠINE (Your existing logic for machines is fine for showing/hiding)
+            let prikljucneBrojac = document.querySelectorAll('#prikljucneDetaljiContainer input[name^="PrikljucneMasine["]').length;
             const prikljucneMap = new Map();
 
             document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
@@ -302,35 +317,24 @@
             document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
                     const id = this.value;
-                    const naziv = this.getAttribute('data-naziv');
                     const container = document.getElementById("prikljucneDetaljiContainer");
                     const existing = document.getElementById(`unos-prikljucna-${id}`);
 
                     if (this.checked) {
-                        if (existing) {
-                            existing.style.display = "block";
-                            existing.querySelectorAll("input").forEach(i => i.disabled = false);
-                        } else {
-                            const index = prikljucneBrojac++;
-                            prikljucneMap.set(id, index);
-
-                            const div = document.createElement("div");
-                            div.classList.add("form-group");
-                            div.id = `unos-prikljucna-${id}`;
-                            div.innerHTML = `
-                                        <label>Priključna mašina: ${naziv} – broj sati</label>
-                                        <input type="hidden" name="PrikljucneMasine[${index}].IdPrikljucnaMasina" value="${id}" />
-                                        <input type="number" name="PrikljucneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
-                                    `;
-                            container.appendChild(div);
+                        if (!document.getElementById(`unos-prikljucna-${id}`)) {
+                            const input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = `PrikljucneMasine[${prikljucneBrojac}].IdPrikljucnaMasina`;
+                            input.id = `unos-prikljucna-${id}`;
+                            input.value = id; // Ensure value is set for the hidden input
+                            container.appendChild(input);
+                            prikljucneBrojac++; // Increment for new additions
                         }
                         const removed = document.getElementById(`obrisana-prikljucna-${id}`);
                         if (removed) removed.remove();
                     } else {
                         if (existing) {
-                            existing.style.display = "none";
-                            existing.querySelectorAll("input").forEach(i => i.disabled = true);
-
+                            existing.remove();
                             const deletedContainer = document.getElementById("obrisanePrikljucneContainer");
                             if (deletedContainer && !document.getElementById(`obrisana-prikljucna-${id}`)) {
                                 const hiddenInput = document.createElement("input");
@@ -345,15 +349,46 @@
                 });
             });
 
-            // RESURSI
-            let resursBrojac = document.querySelectorAll('#resursDetaljiContainer input[name^="Resursi["]').length;
-            const resursMap = new Map();
 
-            document.querySelectorAll('.resurs-checkbox').forEach(checkbox => {
-                const id = checkbox.value;
-                const existing = document.getElementById(`unos-resurs-${id}`);
-                if (existing && !resursMap.has(id)) {
-                    resursMap.set(id, resursBrojac++);
+            // ==================================================================
+            // ISPRAVLJENA LOGIKA ZA RESURSE I IZRAČUNAVANJE TROŠKA
+            // ==================================================================
+            const ceneResursa = @Html.Raw(Json.Serialize(ViewBag.CeneResursa));
+            const resursDetaljiContainer = document.getElementById("resursDetaljiContainer");
+
+            // Brojač za indekse novih resursa, počinje od broja već postojećih
+            let resursBrojac = @(Model.Resursi?.Count ?? 0);
+
+            function izracunajUkupanTrosak() {
+                let ukupno = 0;
+                // Selektuj SVE inpute za količinu unutar kontejnera
+                const sviKolicinaInputi = resursDetaljiContainer.querySelectorAll('.resurs-kolicina-input');
+
+                sviKolicinaInputi.forEach(kolicinaInput => {
+                    // Jednostavna i pouzdana provera: ako input NIJE onemogućen, dodaj u trošak
+                    if (!kolicinaInput.disabled) {
+                        const kolicina = parseFloat(kolicinaInput.value) || 0;
+                        const parentDiv = kolicinaInput.closest('div[id^="unos-resurs-"]');
+                        if (parentDiv) {
+                            const resursId = parentDiv.id.replace('unos-resurs-', '');
+                            const cena = parseFloat(ceneResursa[resursId]) || 0;
+                            ukupno += kolicina * cena;
+                        }
+                    }
+                });
+
+                document.getElementById("ukupanTrosak").innerText = ukupno.toFixed(2);
+                const hiddenUkupanTrosakInput = document.querySelector('input[name="UkupanTrosak"]');
+                if (hiddenUkupanTrosakInput) {
+                    hiddenUkupanTrosakInput.value = ukupno.toFixed(2);
+                }
+            }
+
+            // Koristimo "event delegation" - jedan listener na kontejneru umesto mnogo njih na inputima
+            resursDetaljiContainer.addEventListener('input', function (e) {
+                // Ako je događaj potekao od inputa za količinu, preračunaj trošak
+                if (e.target && e.target.classList.contains('resurs-kolicina-input')) {
+                    izracunajUkupanTrosak();
                 }
             });
 
@@ -361,110 +396,55 @@
                 checkbox.addEventListener('change', function () {
                     const id = this.value;
                     const naziv = this.getAttribute('data-naziv');
-                    const container = document.getElementById("resursDetaljiContainer");
-                    const existing = document.getElementById(`unos-resurs-${id}`);
+                    let existingDiv = document.getElementById(`unos-resurs-${id}`);
+                    const obrisaniResursiContainer = document.getElementById("obrisaniResursiContainer");
 
                     if (this.checked) {
-                        if (existing) {
-                            existing.style.display = "block";
-                            existing.querySelectorAll("input").forEach(i => i.disabled = false);
+                        // Ako polja već postoje (jer su bila deselektovana), samo ih prikaži i omogući
+                        if (existingDiv) {
+                            existingDiv.style.display = 'block';
+                            existingDiv.querySelectorAll("input").forEach(i => i.disabled = false);
                         } else {
-                            const index = resursBrojac++;
-                            resursMap.set(id, index);
-
-                            const div = document.createElement("div");
-                            div.classList.add("form-group");
-                            div.id = `unos-resurs-${id}`;
-                            div.innerHTML = `
+                            // Ako ne postoje, kreiraj ih
+                            existingDiv = document.createElement("div");
+                            existingDiv.classList.add("form-group");
+                            existingDiv.id = `unos-resurs-${id}`;
+                            const index = resursBrojac++; // Koristi i inkrementiraj brojač
+                            existingDiv.innerHTML = `
                                         <label>Resurs: ${naziv} – količina i datum</label>
                                         <input type="hidden" name="Resursi[${index}].IdResurs" value="${id}" />
-                                        <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2" step="0.1" min="0" required />
-                                        <input type="date" name="Resursi[${index}].DatumKoriscenja" class="form-control" required />
-                                    `;
-                            container.appendChild(div);
+                                        <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />
+                                        <input type="date" name="Resursi[${index}].DatumKoriscenja" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />`;
+                            resursDetaljiContainer.appendChild(existingDiv);
                         }
-                        const removed = document.getElementById(`obrisan-resurs-${id}`);
-                        if (removed) removed.remove();
-                    } else {
-                        if (existing) {
-                            existing.style.display = "none";
-                            existing.querySelectorAll("input").forEach(i => i.disabled = true);
-
-                            const deletedContainer = document.getElementById("obrisaniResursiContainer");
-                            if (deletedContainer && !document.getElementById(`obrisan-resurs-${id}`)) {
-                                const hiddenInput = document.createElement("input");
-                                hiddenInput.type = "hidden";
-                                hiddenInput.name = "ObrisaniResursiId[]";
-                                hiddenInput.value = id;
-                                hiddenInput.id = `obrisan-resurs-${id}`;
-                                deletedContainer.appendChild(hiddenInput);
-                            }
+                        // Ukloni iz liste za brisanje ako je bio dodat
+                        const hiddenInputZaBrisanje = document.getElementById(`obrisan-resurs-${id}`);
+                        if (hiddenInputZaBrisanje) {
+                            hiddenInputZaBrisanje.remove();
+                        }
+                    } else { // Ako je checkbox deselektovan
+                        if (existingDiv) {
+                            // Sakrij i OBAVEZNO onemogući polja. Onemogućena polja se ne šalju sa formom.
+                            existingDiv.style.display = 'none';
+                            existingDiv.querySelectorAll("input").forEach(i => i.disabled = true);
+                        }
+                        // Dodaj u listu za brisanje na serveru (samo ako već nije tamo)
+                        if (!document.getElementById(`obrisan-resurs-${id}`)) {
+                            const hiddenInput = document.createElement("input");
+                            hiddenInput.type = "hidden";
+                            hiddenInput.name = "ObrisaniResursiId[]";
+                            hiddenInput.value = id;
+                            hiddenInput.id = `obrisan-resurs-${id}`;
+                            obrisaniResursiContainer.appendChild(hiddenInput);
                         }
                     }
-                });
-            });
-        });
-
-        const ceneResursa = @Html.Raw(Json.Serialize(ViewBag.CeneResursa));
-
-        function izracunajUkupanTrosak() {
-            let ukupno = 0;
-
-            document.querySelectorAll('.resurs-checkbox:checked').forEach(checkbox => {
-                const resursId = checkbox.value;
-                const cena = parseFloat(ceneResursa[resursId]) || 0;
-
-                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
-                if (unosDiv && unosDiv.style.display !== "none") {
-                    const kolicinaInput = unosDiv.querySelector(`input[name$='Kolicina']`);
-                    const kolicina = parseFloat(kolicinaInput?.value) || 0;
-                    ukupno += kolicina * cena;
-                }
-            });
-
-            // Ažuriraj prikaz i hidden input
-            document.getElementById("ukupanTrosak").innerText = ukupno.toFixed(2);
-            const hiddenInput = document.querySelector('input[name="UkupanTrosak"]');
-            if (hiddenInput) hiddenInput.value = ukupno.toFixed(2);
-        }
-
-        function dodajEventListenereZaKolicine() {
-            document.querySelectorAll('.resurs-checkbox:checked').forEach(checkbox => {
-                const resursId = checkbox.value;
-                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
-                if (unosDiv) {
-                    const kolicinaInput = unosDiv.querySelector(`input[name$='Kolicina']`);
-                    if (kolicinaInput) {
-                        kolicinaInput.removeEventListener("input", izracunajUkupanTrosak); // ukloni stari
-                        kolicinaInput.addEventListener("input", izracunajUkupanTrosak);    // dodaj novi
-                    }
-                }
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll('.resurs-checkbox').forEach(checkbox => {
-                const resursId = checkbox.value;
-
-                // Postavi početno vidljiv unos
-                const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
-                if (unosDiv) {
-                    unosDiv.style.display = checkbox.checked ? "block" : "none";
-                }
-
-                // Listener za prikaz/skrivanje + update
-                checkbox.addEventListener("change", () => {
-                    const unosDiv = document.querySelector(`#unos-resurs-${resursId}`);
-                    if (unosDiv) {
-                        unosDiv.style.display = checkbox.checked ? "block" : "none";
-                    }
-                    dodajEventListenereZaKolicine();
+                    // Nakon SVAKE promene, ponovo izračunaj ukupan trošak
                     izracunajUkupanTrosak();
                 });
             });
 
-            dodajEventListenereZaKolicine(); // registruj za već čekirane
-            izracunajUkupanTrosak(); // inicijalno
+            // Inicijalno izračunavanje troška prilikom učitavanja stranice
+            izracunajUkupanTrosak();
         });
     </script>
 }

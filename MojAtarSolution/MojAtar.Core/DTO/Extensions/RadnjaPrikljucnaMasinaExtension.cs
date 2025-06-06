@@ -15,7 +15,6 @@ namespace MojAtar.Core.DTO.Extensions
             {
                 IdRadnja = (Guid)radnjaPrikljucnaMasina.IdRadnja,
                 IdPrikljucnaMasina = (Guid)radnjaPrikljucnaMasina.IdPrikljucnaMasina,
-                BrojRadnihSati = radnjaPrikljucnaMasina.BrojRadnihSati,
             };
         }
     }

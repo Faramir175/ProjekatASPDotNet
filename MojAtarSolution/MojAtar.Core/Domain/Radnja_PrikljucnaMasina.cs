@@ -15,8 +15,5 @@ namespace MojAtar.Core.Domain
         public Guid? IdPrikljucnaMasina { get; set; }
         public PrikljucnaMasina PrikljucnaMasina { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
-        public int BrojRadnihSati { get; set; }
-
     }
 }

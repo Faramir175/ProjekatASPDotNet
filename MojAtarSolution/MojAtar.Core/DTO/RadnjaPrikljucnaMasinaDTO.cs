@@ -12,13 +12,11 @@ namespace MojAtar.Core.DTO
     {
         public Guid IdRadnja { get; set; }
         public Guid IdPrikljucnaMasina { get; set; }
-        public int BrojRadnihSati { get; set; }
 
         public Radnja_PrikljucnaMasina ToPrikljucnaMasina() => new Radnja_PrikljucnaMasina()
         {
             IdRadnja = IdRadnja,
             IdPrikljucnaMasina = IdPrikljucnaMasina,
-            BrojRadnihSati = BrojRadnihSati
         };
     }
 }

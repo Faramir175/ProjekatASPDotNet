@@ -12,8 +12,8 @@ using MojAtar.Infrastructure.MojAtar;
 namespace MojAtar.Infrastructure.Migrations
 {
     [DbContext(typeof(MojAtarDbContext))]
-    [Migration("20250413201244_ParcelaKultura-ID")]
-    partial class ParcelaKulturaID
+    [Migration("20250605203208_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -352,9 +352,6 @@ namespace MojAtar.Infrastructure.Migrations
 
                     b.Property<Guid>("IdPrikljucnaMasina")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("BrojRadnihSati")
-                        .HasColumnType("int");
 
                     b.HasKey("IdRadnja", "IdPrikljucnaMasina");
 
