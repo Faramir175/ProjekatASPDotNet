@@ -3,48 +3,56 @@
   "WorkspaceRootPath": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\korisnik\\podesavanja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\korisnik\\podesavanja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\resurs\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\resurs\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\shared\\_mainlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\shared\\_mainlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\kultura\\kulture.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\kultura\\kulture.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\wwwroot\\css\\auth.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\wwwroot\\css\\auth.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\korisnik\\podesavanja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\korisnik\\podesavanja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\kultura\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\kultura\\dodaj.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\resurs\\resursi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\resurs\\resursi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\parcela\\parcele.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\parcela\\parcele.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnja\\radnjepoparceli.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\radnjepoparceli.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\prikljucnamasina\\prikljucnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\prikljucnamasina\\prikljucnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnamasina\\radnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnamasina\\radnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\prikljucnamasina\\prikljucnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\prikljucnamasina\\prikljucnemasine.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\resurs\\resursi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\resurs\\resursi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\radnje.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\views\\radnja\\radnjepoparceli.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\views\\radnja\\radnjepoparceli.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|c:\\users\\faramir\\projekataspdotnet\\mojatarsolution\\mojatar.ui\\wwwroot\\css\\auth.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{C8CCC215-55C7-453A-8AFD-F2EC0BB1B767}|MojAtar.UI\\MojAtar.UI.csproj|solutionrelative:mojatar.ui\\wwwroot\\css\\auth.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 19,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -94,7 +102,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
+              "Title": "Dodaj.cshtml",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Resurs\\Dodaj.cshtml",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Resurs\\Dodaj.cshtml",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Resurs\\Dodaj.cshtml",
+              "RelativeToolTip": "MojAtar.UI\\Views\\Resurs\\Dodaj.cshtml",
+              "ViewState": "AQIAAAUAAAAAAAAAAAD4vwwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-07T12:51:07.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dodaj.cshtml",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
+              "RelativeToolTip": "MojAtar.UI\\Views\\Radnja\\Dodaj.cshtml",
+              "ViewState": "AQIAABEAAAAAAAAAAAAIwCMAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-07T12:47:40.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_MainLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
+              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
+              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
+              "RelativeToolTip": "MojAtar.UI\\Views\\Shared\\_MainLayout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-07T12:24:02.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "auth.css",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\wwwroot\\css\\auth.css",
               "RelativeDocumentMoniker": "MojAtar.UI\\wwwroot\\css\\auth.css",
@@ -107,33 +154,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Podesavanja.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Korisnik\\Podesavanja.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Korisnik\\Podesavanja.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Korisnik\\Podesavanja.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Korisnik\\Podesavanja.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAHAAAA",
+              "ViewState": "AQIAACUAAAAAAAAAAAAIwDoAAAAPAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T10:34:48.759Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "RadnjePoParceli.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Radnja\\RadnjePoParceli.cshtml",
-              "ViewState": "AQIAABUAAAAAAAAAAAAAACMAAAA2AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACMAAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T10:18:18.747Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "Radnje.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Radnja\\Radnje.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Radnja\\Radnje.cshtml",
@@ -146,39 +193,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "Resursi.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Resurs\\Resursi.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Resurs\\Resursi.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Resurs\\Resursi.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Resurs\\Resursi.cshtml",
-              "ViewState": "AQIAABIAAAAAAAAAAAAQwC8AAAAAAAAA",
+              "ViewState": "AQIAAAQAAAAAAAAAAAAIwAsAAABCAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T10:17:06.811Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "RadneMasine.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\RadnaMasina\\RadneMasine.cshtml",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAmwDgAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T10:15:05.808Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 7,
               "Title": "PrikljucneMasine.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\PrikljucnaMasina\\PrikljucneMasine.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\PrikljucnaMasina\\PrikljucneMasine.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\PrikljucnaMasina\\PrikljucneMasine.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\PrikljucnaMasina\\PrikljucneMasine.cshtml",
-              "ViewState": "AQIAABsAAAAAAAAAAAAmwDUAAAAAAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAmwAsAAABOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T10:14:26.653Z",
               "EditorCaption": ""
@@ -191,46 +238,33 @@
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Parcela\\Parcele.cshtml",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAmwC4AAABPAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAmwAsAAABEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T09:58:50.966Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Kulture.cshtml",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Kultura\\Kulture.cshtml",
               "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Kultura\\Kulture.cshtml",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Kultura\\Kulture.cshtml",
               "RelativeToolTip": "MojAtar.UI\\Views\\Kultura\\Kulture.cshtml",
-              "ViewState": "AQIAABIAAAAAAAAAAAAQwCMAAAChAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAAC8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-07T09:25:18.589Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Dodaj.cshtml",
-              "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Kultura\\Dodaj.cshtml",
-              "RelativeDocumentMoniker": "MojAtar.UI\\Views\\Kultura\\Dodaj.cshtml",
-              "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\Views\\Kultura\\Dodaj.cshtml",
-              "RelativeToolTip": "MojAtar.UI\\Views\\Kultura\\Dodaj.cshtml",
-              "ViewState": "AQIAABEAAAAAAAAAAAAmwCsAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-07T09:24:22.191Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "site.css",
               "DocumentMoniker": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "MojAtar.UI\\wwwroot\\css\\site.css",
               "ToolTip": "C:\\Users\\Faramir\\ProjekatASPDotNet\\MojAtarSolution\\MojAtar.UI\\wwwroot\\css\\site.css",
               "RelativeToolTip": "MojAtar.UI\\wwwroot\\css\\site.css",
-              "ViewState": "AQIAAAcAAAAAAAAAAAAAABIAAAAYAAAA",
+              "ViewState": "AQIAAH4AAAAAAAAAAAAQwJsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-06-07T09:21:35.183Z",
               "EditorCaption": ""

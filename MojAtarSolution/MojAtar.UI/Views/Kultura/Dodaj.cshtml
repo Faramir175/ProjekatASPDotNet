@@ -4,9 +4,18 @@
 @{
     ViewData["Title"] = Model.Id == null ? "Dodaj kulturu" : "Izmeni kulturu";
 }
-<div class="container mt-5">
-    <div class="container-glass">
-        <h2>@ViewData["Title"]</h2>
+
+<div class="container py-5">
+    <div class="container-glass" style="max-width: 600px; margin: auto;">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+            <form asp-action="Kulture" method="get">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Nazad
+                </button>
+            </form>
+        </div>
 
         <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Kultura">
             @if (Model.Id != null)
@@ -16,28 +25,29 @@
 
             <input type="hidden" name="KorisnikId" value="@ViewBag.UserId" />
 
-            <div class="form-group">
-                <label asp-for="Naziv">Naziv kulture</label>
+            <div class="mb-3">
+                <label asp-for="Naziv" class="form-label">Naziv kulture</label>
                 <input asp-for="Naziv" class="form-control" />
                 <span asp-validation-for="Naziv" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Hibrid">Hibrid</label>
+            <div class="mb-3">
+                <label asp-for="Hibrid" class="form-label">Hibrid</label>
                 <input asp-for="Hibrid" class="form-control" />
                 <span asp-validation-for="Hibrid" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="AktuelnaCena">Aktuelna cena (RSD/kg)</label>
+            <div class="mb-3">
+                <label asp-for="AktuelnaCena" class="form-label">Aktuelna cena (RSD/kg)</label>
                 <input asp-for="AktuelnaCena" type="number" step="0.01" class="form-control" />
                 <span asp-validation-for="AktuelnaCena" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">
-                @(Model.Id == null ? "Dodaj kulturu" : "Sačuvaj izmene")
-            </button>
-            <a asp-action="Kulture" class="btn btn-secondary ml-2">Nazad</a>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.Id == null ? "Dodaj kulturu" : "Sačuvaj izmene")
+                </button>
+            </div>
         </form>
     </div>
 </div>

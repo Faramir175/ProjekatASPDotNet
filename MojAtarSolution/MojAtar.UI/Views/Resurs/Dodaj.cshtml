@@ -5,36 +5,49 @@
     ViewData["Title"] = Model.Id == null ? "Dodaj resurs" : "Izmeni resurs";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container py-5">
+    <div class="container-glass" style="max-width: 600px; margin: auto;">
 
-<form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Resurs">
-    @if (Model.Id != null)
-    {
-        <input type="hidden" asp-for="Id" />
-    }
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+            <form asp-action="Resursi" method="get">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Nazad
+                </button>
+            </form>
+        </div>
 
-    <input type="hidden" name="KorisnikId" value="@ViewBag.UserId" />
+        <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Resurs">
+            @if (Model.Id != null)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
 
-    <div class="form-group">
-        <label asp-for="Naziv">Naziv resursa</label>
-        <input asp-for="Naziv" class="form-control" />
-        <span asp-validation-for="Naziv" class="text-danger"></span>
+            <input type="hidden" name="KorisnikId" value="@ViewBag.UserId" />
+
+            <div class="mb-3">
+                <label asp-for="Naziv" class="form-label">Naziv resursa</label>
+                <input asp-for="Naziv" class="form-control" />
+                <span asp-validation-for="Naziv" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Vrsta" class="form-label">Vrsta</label>
+                <input asp-for="Vrsta" class="form-control" />
+                <span asp-validation-for="Vrsta" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AktuelnaCena" class="form-label">Aktuelna cena po jedinici</label>
+                <input asp-for="AktuelnaCena" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="AktuelnaCena" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.Id == null ? "Dodaj resurs" : "Sačuvaj izmene")
+                </button>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Vrsta">Vrsta</label>
-        <input asp-for="Vrsta" class="form-control" />
-        <span asp-validation-for="Vrsta" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AktuelnaCena">Aktuelna cena po jedinici</label>
-        <input asp-for="AktuelnaCena" type="number" step="0.01" class="form-control" />
-        <span asp-validation-for="AktuelnaCena" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        @(Model.Id == null ? "Dodaj resurs" : "Sačuvaj izmene")
-    </button>
-    <a asp-action="Resursi" class="btn btn-secondary ml-2">Nazad</a>
-</form>
+</div>

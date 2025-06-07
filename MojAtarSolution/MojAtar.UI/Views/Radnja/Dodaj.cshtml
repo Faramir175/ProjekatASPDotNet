@@ -5,8 +5,6 @@
     ViewData["Title"] = "Dodaj / Izmeni Radnju";
 }
 
-<h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
-
 @if (!ViewData.ModelState.IsValid)
 {
     foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
@@ -15,199 +13,222 @@
     }
 }
 
+<div class="container py-5">
+    <div class="container-glass" style="max-width: 600px; margin: auto;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-<form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Radnja">
-    @if (Model.Id != null)
-    {
-        <input type="hidden" asp-for="Id" />
-    }
-    <div id="obrisaneMasineContainer"></div>
-    <div id="obrisanePrikljucneContainer"></div>
-    <div id="obrisaniResursiContainer"></div>
-
-    <div class="form-group">
-        <label for="IdParcela">Parcela</label>
-        <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList">
-            <option value="">-- Izaberite parcelu --</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DatumIzvrsenja">Datum izvršenja</label>
-        <input asp-for="DatumIzvrsenja" class="form-control" type="date" />
-    </div>
-
-    @if (Model.Id == null)
-    {
-        <div class="form-group">
-            <label asp-for="TipRadnje">Tip radnje</label>
-            <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
+            <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
+            @if (Model.IdParcela != null)
+            {
+                <form asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" method="get">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Nazad
+                    </button>
+                </form>
+            }
+            else
+            {
+                <form asp-action="Radnje" method="get">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Nazad
+                    </button>
+                </form>
+            }
         </div>
-    }
-    else
-    {
-        <input type="hidden" asp-for="TipRadnje" />
-        <div class="form-group">
-            <label>Tip radnje</label>
-            <input class="form-control" value="@Model.TipRadnje" disabled />
-        </div>
-    }
 
-    <div class="form-group">
-        <label asp-for="VremenskiUslovi">Vremenski uslovi</label>
-        <input asp-for="VremenskiUslovi" class="form-control" />
-    </div>
+            <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Radnja">
+                @if (Model.Id != null)
+                {
+                    <input type="hidden" asp-for="Id" />
+                }
+                <div id="obrisaneMasineContainer"></div>
+                <div id="obrisanePrikljucneContainer"></div>
+                <div id="obrisaniResursiContainer"></div>
 
-    <div class="form-group">
-        <label asp-for="Napomena">Napomena</label>
-        <textarea asp-for="Napomena" class="form-control"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="IdKultura">Kultura</label>
-        <select asp-for="IdKultura" class="form-control" asp-items="ViewBag.KultureSelectList">
-            <option value="">-- Izaberite kulturu --</option>
-        </select>
-    </div>
-
-    <div class="form-group" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
-        <label asp-for="Povrsina">Površina za setvu (ha)</label>
-        <input asp-for="Povrsina" class="form-control" type="number" step="0.01" min="0.01" />
-    </div>
-
-
-    <div class="form-group" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
-        <label asp-for="Prinos">Prinos (t)</label>
-        <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
-    </div>
-
-    <div id="listaMasina">
-        <label class="form-check-label">Izaberi radne masine koje koristis na ovoj radnji</label>
-
-        @{
-            var povezaneMasine = Model.RadneMasine?.ToDictionary(rm => rm.IdRadnaMasina, rm => (double)rm.BrojRadnihSati)
-            ?? new Dictionary<Guid, double>();
-
-            int index = 0;
-        }
-
-        @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
-        {
-            var isChecked = povezaneMasine.ContainsKey(Guid.Parse(masina.Value));
-            <div class="form-check">
-                <input class="form-check-input masina-checkbox" type="checkbox"
-                       id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
-                @(isChecked ? "checked" : "") />
-                <label class="form-check-label" for="masinaCheckbox_@masina.Value">
-                    @masina.Text
-                </label>
-            </div>
-            if (isChecked)
-            {
-                <div class="form-group" id="unos-masina-@masina.Value">
-                    <label>Radna mašina: @masina.Text – broj sati</label>
-                    <input type="hidden" name="RadneMasine[@index].IdRadnaMasina" value="@masina.Value" />
-                    <input type="number" name="RadneMasine[@index].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezaneMasine[Guid.Parse(masina.Value)]" required />
+                <div class="mb-3">
+                    <label class="form-label" for="IdParcela">Parcela</label>
+                    <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList">
+                        <option value="">-- Izaberite parcelu --</option>
+                    </select>
                 </div>
-                index++;
-            }
-        }
-    </div>
 
-    <div id="masineDetaljiContainer"></div>
-
-    <div id="listaPrikljucnihMasina">
-        <label class="form-check-label">Izaberi priključne mašine koje koristis na ovoj radnji</label>
-
-        @{
-            var povezanePrikljucne = Model.PrikljucneMasine?
-            .Select(pm => pm.IdPrikljucnaMasina)
-            .ToHashSet()
-            ?? new HashSet<Guid>();
-
-            int indexPrik = 0;
-        }
-
-        @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.PrikljucneMasineSelectList)
-        {
-            var isChecked = povezanePrikljucne.Contains(Guid.Parse(masina.Value));
-            <div class="form-check">
-                <input class="form-check-input prikljucna-checkbox" type="checkbox"
-                       id="prikljucnaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
-                @(isChecked ? "checked" : "") />
-                <label class="form-check-label" for="prikljucnaCheckbox_@masina.Value">
-                    @masina.Text
-                </label>
-            </div>
-            if (isChecked)
-            {
-                <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
-                indexPrik++;
-            }
-        }
-
-    </div>
-
-    <div id="prikljucneDetaljiContainer"></div>
-
-    <div id="listaResursa">
-        <label class="form-check-label">Izaberi resurse koje koristiš u ovoj radnji</label>
-
-        @{
-            var povezaniResursi = Model.Resursi?.ToDictionary(r => r.IdResurs, r => (r.Kolicina, r.DatumKoriscenja))
-            ?? new Dictionary<Guid, (double, DateTime)>();
-        }
-
-        @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
-        {
-            var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
-            <div class="form-check">
-                <input class="form-check-input resurs-checkbox" type="checkbox"
-                       id="resursCheckbox_@resurs.Value" value="@resurs.Value" data-naziv="@resurs.Text"
-                @(isChecked ? "checked" : "") />
-                <label class="form-check-label" for="resursCheckbox_@resurs.Value">
-                    @resurs.Text
-                </label>
-            </div>
-        }
-    </div>
-
-    <div id="resursDetaljiContainer">
-        @{
-            int indexResurs = 0; 
-        }
-        @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
-        {
-            var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
-            if (isChecked)
-            {
-                var resData = povezaniResursi[Guid.Parse(resurs.Value)];
-
-                <div class="form-group" id="unos-resurs-@resurs.Value" style="display: block;">
-                    <label>Resurs: @resurs.Text – količina i datum</label>
-                    <input type="hidden" name="Resursi[@indexResurs].IdResurs" value="@resurs.Value" />
-                    <input type="number" name="Resursi[@indexResurs].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" value="@resData.Item1" required />
-                    <input type="date" name="Resursi[@indexResurs].DatumKoriscenja" class="form-control" value="@resData.Item2.ToString("yyyy-MM-dd")" required />
+                <div class="mb-3">
+                    <label asp-for="DatumIzvrsenja" class="form-label">Datum izvršenja</label>
+                    <input asp-for="DatumIzvrsenja" class="form-control" type="date" />
                 </div>
-                indexResurs++;
-            }
-        }
+
+                @if (Model.Id == null)
+                {
+                    <div class="mb-3">
+                        <label asp-for="TipRadnje" class="form-label">Tip radnje</label>
+                        <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="TipRadnje" />
+                    <div class="mb-3">
+                        <label>Tip radnje</label>
+                        <input class="form-control" value="@Model.TipRadnje" disabled />
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label asp-for="VremenskiUslovi" class="form-label">Vremenski uslovi</label>
+                    <input asp-for="VremenskiUslovi" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Napomena" class="form-label">Napomena</label>
+                    <textarea asp-for="Napomena" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="IdKultura">Kultura</label>
+                    <select asp-for="IdKultura" class="form-control" asp-items="ViewBag.KultureSelectList">
+                        <option value="">-- Izaberite kulturu --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
+                    <label asp-for="Povrsina" class="form-label">Površina za setvu (ha)</label>
+                    <input asp-for="Povrsina" class="form-control" type="number" step="0.01" min="0.01" />
+                </div>
+
+
+                <div class="mb-3" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
+                    <label asp-for="Prinos" class="form-label">Prinos (t)</label>
+                    <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
+                </div>
+
+                <div id="listaMasina">
+                    <label class="form-label">Izaberi radne masine koje koristis na ovoj radnji</label>
+
+                    @{
+                        var povezaneMasine = Model.RadneMasine?.ToDictionary(rm => rm.IdRadnaMasina, rm => (double)rm.BrojRadnihSati)
+                        ?? new Dictionary<Guid, double>();
+
+                        int index = 0;
+                    }
+
+                    @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
+                    {
+                        var isChecked = povezaneMasine.ContainsKey(Guid.Parse(masina.Value));
+                        <div class="form-check">
+                            <input class="form-check-input masina-checkbox" type="checkbox"
+                                   id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
+                            @(isChecked ? "checked" : "") />
+                            <label class="form-label" for="masinaCheckbox_@masina.Value">
+                                @masina.Text
+                            </label>
+                        </div>
+                        if (isChecked)
+                        {
+                            <div class="mb-3" id="unos-masina-@masina.Value">
+                                <label class="form-label">Radna mašina: @masina.Text – broj sati</label>
+                                <input type="hidden" name="RadneMasine[@index].IdRadnaMasina" value="@masina.Value" />
+                                <input type="number" name="RadneMasine[@index].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezaneMasine[Guid.Parse(masina.Value)]" required />
+                            </div>
+                            index++;
+                        }
+                    }
+                </div>
+
+                <div id="masineDetaljiContainer"></div>
+
+                <div id="listaPrikljucnihMasina">
+                    <label class="form-label">Izaberi priključne mašine koje koristis na ovoj radnji</label>
+
+                    @{
+                        var povezanePrikljucne = Model.PrikljucneMasine?
+                        .Select(pm => pm.IdPrikljucnaMasina)
+                        .ToHashSet()
+                        ?? new HashSet<Guid>();
+
+                        int indexPrik = 0;
+                    }
+
+                    @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.PrikljucneMasineSelectList)
+                    {
+                        var isChecked = povezanePrikljucne.Contains(Guid.Parse(masina.Value));
+                        <div class="form-check">
+                            <input class="form-check-input prikljucna-checkbox" type="checkbox"
+                                   id="prikljucnaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
+                            @(isChecked ? "checked" : "") />
+                            <label class="form-label" for="prikljucnaCheckbox_@masina.Value">
+                                @masina.Text
+                            </label>
+                        </div>
+                        if (isChecked)
+                        {
+                            <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
+                            indexPrik++;
+                        }
+                    }
+
+                </div>
+
+                <div id="prikljucneDetaljiContainer"></div>
+
+                <div id="listaResursa">
+                    <label class="form-label">Izaberi resurse koje koristiš u ovoj radnji</label>
+
+                    @{
+                        var povezaniResursi = Model.Resursi?.ToDictionary(r => r.IdResurs, r => (r.Kolicina, r.DatumKoriscenja))
+                        ?? new Dictionary<Guid, (double, DateTime)>();
+                    }
+
+                    @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
+                    {
+                        var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
+                        <div class="form-check">
+                            <input class="form-check-input resurs-checkbox" type="checkbox"
+                                   id="resursCheckbox_@resurs.Value" value="@resurs.Value" data-naziv="@resurs.Text"
+                            @(isChecked ? "checked" : "") />
+                            <label class="form-label" for="resursCheckbox_@resurs.Value">
+                                @resurs.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div id="resursDetaljiContainer">
+                    @{
+                        int indexResurs = 0; 
+                    }
+                    @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
+                    {
+                        var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
+                        if (isChecked)
+                        {
+                            var resData = povezaniResursi[Guid.Parse(resurs.Value)];
+
+                            <div class="mb-3" id="unos-resurs-@resurs.Value" style="display: block;">
+                                <label class="form-label">Resurs: @resurs.Text – količina i datum</label>
+                                <input type="hidden" name="Resursi[@indexResurs].IdResurs" value="@resurs.Value" />
+                                <input type="number" name="Resursi[@indexResurs].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" value="@resData.Item1" required />
+                                <input type="date" name="Resursi[@indexResurs].DatumKoriscenja" class="form-control" value="@resData.Item2.ToString("yyyy-MM-dd")" required />
+                            </div>
+                            indexResurs++;
+                        }
+                    }
+                </div>
+
+                <div id="ukupanTrosakPrikaz" class="mt-3">
+                    <strong>
+                        Ukupan trošak:
+                        <span id="ukupanTrosak">
+                            @(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")
+                        </span> RSD
+                    </strong>
+                </div>
+
+                <input type="hidden" name="UkupanTrosak" value="@(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")" />
+
+                <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
+            </form>
     </div>
-
-    <div id="ukupanTrosakPrikaz" class="mt-3">
-        <strong>
-            Ukupan trošak:
-            <span id="ukupanTrosak">
-                @(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")
-            </span> RSD
-        </strong>
-    </div>
-
-    <input type="hidden" name="UkupanTrosak" value="@(Model.Id != null ? Model.UkupanTrosak.ToString("0.00") : "0.00")" />
-
-    <button type="submit" class="btn btn-success mt-3">Sačuvaj</button>
-    <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary mt-3">Nazad</a>
-</form>
+</div>
 
 @section Scripts {
     <script>
@@ -272,10 +293,10 @@
                             masineMap.set(id, index);
 
                             const div = document.createElement("div");
-                            div.classList.add("form-group");
+                            div.classList.add("mb-3");
                             div.id = `unos-masina-${id}`;
                             div.innerHTML = `
-                                <label>Radna mašina: ${naziv} – broj sati</label>
+                                        <label class="form-label">Radna mašina: ${naziv} – broj sati</label>
                                 <input type="hidden" name="RadneMasine[${index}].IdRadnaMasina" value="${id}" />
                                 <input type="number" name="RadneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
                             `;
@@ -407,11 +428,11 @@
                         } else {
                             // Ako ne postoje, kreiraj ih
                             existingDiv = document.createElement("div");
-                            existingDiv.classList.add("form-group");
+                            existingDiv.classList.add("mb-3");
                             existingDiv.id = `unos-resurs-${id}`;
                             const index = resursBrojac++; // Koristi i inkrementiraj brojač
                             existingDiv.innerHTML = `
-                                        <label>Resurs: ${naziv} – količina i datum</label>
+                                                <label class="form-label">Resurs: ${naziv} – količina i datum</label>
                                         <input type="hidden" name="Resursi[${index}].IdResurs" value="${id}" />
                                         <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />
                                         <input type="date" name="Resursi[${index}].DatumKoriscenja" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />`;
