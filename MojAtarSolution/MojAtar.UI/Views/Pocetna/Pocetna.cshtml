@@ -1,4 +1,4 @@
-﻿@model MojAtar.Core.DTO.KorisnikResponseDTO
+﻿@model MojAtar.Core.DTO.PocetnaViewModel
 
 @{
     ViewData["Title"] = "Početna stranica";
@@ -12,13 +12,113 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <h1>Dobrodošli, @Model.Ime @Model.Prezime!</h1>
-    <p>Email: @Model.Email</p>
-    <p>Uloga: @Model.TipKorisnika</p>
-    <p>Datum registracije: @Model.DatumRegistracije.ToString("dd.MM.yyyy HH:mm")</p>
+    <div class="container-glass my-4 text-center">
+        <h2 class="mb-2">👋 Dobrodošli, <span style="color:white">@Model.Ime</span>!</h2>
+        <p class="lead">Ovde možete pratiti važne informacije o vašem ataru.</p>
+    </div>
 
-    <form asp-controller="Auth" asp-action="Logout" method="post">
-        <button type="submit" onclick="return confirm('Da li ste sigurni?');">Logout</button>
-    </form>
+    <div class="container-glass my-4">
+        <h2 class="text-center mb-4">📊 Statistika</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Parcele</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojParcela</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Radnje</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojRadnji</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Resursi</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojResursa</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Radne mašine</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojRadnihMasina</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Priključne mašine</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojPrikljucnihMasina</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h5>Kulture</h5>
+                    <p class="fs-4 fw-bold text-success">@Model.BrojKultura</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @if (Model.PoslednjeRadnje.Any())
+    {
+        <div class="mt-5">
+            <h4>📌 Poslednjih 5 radnji</h4>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
+                @foreach (var radnja in Model.PoslednjeRadnje)
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow border-0">
+                            <div class="card-body">
+                                <h5 class="card-title">@radnja.TipRadnje</h5>
+                                <p class="card-text mb-1">
+                                    <strong>Parcela:</strong> @radnja.Parcela?.Naziv
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Napomena:</strong> @radnja.Napomena
+                                </p>
+                                @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                                {
+                                    <p class="card-text">
+                                        <strong>Prinos:</strong> @radnja.Prinos
+                                    </p>
+                                }
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                                <form asp-action="Izmeni" asp-controller="Radnja" asp-route-id="@radnja.Id" method="get" class="flex-fill">
+                                    <button type="submit" class="btn btn-sm btn-warning w-100">
+                                        <i class="bi bi-pencil-square"></i> Izmeni
+                                    </button>
+                                </form>
+                                <form asp-action="Obrisi" asp-controller="Radnja" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                    <button type="submit" class="btn btn-sm btn-danger w-100">
+                                        <i class="bi bi-trash3"></i> Obriši
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted mt-3">Nema zabeleženih radnji.</p>
+    }
+
 </body>
+
 </html>

@@ -21,5 +21,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         Task<List<Radnja>> GetAllByParcelaPaged(Guid idParcela, int skip, int take);
         Task<List<Radnja>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
 
+        Task<List<Radnja>> GetLastRadnjeByKorisnik(Guid korisnikId, int broj);
+        Task<int> CountByKorisnikId(Guid korisnikId);
     }
 }

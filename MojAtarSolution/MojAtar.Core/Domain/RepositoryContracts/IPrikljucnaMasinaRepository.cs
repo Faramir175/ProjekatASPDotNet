@@ -12,6 +12,6 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         public Task<PrikljucnaMasina> GetByNaziv(string naziv);
         public Task<bool> DeletePrikljucnaMasinaById(Guid? id);
         public Task<List<PrikljucnaMasina>> GetAllByKorisnik(Guid idKorisnik);
-
+        Task<int> CountByKorisnikId(Guid korisnikId);
     }
 }

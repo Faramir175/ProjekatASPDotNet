@@ -65,6 +65,8 @@ builder.Services.AddScoped<IRadnjaResursService, RadnjaResursService>();
 builder.Services.AddScoped<IParcelaKulturaRepository, ParcelaKulturaRepository>();
 builder.Services.AddScoped<IParcelaKulturaService, ParcelaKulturaService>();
 
+builder.Services.AddScoped<IPocetnaService, PocetnaService>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

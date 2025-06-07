@@ -13,5 +13,6 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         public Task<bool> DeleteKulturaById(Guid? id);
         public Task<List<Kultura>> GetAllByKorisnik(Guid idKorisnik);
         public Task DodajCenu(CenaKulture cena);
+        Task<int> CountByKorisnikId(Guid korisnikId);
     }
 }

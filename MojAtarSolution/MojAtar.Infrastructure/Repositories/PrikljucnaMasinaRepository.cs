@@ -85,5 +85,9 @@ namespace MojAtar.Infrastructure.Repositories
 
             return rowsDeleted > 0;
         }
+
+        public Task<int> CountByKorisnikId(Guid korisnikId) =>
+            _dbContext.PrikljucneMasine.CountAsync(pm => pm.IdKorisnik == korisnikId);
+
     }
 }

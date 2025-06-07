@@ -89,5 +89,9 @@ namespace MojAtar.Infrastructure.Repositories
             _dbContext.CeneResursa.AddAsync(cena);
             await _dbContext.SaveChangesAsync();
         }
+
+        public Task<int> CountByKorisnikId(Guid korisnikId) => 
+            _dbContext.Resursi.CountAsync(r => r.IdKorisnik == korisnikId);
+
     }
 }

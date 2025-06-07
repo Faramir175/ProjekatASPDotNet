@@ -160,6 +160,19 @@ namespace MojAtar.Infrastructure.Repositories
                 .Take(take)
                 .ToListAsync();
         }
-
+        public async Task<List<Radnja>> GetLastRadnjeByKorisnik(Guid korisnikId, int broj)
+        {
+            return await _dbContext.Radnje
+                .Where(r => r.Parcela.IdKorisnik == korisnikId)
+                .Include(r => r.Parcela)
+                .Include(r => r.Kultura)
+                .OrderByDescending(r => r.DatumIzvrsenja)
+                .Take(broj)
+                .ToListAsync();
+        }
+        public Task<int> CountByKorisnikId(Guid korisnikId)
+        {
+            return _dbContext.Radnje.CountAsync(p => p.Parcela.IdKorisnik == korisnikId);
+        }
     }
 }

@@ -23,6 +23,24 @@ body {
     animation: fadeIn 0.5s ease-in-out;
 }
 
+.container-glass h2 {
+    color: var(--primary-color);
+}
+
+.bg-white {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.shadow-sm {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.lead {
+    font-size: 1.25rem;
+    color: #333;
+}
+
 /* NAVBAR */
 .navbar {
     background: rgba(0, 0, 0, 0.9) !important;
@@ -139,6 +157,12 @@ select {
     padding: 10px;
     margin-bottom: 15px;
     width: 100%;
+}
+
+.logout-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 /* ANIMATIONS */
