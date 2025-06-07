@@ -1,39 +1,53 @@
 ﻿@model List<MojAtar.Core.DTO.PrikljucnaMasinaDTO>
 
 @{
-    ViewData["Title"] = "Moje Prikljucne Masine";
+    ViewData["Title"] = "Moje Priključne Mašine";
 }
 
-<h2>Moje Prikljucne Masine</h2>
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">🛠️ Moje Priključne Mašine</h2>
+            <a asp-action="Dodaj" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Dodaj novu prikljucnu masinu
+            </a>
+        </div>
 
-<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu prikljucnu masinu</a>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Naziv</th>
-            <th>Tip masine</th>
-            <th>Sirina obrade prikljucne masine</th>
-            <th>Datum poslednjeg servisa</th>
-            <th>Opis servisa</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var prikljucnaMasina in Model)
-        {
-            <tr>
-                <td>@prikljucnaMasina.Naziv</td>
-                <td>@prikljucnaMasina.TipMasine</td>
-                <td>@prikljucnaMasina.SirinaObrade</td>
-                <td>@prikljucnaMasina.PoslednjiServis</td>
-                <td>@prikljucnaMasina.OpisServisa</td>
-                <td>
-                    <a asp-action="Izmeni" asp-route-id="@prikljucnaMasina.Id" class="btn btn-warning">Izmeni</a>
-                    <form asp-action="Obrisi" asp-route-id="@prikljucnaMasina.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var masina in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">@masina.Naziv</h5>
+                            <p class="card-text mb-1">
+                                <strong>Tip mašine:</strong> @masina.TipMasine
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Širina obrade:</strong> @masina.SirinaObrade m
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Poslednji servis:</strong> @masina.PoslednjiServis.ToShortDateString()
+                            </p>
+                            <p class="card-text">
+                                <strong>Opis servisa:</strong> @masina.OpisServisa
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                            <form asp-action="Izmeni" asp-route-id="@masina.Id" method="get" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-warning w-100">
+                                    <i class="bi bi-pencil-square"></i> Izmeni
+                                </button>
+                            </form>
+                            <form asp-action="Obrisi" asp-route-id="@masina.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="bi bi-trash3"></i> Obriši
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -4,32 +4,44 @@
     ViewData["Title"] = "Moje Kulture";
 }
 
-<h2>Moje Kulture</h2>
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">🌾 Moje Kulture</h2>
+            <a asp-action="Dodaj" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Dodaj novu kulturu
+            </a>
+        </div>
 
-<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu kulturu</a>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Naziv</th>
-            <th>Hibrid</th>
-            <th>Aktuelna cena (RSD/kg)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var kultura in Model)
-        {
-            <tr>
-                <td>@kultura.Naziv</td>
-                <td>@kultura.Hibrid</td>
-                <td>@kultura.AktuelnaCena</td>
-                <td>
-                    <a asp-action="Izmeni" asp-route-id="@kultura.Id" class="btn btn-warning">Izmeni</a>
-                    <form asp-action="Obrisi" asp-route-id="@kultura.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var kultura in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow border-0 ">
+                        <div class="card-body">
+                            <h5 class="card-title">@kultura.Naziv</h5>
+                            <p class="card-text mb-1">
+                                <strong>Hibrid:</strong> @kultura.Hibrid
+                            </p>
+                            <p class="card-text">
+                                <strong>Aktuelna cena:</strong> @kultura.AktuelnaCena RSD/kg
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                            <form asp-action="Izmeni" asp-route-id="@kultura.Id" method="get" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-warning w-100">
+                                    <i class="bi bi-pencil-square"></i> Izmeni
+                                </button>
+                            </form>
+                            <form asp-action="Obrisi" asp-route-id="@kultura.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="bi bi-trash3"></i> Obriši
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

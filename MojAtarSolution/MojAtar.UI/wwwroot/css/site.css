@@ -9,11 +9,21 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--primary-color);
-    margin: 0;
-    padding: 0;
+    color: #000;
 }
 
-/* Navbar stil */
+/* GLASS CONTAINER */
+.container-glass {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* NAVBAR */
 .navbar {
     background: rgba(0, 0, 0, 0.9) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -35,7 +45,7 @@ body {
         color: var(--secondary-color) !important;
     }
 
-/* Sidebar stil */
+/* SIDEBAR */
 .sidebar {
     width: 250px;
     background: rgba(52, 58, 64, 0.9);
@@ -57,9 +67,8 @@ body {
             transform: translateX(5px);
         }
 
-/* Dugmad */
+/* BUTTONS */
 button {
-    width: 100%;
     background-color: var(--secondary-color);
     color: white;
     padding: 12px;
@@ -74,7 +83,65 @@ button {
         background-color: #40916c;
     }
 
-/* Animacije */
+/* ACTION BUTTONS */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    min-width: 120px;
+    height: 40px;
+    margin: 2px;
+}
+
+form .action-btn {
+    width: auto;
+}
+
+/* FORM STYLING */
+form {
+    background-color: rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(8, 7, 16, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+    form button.submit-button {
+        width: 100%;
+    }
+
+    form label {
+        font-weight: 500;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    form input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(116, 198, 157, 0.3);
+    }
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    color: black;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* ANIMATIONS */
 @keyframes fadeIn {
     from {
         opacity: 0;

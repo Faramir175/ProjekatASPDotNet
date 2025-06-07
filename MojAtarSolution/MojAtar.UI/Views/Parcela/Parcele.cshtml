@@ -4,36 +4,56 @@
     ViewData["Title"] = "Moje Parcele";
 }
 
-<h2>Moje Parcele</h2>
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">📍 Moje Parcele</h2>
+            <a asp-action="Dodaj" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Dodaj novu parcelu
+            </a>
+        </div>
 
-<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu parcelu</a>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var parcela in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">@parcela.Naziv</h5>
+                            <p class="card-text mb-1">
+                                <strong>Broj parcele:</strong> @parcela.BrojParcele
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Površina:</strong> @parcela.Povrsina ha
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Napomena:</strong> @parcela.Napomena
+                            </p>
+                            <p class="card-text">
+                                <strong>Katastarska opština:</strong> @parcela.KatastarskaOpstinaNaziv
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                            <form asp-action="Izmeni" asp-route-id="@parcela.Id" method="get" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-warning w-100">
+                                    <i class="bi bi-pencil-square"></i> Izmeni
+                                </button>
+                            </form>
+                            <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="bi bi-trash3"></i> Obriši
+                                </button>
+                            </form>
+                            <form asp-controller="Radnja" asp-action="RadnjePoParceli" asp-route-idParcela="@parcela.Id" method="get" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-info w-100">
+                                    <i class="bi bi-list-ul"></i> Radnje
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Naziv</th>
-            <th>Broj parcele</th>
-            <th>Površina</th>
-            <th>Katastarska Opština</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var parcela in Model)
-        {
-            <tr>
-                <td>@parcela.Naziv</td>
-                <td>@parcela.BrojParcele</td>
-                <td>@parcela.Povrsina ha</td>
-                <td>@parcela.Napomena</td>
-                <td>@parcela.KatastarskaOpstinaNaziv</td>
-                <td>
-                    <a asp-action="Izmeni" asp-route-id="@parcela.Id" class="btn btn-warning">Izmeni</a>
-                    <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
-                    </form>
-                    <a asp-controller="Radnja" asp-action="RadnjePoParceli" asp-route-idParcela="@parcela.Id" class="btn btn-info">Radnje</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
+</div>

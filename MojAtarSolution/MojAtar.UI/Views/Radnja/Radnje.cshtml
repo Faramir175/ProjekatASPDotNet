@@ -4,48 +4,62 @@
     ViewData["Title"] = "Radnje";
 }
 
-<h2>Radnje</h2>
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">📋 Radnje</h2>
+            <a asp-action="Dodaj" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Dodaj novu radnju
+            </a>
+        </div>
 
-<a asp-action="Dodaj" class="btn btn-primary mb-3">Dodaj novu radnju</a>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Parcela</th>
-            <th>Kultura</th>
-            <th>Datum izvršenja</th>
-            <th>Tip radnje</th>
-            <th>Ukupan trošak (€)</th>
-            <th>Vremenski uslovi</th>
-            <th>Napomena</th>
-            <th>Prinos (ako je žetva)</th>
-            <th>Akcije</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var radnja in Model)
-        {
-            <tr>
-                <td>@radnja.Parcela.Naziv</td>
-                <td>@radnja.Kultura?.Naziv</td>
-                <td>@radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</td>
-                <td>@radnja.TipRadnje</td>
-                <td>@radnja.UkupanTrosak</td>
-                <td>@radnja.VremenskiUslovi</td>
-                <td>@radnja.Napomena</td>
-                <td>
-                    @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
-                    {
-                        @radnja.Prinos
-                    }
-                </td>
-                <td>
-                    <a asp-action="Izmeni" asp-route-id="@radnja.Id" class="btn btn-warning btn-sm">Izmeni</a>
-                    <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Da li ste sigurni?');">Obriši</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var radnja in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">@radnja.TipRadnje</h5>
+                            <p class="card-text mb-1">
+                                <strong>Parcela:</strong> @radnja.Parcela?.Naziv
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>Napomena:</strong> @radnja.Napomena
+                            </p>
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                            {
+                                <p class="card-text">
+                                    <strong>Prinos:</strong> @radnja.Prinos
+                                </p>
+                            }
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                            <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-warning w-100">
+                                    <i class="bi bi-pencil-square"></i> Izmeni
+                                </button>
+                            </form>
+                            <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="bi bi-trash3"></i> Obriši
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
