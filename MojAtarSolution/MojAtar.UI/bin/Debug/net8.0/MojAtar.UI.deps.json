@@ -1055,7 +1055,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.3"
         },
         "runtime": {
-          "MojAtar.Core.dll": {}
+          "MojAtar.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "MojAtar.Infrastructure/1.0.0": {
@@ -1065,7 +1068,10 @@
           "MojAtar.Core": "1.0.0"
         },
         "runtime": {
-          "MojAtar.Infrastructure.dll": {}
+          "MojAtar.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

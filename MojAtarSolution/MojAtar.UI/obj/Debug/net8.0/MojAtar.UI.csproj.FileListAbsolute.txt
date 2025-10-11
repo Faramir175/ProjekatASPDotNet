@@ -157,11 +157,6 @@ C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\M
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\MojAtar.Infrastructure.pdb
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets\msbuild.MojAtar.UI.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets\msbuild.build.MojAtar.UI.props
-C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.MojAtar.UI.props
-C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.MojAtar.UI.props
-C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\scopedcss\bundle\MojAtar.UI.styles.css
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.csproj.Up2Date
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.dll
@@ -170,3 +165,11 @@ C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\M
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.genruntimeconfig.cache
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\ref\MojAtar.UI.dll
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\MojAtar.UI.staticwebassets.endpoints.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

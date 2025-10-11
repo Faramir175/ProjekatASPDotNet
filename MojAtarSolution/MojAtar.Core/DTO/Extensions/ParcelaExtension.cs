@@ -19,7 +19,9 @@ namespace MojAtar.Core.DTO.Extensions
                 Povrsina = parcela.Povrsina,
                 Napomena = parcela.Napomena,
                 IdKatastarskaOpstina = (Guid)parcela.IdKatastarskaOpstina,
-                IdKorisnik = (Guid)parcela.IdKorisnik
+                IdKorisnik = (Guid)parcela.IdKorisnik,
+                Latitude = parcela.Latitude,
+                Longitude = parcela.Longitude
             };
         }
     }

@@ -64,6 +64,8 @@ namespace MojAtar.Infrastructure.Repositories
             parcelaZaUpdate.Napomena = entity.Napomena;
             parcelaZaUpdate.IdKatastarskaOpstina = entity.IdKatastarskaOpstina;
             parcelaZaUpdate.IdKorisnik = entity.IdKorisnik;
+            parcelaZaUpdate.Latitude = entity.Latitude;
+            parcelaZaUpdate.Longitude = entity.Longitude;
 
             await _dbContext.SaveChangesAsync();
 

@@ -114,7 +114,9 @@ namespace MojAtar.Core.Services
                 Povrsina = dto.Povrsina,
                 Napomena = dto.Napomena,
                 IdKatastarskaOpstina = dto.IdKatastarskaOpstina,
-                IdKorisnik = dto.IdKorisnik
+                IdKorisnik = dto.IdKorisnik,
+                Longitude = dto.Longitude,
+                Latitude = dto.Latitude
             };
 
             await _parcelaRepository.Update(parcela);

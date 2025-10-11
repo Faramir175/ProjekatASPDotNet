@@ -169,6 +169,12 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<Guid?>("IdKorisnik")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
+
                     b.Property<string>("Napomena")
                         .IsRequired()
                         .HasMaxLength(175)

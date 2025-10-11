@@ -19,6 +19,10 @@ namespace MojAtar.Core.Domain
         public double Povrsina { get; set; }
         [StringLength(175, ErrorMessage = $"Duzina stringa mora biti manja od 175 karaktera")]
         public string Napomena { get; set; }
+        [Range(-90, 90)]
+        public double? Latitude { get; set; }
+        [Range(-180, 180)]
+        public double? Longitude { get; set; }
 
         // Foreign Key
         public Guid? IdKatastarskaOpstina { get; set; }

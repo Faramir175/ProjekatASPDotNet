@@ -17,6 +17,8 @@ namespace MojAtar.Core.DTO
         public Guid IdKatastarskaOpstina { get; set; }
         public Guid IdKorisnik { get; set; }
         public string? KatastarskaOpstinaNaziv { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
 
         public Parcela ToParcela() => new Parcela()
         {
@@ -26,7 +28,9 @@ namespace MojAtar.Core.DTO
             Povrsina = Povrsina,
             Napomena = Napomena,
             IdKatastarskaOpstina = IdKatastarskaOpstina,
-            IdKorisnik = IdKorisnik
+            IdKorisnik = IdKorisnik,
+            Latitude = Latitude,
+            Longitude = Longitude
         };
     }
 }

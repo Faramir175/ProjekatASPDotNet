@@ -57,6 +57,25 @@
                 <span asp-validation-for="IdKatastarskaOpstina" class="text-danger"></span>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Локација парцеле</label>
+                <div class="mt-2 text-center" id="coordsDisplay" style="font-size: 0.9rem; color: #444;">
+                    @if (Model.Latitude != 0 && Model.Longitude != 0 && Model.Latitude!=null && Model.Longitude!=null)
+                    {
+                        <span>Координате: @Model.Latitude, @Model.Longitude</span>
+                    }
+                    else
+                    {
+                        <span>Кликните на мапу да изаберете локацију</span>
+                    }
+                </div>
+
+                <div id="map" style="height: 400px; border-radius: 10px;"></div>
+                <input type="hidden" asp-for="Latitude" />
+                <input type="hidden" asp-for="Longitude" />
+            </div>
+
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">
                     @(Model.Id == null ? "Dodaj parcelu" : "Sačuvaj izmene")
@@ -65,3 +84,74 @@
         </form>
     </div>
 </div>
+
+@section Scripts{
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const latInput = document.getElementById("Latitude");
+            const lngInput = document.getElementById("Longitude");
+            const coordsDisplay = document.getElementById("coordsDisplay");
+
+            const defaultLat = parseFloat(latInput.value) || 44.787197;
+            const defaultLng = parseFloat(lngInput.value) || 20.457273;
+
+            const map = L.map('map').setView([defaultLat, defaultLng], 10);
+        // Osnovni sloj – satelitski
+        var satellite = L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          { attribution: 'Tiles © Esri', maxZoom: 19 }
+        );
+
+        // Overlay sloj – nazivi mesta i puteva
+        var labels = L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+          { attribution: 'Labels © Esri', maxZoom: 19, pane: 'overlayPane' }
+        );
+
+        satellite.addTo(map);
+        labels.addTo(map);
+
+
+        let marker;
+        // Ако већ постоје координате, постави marker
+        if (latInput.value && lngInput.value) {
+                marker = L.marker([parseFloat(latInput.value), parseFloat(lngInput.value)], { draggable: true }).addTo(map);
+                coordsDisplay.innerHTML = `Координате: ${parseFloat(latInput.value).toFixed(6)}, ${parseFloat(lngInput.value).toFixed(6)}`;
+                map.setView([parseFloat(latInput.value), parseFloat(lngInput.value)], 16);
+
+                marker.on('dragend', function (e) {
+                    const pos = e.target.getLatLng();
+                    latInput.value = pos.lat;
+                    lngInput.value = pos.lng;
+                    coordsDisplay.innerHTML = `Координате: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+                });
+            }
+
+        map.on('click', function (e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+
+                latInput.value = lat;
+                lngInput.value = lng;
+                coordsDisplay.innerHTML = `Координате: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                    marker.on('dragend', function (ev) {
+                        const pos = ev.target.getLatLng();
+                        latInput.value = pos.lat;
+                        lngInput.value = pos.lng;
+                        coordsDisplay.innerHTML = `Координате: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+            });
+            }
+        });
+
+        });
+    </script>
+
+}
