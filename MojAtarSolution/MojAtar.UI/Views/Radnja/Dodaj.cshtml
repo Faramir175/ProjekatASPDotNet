@@ -66,11 +66,13 @@
                 }
                 else
                 {
+                <div class="mb-3">
+                    <label>Tip radnje</label>
+                    <select asp-for="TipRadnje" class="form-control" disabled id="TipRadnje">
+                        <option value="@Model.TipRadnje" selected>@Model.TipRadnje</option>
+                    </select>
                     <input type="hidden" asp-for="TipRadnje" />
-                    <div class="mb-3">
-                        <label>Tip radnje</label>
-                        <input class="form-control" value="@Model.TipRadnje" disabled />
-                    </div>
+                </div>
                 }
 
                 <div class="mb-3">
@@ -233,40 +235,61 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-        const tipRadnjeSelect = document.getElementById("TipRadnje");
-        const prinosDiv = document.getElementById("prinosDiv");
-        const povrsinaDiv = document.getElementById("povrsinaDiv");
+                const tipRadnjeSelect = document.getElementById("TipRadnje");
+                const prinosDiv = document.getElementById("prinosDiv");
+                const povrsinaDiv = document.getElementById("povrsinaDiv");
 
-        // OVDE je ključno — direktno ubacujemo enum vrednosti iz C#
-        const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
-        const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
+                const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
+                const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
 
-        function toggleZetvaSetva() {
-            if (tipRadnjeSelect) {
-                if (tipRadnjeSelect.value === SETVA_VALUE) {
-                    povrsinaDiv.style.display = "block";
-                    prinosDiv.style.display = "none";
-                } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
-                    povrsinaDiv.style.display = "none";
-                    prinosDiv.style.display = "block";
-                } else {
-                    povrsinaDiv.style.display = "none";
-                    prinosDiv.style.display = "none";
+                // Funkcija za Dodaj stranicu
+                function toggleZetvaSetvaDodaj() {
+                    if (tipRadnjeSelect) {
+                        if (tipRadnjeSelect.value === SETVA_VALUE) {
+                            povrsinaDiv.style.display = "block";
+                            prinosDiv.style.display = "none";
+                        } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
+                            povrsinaDiv.style.display = "none";
+                            prinosDiv.style.display = "block";
+                        } else {
+                            povrsinaDiv.style.display = "none";
+                            prinosDiv.style.display = "none";
+                        }
+                    }
                 }
-            } else {
-                if ("@((int)Model.TipRadnje)" === SETVA_VALUE) {
-                    povrsinaDiv.style.display = "block";
-                    prinosDiv.style.display = "none";
-                } else if ("@((int)Model.TipRadnje)" === ZETVA_VALUE) {
-                    povrsinaDiv.style.display = "none";
-                    prinosDiv.style.display = "block";
-                }
-            }
-        }
-            tipRadnjeSelect?.addEventListener("change", toggleZetvaSetva);
 
-            // Initial call for toggling display based on action type
-            toggleZetvaSetva();
+                // Funkcija za Izmeni stranicu
+                function toggleZetvaSetvaIzmeni() {
+                    if (tipRadnjeSelect) {
+                        // Kod izmeni select je disabled, vrednost dolazi iz modela
+                        const tipRadnje = "@((int)Model.TipRadnje)";
+                        if (tipRadnje === SETVA_VALUE) {
+                            povrsinaDiv.style.display = "block";
+                            prinosDiv.style.display = "none";
+                        } else if (tipRadnje === ZETVA_VALUE) {
+                            povrsinaDiv.style.display = "none";
+                            prinosDiv.style.display = "block";
+                        } else {
+                            povrsinaDiv.style.display = "none";
+                            prinosDiv.style.display = "none";
+                        }
+                    }
+                }
+
+                // Pozivanje prema tipu stranice
+                @if (Model.Id == null)
+                {
+                        <text>
+                            tipRadnjeSelect?.addEventListener("change", toggleZetvaSetvaDodaj);
+                            toggleZetvaSetvaDodaj();
+                        </text>
+                }
+                else
+                {
+                        <text>
+                            toggleZetvaSetvaIzmeni();
+                        </text>
+                }
 
             // RADNE MAŠINE (Your existing logic for machines is fine for showing/hiding)
             let masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;

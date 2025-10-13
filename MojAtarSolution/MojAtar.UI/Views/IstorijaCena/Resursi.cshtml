@@ -1,0 +1,22 @@
+﻿@model IEnumerable<MojAtar.Core.Domain.CenaResursa>
+
+<h3>Istorija cena resursa</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Resurs</th>
+            <th>Cena po jedinici (RSD)</th>
+            <th>Datum važenja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Resurs.Naziv</td>
+                <td>@c.CenaPojedinici.ToString("N2")</td>
+                <td>@c.DatumVaznosti.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
