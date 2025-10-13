@@ -9,10 +9,12 @@ namespace MojAtar.Core.Domain
 {
     public class Radnja_RadnaMasina
     {
-        public Guid? IdRadnja { get; set; }
+        [Required]
+        public Guid IdRadnja { get; set; }
         public Radnja Radnja { get; set; }
 
-        public Guid? IdRadnaMasina { get; set; }
+        [Required]
+        public Guid IdRadnaMasina { get; set; }
         public RadnaMasina RadnaMasina { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]

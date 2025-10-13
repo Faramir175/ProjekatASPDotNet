@@ -26,10 +26,43 @@ namespace MojAtar.Core.Services
 
         public async Task<RadnjaDTO> Add(RadnjaDTO dto)
         {
-            var radnja = dto.ToRadnja(); // automatski može biti i Zetva ako je dto.TipRadnje == Zetva
-            var added = await _radnjaRepository.Add(radnja);
-            return added.ToRadnjaDTO();
+            Radnja novaRadnja;
+
+            // Ako je u ComboBox-u izabrana Zetva
+            if (dto.TipRadnje == RadnjaTip.Zetva)
+            {
+                novaRadnja = new Zetva
+                {
+                    DatumIzvrsenja = dto.DatumIzvrsenja,
+                    TipRadnje = dto.TipRadnje,
+                    IdParcela = dto.IdParcela,
+                    IdKultura = dto.IdKultura,
+                    Napomena = dto.Napomena,
+                    UkupanTrosak = dto.UkupanTrosak,
+                    VremenskiUslovi = dto.VremenskiUslovi,
+                    Prinos = (double)dto.Prinos // <--- samo za žetvu
+                };
+            }
+            else
+            {
+                // Sve ostale radnje
+                novaRadnja = new Radnja
+                {
+                    DatumIzvrsenja = dto.DatumIzvrsenja,
+                    TipRadnje = dto.TipRadnje,
+                    IdParcela = dto.IdParcela,
+                    IdKultura = dto.IdKultura,
+                    Napomena = dto.Napomena,
+                    UkupanTrosak = dto.UkupanTrosak,
+                    VremenskiUslovi = dto.VremenskiUslovi
+                };
+            }
+
+            // Snimanje u bazu
+            var entity = await _radnjaRepository.Add(novaRadnja);
+            return entity.ToRadnjaDTO();
         }
+
 
         public async Task<RadnjaDTO> Update(Guid id, RadnjaDTO dto)
         {

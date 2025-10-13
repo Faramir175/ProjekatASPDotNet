@@ -13,7 +13,8 @@
           "Microsoft.EntityFrameworkCore.Tools": "9.0.3",
           "MojAtar.Core": "1.0.0",
           "MojAtar.Infrastructure": "1.0.0",
-          "Newtonsoft.Json": "13.0.3"
+          "Newtonsoft.Json": "13.0.3",
+          "Rotativa.AspNetCore": "1.4.0"
         },
         "runtime": {
           "MojAtar.UI.dll": {}
@@ -754,6 +755,14 @@
           }
         }
       },
+      "Rotativa.AspNetCore/1.4.0": {
+        "runtime": {
+          "lib/net8.0/Rotativa.AspNetCore.dll": {
+            "assemblyVersion": "1.4.0.0",
+            "fileVersion": "1.4.0.0"
+          }
+        }
+      },
       "System.ClientModel/1.0.0": {
         "dependencies": {
           "System.Memory.Data": "1.0.2",
@@ -1403,6 +1412,13 @@
       "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
       "path": "newtonsoft.json/13.0.3",
       "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+    },
+    "Rotativa.AspNetCore/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zn0KgqCQqiTuNPYgeqrIJxXafjJUfDJBcUJIhAV5NgWSCX3DOEeg339zMJTbzcCyoJgGPL5LrG+IKZ3k8/Uk9Q==",
+      "path": "rotativa.aspnetcore/1.4.0",
+      "hashPath": "rotativa.aspnetcore.1.4.0.nupkg.sha512"
     },
     "System.ClientModel/1.0.0": {
       "type": "package",

@@ -173,3 +173,5 @@ C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\r
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\obj\Debug\net8.0\MojAtar.UI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\bin\Debug\net8.0\Rotativa.AspNetCore.dll

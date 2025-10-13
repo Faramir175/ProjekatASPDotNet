@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Generisanje izveštaja";
+}
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Generisanje izveštaja</h2>
+
+    <form asp-action="Generisi" asp-controller="Izvestaji" method="post" class="card p-4 shadow-sm">
+        <div class="mb-3">
+            <label for="parcelaId" class="form-label">Izaberi parcelu</label>
+            <select class="form-select" id="parcelaId" name="parcelaId">
+                <option value="">-- Sve parcele --</option>
+                @foreach (var parcela in ViewBag.Parcele as SelectList)
+                {
+                    <option value="@parcela.Value">@parcela.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="sveParcele" name="sveParcele" value="true" />
+            <label class="form-check-label" for="sveParcele">
+                Uključi sve parcele
+            </label>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="odDatuma" class="form-label">Od datuma</label>
+                <input type="date" class="form-control" id="odDatuma" name="odDatuma" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="doDatuma" class="form-label">Do datuma</label>
+                <input type="date" class="form-control" id="doDatuma" name="doDatuma" required />
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-file-earmark-text"></i> Generiši izveštaj
+            </button>
+        </div>
+    </form>
+</div>

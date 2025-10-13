@@ -1,0 +1,102 @@
+﻿@model MojAtar.Core.DTO.IzvestajDTO
+
+@{
+    ViewData["Title"] = "Izveštaj";
+}
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Izveštaj o radu i troškovima</h2>
+    <h5 class="text-center mb-5">
+        Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()
+    </h5>
+
+    @foreach (var parcela in Model.Parcele)
+    {
+        <div class="card mb-5 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">@parcela.NazivParcele</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Datum</th>
+                                <th>Radnja</th>
+                                <th>Kultura</th>
+                                <th>Radne mašine</th>
+                                <th>Resursi</th>
+                                <th>Trošak (RSD)</th>
+                                <th>Prihod (RSD)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in parcela.Radnje)
+                            {
+                                <tr>
+                                    <td>@r.Datum.ToShortDateString()</td>
+                                    <td>@r.NazivRadnje</td>
+                                    <td>@r.Kultura</td>
+                                    <td>
+                                        @if (r.RadneMasine.Any())
+                                        {
+                                            @foreach (var m in r.RadneMasine)
+                                            {
+                                                <div>• @m.IdRadnaMasina.ToString().Substring(0, 8) (@m.BrojRadnihSati sati)</div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Nema</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (r.Resursi.Any())
+                                        {
+                                            @foreach (var res in r.Resursi)
+                                            {
+                                                <div>• ID: @res.IdResurs.ToString().Substring(0, 8) – @res.Kolicina</div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Nema</span>
+                                        }
+                                    </td>
+                                    <td>@r.Trosak.ToString("N2")</td>
+                                    <td>@r.Prihod.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="5" class="text-end">Ukupno:</td>
+                                <td>@parcela.Trosak.ToString("N2")</td>
+                                <td>@parcela.Prihod.ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card text-center shadow-sm mt-4">
+        <div class="card-body">
+            <h4 class="mb-2 text-danger">Ukupan trošak: @Model.UkupanTrosak.ToString("N2") RSD</h4>
+            <h4 class="mb-2 text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
+            <h4 class="fw-bold">Profit: @Model.Profit.ToString("N2") RSD</h4>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <form method="post" asp-action="Pdf" asp-controller="Izvestaji">
+            <input type="hidden" name="odDatuma" value="@Model.DatumOd" />
+            <input type="hidden" name="doDatuma" value="@Model.DatumDo" />
+            <button type="submit" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-file-earmark-pdf"></i> Preuzmi PDF
+            </button>
+        </form>
+    </div>
+</div>

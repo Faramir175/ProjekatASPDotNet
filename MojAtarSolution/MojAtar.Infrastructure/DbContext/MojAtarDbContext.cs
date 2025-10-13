@@ -66,7 +66,7 @@ namespace MojAtar.Infrastructure.MojAtar
                 .HasKey(rrm => new { rrm.IdRadnja, rrm.IdRadnaMasina });
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasOne(rrm => rrm.Radnja)
-                .WithMany()
+                .WithMany(r => r.RadnjeRadneMasine)
                 .HasForeignKey(rrm => rrm.IdRadnja);
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasOne(rrm => rrm.RadnaMasina)

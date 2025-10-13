@@ -61,7 +61,7 @@
                 {
                     <div class="mb-3">
                         <label asp-for="TipRadnje" class="form-label">Tip radnje</label>
-                        <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
+                    <select asp-for="TipRadnje" class="form-control" asp-items="Html.GetEnumSelectList<MojAtar.Core.Domain.Enums.RadnjaTip>()"></select>
                     </div>
                 }
                 else
@@ -233,34 +233,37 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const tipRadnjeSelect = document.getElementById("TipRadnje");
-            const prinosDiv = document.getElementById("prinosDiv");
-            const povrsinaDiv = document.getElementById("povrsinaDiv");
-            const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
-            const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
+        const tipRadnjeSelect = document.getElementById("TipRadnje");
+        const prinosDiv = document.getElementById("prinosDiv");
+        const povrsinaDiv = document.getElementById("povrsinaDiv");
 
-            function toggleZetvaSetva() {
-                if (tipRadnjeSelect) { // Check if tipRadnjeSelect exists (it won't on edit if Model.Id is not null)
-                    if (tipRadnjeSelect.value === SETVA_VALUE) {
-                        povrsinaDiv.style.display = "block";
-                        prinosDiv.style.display = "none";
-                    } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
-                        povrsinaDiv.style.display = "none";
-                        prinosDiv.style.display = "block";
-                    } else {
-                        povrsinaDiv.style.display = "none";
-                        prinosDiv.style.display = "none";
-                    }
-                } else { // Handle the case where TipRadnje is a disabled input on edit
-                     if ("@Model.TipRadnje" === "@MojAtar.Core.Domain.Enums.RadnjaTip.Setva") {
-                        povrsinaDiv.style.display = "block";
-                        prinosDiv.style.display = "none";
-                    } else if ("@Model.TipRadnje" === "@MojAtar.Core.Domain.Enums.RadnjaTip.Zetva") {
-                        povrsinaDiv.style.display = "none";
-                        prinosDiv.style.display = "block";
-                    }
+        // OVDE je ključno — direktno ubacujemo enum vrednosti iz C#
+        const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
+        const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
+
+        function toggleZetvaSetva() {
+            if (tipRadnjeSelect) {
+                if (tipRadnjeSelect.value === SETVA_VALUE) {
+                    povrsinaDiv.style.display = "block";
+                    prinosDiv.style.display = "none";
+                } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
+                    povrsinaDiv.style.display = "none";
+                    prinosDiv.style.display = "block";
+                } else {
+                    povrsinaDiv.style.display = "none";
+                    prinosDiv.style.display = "none";
+                }
+            } else {
+                if ("@((int)Model.TipRadnje)" === SETVA_VALUE) {
+                    povrsinaDiv.style.display = "block";
+                    prinosDiv.style.display = "none";
+                } else if ("@((int)Model.TipRadnje)" === ZETVA_VALUE) {
+                    povrsinaDiv.style.display = "none";
+                    prinosDiv.style.display = "block";
                 }
             }
+        }
+            tipRadnjeSelect?.addEventListener("change", toggleZetvaSetva);
 
             // Initial call for toggling display based on action type
             toggleZetvaSetva();

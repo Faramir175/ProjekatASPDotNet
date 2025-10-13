@@ -356,9 +356,14 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<Guid>("IdPrikljucnaMasina")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("RadnjaId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("IdRadnja", "IdPrikljucnaMasina");
 
                     b.HasIndex("IdPrikljucnaMasina");
+
+                    b.HasIndex("RadnjaId");
 
                     b.ToTable("RadnjePrikljucneMasine");
                 });
@@ -395,9 +400,14 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<double>("Kolicina")
                         .HasColumnType("float");
 
+                    b.Property<Guid?>("RadnjaId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("IdRadnja", "IdResurs");
 
                     b.HasIndex("IdResurs");
+
+                    b.HasIndex("RadnjaId");
 
                     b.ToTable("RadnjeResursi");
                 });
@@ -516,6 +526,10 @@ namespace MojAtar.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MojAtar.Core.Domain.Radnja", null)
+                        .WithMany("RadnjePrikljucneMasine")
+                        .HasForeignKey("RadnjaId");
+
                     b.Navigation("PrikljucnaMasina");
 
                     b.Navigation("Radnja");
@@ -530,7 +544,7 @@ namespace MojAtar.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("MojAtar.Core.Domain.Radnja", "Radnja")
-                        .WithMany()
+                        .WithMany("RadnjeRadneMasine")
                         .HasForeignKey("IdRadnja")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -553,6 +567,10 @@ namespace MojAtar.Infrastructure.Migrations
                         .HasForeignKey("IdResurs")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MojAtar.Core.Domain.Radnja", null)
+                        .WithMany("RadnjeResursi")
+                        .HasForeignKey("RadnjaId");
 
                     b.Navigation("Radnja");
 
@@ -583,6 +601,15 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Navigation("ParceleKulture");
 
                     b.Navigation("Radnje");
+                });
+
+            modelBuilder.Entity("MojAtar.Core.Domain.Radnja", b =>
+                {
+                    b.Navigation("RadnjePrikljucneMasine");
+
+                    b.Navigation("RadnjeRadneMasine");
+
+                    b.Navigation("RadnjeResursi");
                 });
 
             modelBuilder.Entity("MojAtar.Core.Domain.Resurs", b =>

@@ -5,6 +5,7 @@ using MojAtar.Core.Services;
 using MojAtar.Infrastructure.MojAtar;
 using MojAtar.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Rotativa.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +66,9 @@ builder.Services.AddScoped<IRadnjaResursService, RadnjaResursService>();
 builder.Services.AddScoped<IParcelaKulturaRepository, ParcelaKulturaRepository>();
 builder.Services.AddScoped<IParcelaKulturaService, ParcelaKulturaService>();
 
+builder.Services.AddScoped<IIzvestajRepository, IzvestajRepository>();
+builder.Services.AddScoped<IIzvestajService, IzvestajService>();
+
 builder.Services.AddScoped<IPocetnaService, PocetnaService>();
 
 var app = builder.Build();
@@ -73,6 +77,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseRotativa();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
