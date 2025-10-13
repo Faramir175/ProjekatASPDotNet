@@ -1,7 +1,7 @@
 ﻿using MojAtar.Core.DTO;
 namespace MojAtar.Core.DTO
 {
-    public class PocetnaViewModel
+    public class PocetnaDTO
     {
         public string Ime { get; set; }
         public string Prezime { get; set; }

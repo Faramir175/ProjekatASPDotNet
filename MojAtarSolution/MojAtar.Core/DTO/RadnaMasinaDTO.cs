@@ -14,7 +14,7 @@ namespace MojAtar.Core.DTO
         public string Naziv { get; set; }
         public string TipUlja { get; set; }
         public int RadniSatiServis { get; set; }
-        public DateTime PoslednjiServis { get; set; }
+        public DateTime PoslednjiServis { get; set; } = DateTime.Now;
         public string OpisServisa { get; set; }
         public int UkupanBrojRadnihSati { get; set; }
         public Guid IdKorisnik { get; set; }

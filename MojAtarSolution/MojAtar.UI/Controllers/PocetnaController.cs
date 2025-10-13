@@ -29,7 +29,7 @@ namespace MojAtar.UI.Controllers
             var uloga = User.FindFirst(ClaimTypes.Role)?.Value;
             var datumRegistracije = DateTime.Parse(User.FindFirst("DatumRegistracije")?.Value);
 
-            var model = new PocetnaViewModel
+            var model = new PocetnaDTO
             {
                 Ime = ime,
                 Prezime = prezime,

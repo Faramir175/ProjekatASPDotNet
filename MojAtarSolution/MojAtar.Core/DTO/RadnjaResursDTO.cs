@@ -13,7 +13,7 @@ namespace MojAtar.Core.DTO
         public Guid IdRadnja { get; set; }
         public Guid IdResurs { get; set; }
         public double Kolicina { get; set; }
-        public DateTime DatumKoriscenja { get; set; }
+        public DateTime DatumKoriscenja { get; set; } = DateTime.Now;
 
         public Radnja_Resurs ToResurs() => new Radnja_Resurs()
         {

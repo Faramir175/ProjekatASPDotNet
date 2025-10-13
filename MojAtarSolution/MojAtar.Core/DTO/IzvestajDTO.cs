@@ -3,7 +3,7 @@
     public class IzvestajDTO
     {
         public DateTime DatumOd { get; set; }
-        public DateTime DatumDo { get; set; }
+        public DateTime DatumDo { get; set; } = DateTime.Now;
         public List<ParcelaIzvestajDTO> Parcele { get; set; } = new();
 
         public double UkupanTrosak => Parcele.Sum(p => p.Trosak);
@@ -25,7 +25,7 @@
     {
         public Guid Id { get; set; }
         public string NazivRadnje { get; set; } = string.Empty;
-        public DateTime Datum { get; set; }
+        public DateTime Datum { get; set; } = DateTime.Now;
         public string Kultura { get; set; } = string.Empty;
         public double Trosak { get; set; }
         public double Prihod { get; set; }
