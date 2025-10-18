@@ -18,14 +18,58 @@ namespace MojAtar.Core.Services
     public class RadnjaService : IRadnjaService
     {
         private readonly IRadnjaRepository _radnjaRepository;
+        private readonly IParcelaKulturaService _parcelaKulturaService;
 
-        public RadnjaService(IRadnjaRepository radnjaRepository)
+        public RadnjaService(IRadnjaRepository radnjaRepository,IParcelaKulturaService parcelaKulturaService)
         {
             _radnjaRepository = radnjaRepository;
+            _parcelaKulturaService = parcelaKulturaService;
         }
 
         public async Task<RadnjaDTO> Add(RadnjaDTO dto)
         {
+            // 1️⃣ Validacija SETVE
+            if (dto.TipRadnje == RadnjaTip.Setva)
+            {
+                var parcela = await _radnjaRepository.GetParcelaSaSetvama((Guid)dto.IdParcela);
+                if (parcela == null)
+                    throw new Exception("Parcela nije pronađena.");
+
+                var nezavrseneSetve = parcela.ParceleKulture
+                    .Where(pk => pk.DatumZetve == null)
+                    .ToList();
+
+                var setveZaRacunanje = nezavrseneSetve
+                    .Where(pk => !(pk.IdKultura == dto.IdKultura
+                                   && pk.Povrsina == dto.Povrsina
+                                   && pk.DatumSetve == dto.DatumIzvrsenja))
+                    .ToList();
+
+
+                double slobodno = parcela.Povrsina - setveZaRacunanje.Sum(pk => pk.Povrsina);
+
+                if (dto.Povrsina > slobodno)
+                {
+                    await _parcelaKulturaService.DeleteIfNotCompleted(
+                        (Guid)dto.IdParcela,
+                        (Guid)dto.IdKultura,
+                        dto.DatumIzvrsenja
+                    );
+                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
+                }
+
+            }
+            else if (dto.TipRadnje == RadnjaTip.Zetva)
+            {
+                // Nađi postojeću setvu za tu parcelu i kulturu
+                var setva = await _parcelaKulturaService.GetByParcelaAndKulturaId((Guid)dto.IdParcela, (Guid)dto.IdKultura);
+                if (setva == null)
+                    throw new Exception("Nema pronađene setve za ovu kulturu na parceli.");
+
+                setva.DatumZetve = dto.DatumIzvrsenja;
+
+                await _parcelaKulturaService.Update(setva);
+            }
             Radnja novaRadnja;
 
             // Ako je u ComboBox-u izabrana Zetva
@@ -66,8 +110,50 @@ namespace MojAtar.Core.Services
 
         public async Task<RadnjaDTO> Update(Guid id, RadnjaDTO dto)
         {
-            var radnja = dto.ToRadnja();
-            radnja.Id = id;
+            var radnja = await _radnjaRepository.GetById(id);
+            if (radnja == null)
+                throw new Exception("Radnja nije pronađena.");
+
+            // 1️⃣ Ažuriraj osnovne podatke radnje
+            radnja.DatumIzvrsenja = dto.DatumIzvrsenja;
+            radnja.Napomena = dto.Napomena;
+            radnja.VremenskiUslovi = dto.VremenskiUslovi;
+            radnja.UkupanTrosak = dto.UkupanTrosak;
+
+            // 2️⃣ Update Povrsine za setvu sa validacijom
+            if (radnja.TipRadnje == RadnjaTip.Setva)
+            {
+                var parcela = await _radnjaRepository.GetParcelaSaSetvama(radnja.IdParcela.Value);
+                if (parcela == null)
+                    throw new Exception("Parcela nije pronađena.");
+
+                var parcelaKultura = await _parcelaKulturaService
+                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                // Izračunaj trenutno zauzetu površinu bez ove setve
+                double trenutnoZauzeto = parcela.ParceleKulture
+                    .Where(pk => pk.DatumZetve == null && pk.Id != parcelaKultura.Id)
+                    .Sum(pk => pk.Povrsina);
+
+                double slobodno = parcela.Povrsina - trenutnoZauzeto;
+
+                if (dto.Povrsina > slobodno)
+                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
+
+                // Update površine
+                parcelaKultura.Povrsina = dto.Povrsina ?? parcelaKultura.Povrsina;
+                await _parcelaKulturaService.Update(parcelaKultura);
+            }
+            else if (radnja.TipRadnje == RadnjaTip.Zetva)
+            {
+                var parcelaKultura = await _parcelaKulturaService
+                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                parcelaKultura.DatumZetve = dto.DatumIzvrsenja;
+                await _parcelaKulturaService.Update(parcelaKultura);
+            }
+
+            // 3️⃣ Update radnje
             var updated = await _radnjaRepository.Update(radnja);
             return updated.ToRadnjaDTO();
         }
@@ -136,6 +222,5 @@ namespace MojAtar.Core.Services
         {
             return await _radnjaRepository.GetCountByKorisnik(idKorisnik);
         }
-
     }
 }

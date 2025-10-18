@@ -141,8 +141,8 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return await _dbContext.Radnje
                 .Where(x => x.IdParcela == idParcela)
-                .Include(r => r.Parcela) // <-- dodaj ovo
-                .Include(r => r.Kultura) // (opciono, ako koristiš Kultura)
+                .Include(r => r.Parcela) 
+                .Include(r => r.Kultura) 
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)
@@ -153,8 +153,8 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return await _dbContext.Radnje
                 .Where(x => x.Parcela.IdKorisnik == idKorisnik)
-                .Include(r => r.Parcela) // <-- dodaj ovo
-                .Include(r => r.Kultura) // (opciono)
+                .Include(r => r.Parcela) 
+                .Include(r => r.Kultura)
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)
@@ -174,5 +174,14 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return _dbContext.Radnje.CountAsync(p => p.Parcela.IdKorisnik == korisnikId);
         }
+        // ✅ Dohvata parcelu sa svim vezama na kulture (za proveru zauzetosti)
+        public async Task<Parcela> GetParcelaSaSetvama(Guid idParcela)
+        {
+            return await _dbContext.Parcele
+                .Include(p => p.ParceleKulture.Where(pk => pk.DatumZetve == null))
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == idParcela);
+        }
+
     }
 }

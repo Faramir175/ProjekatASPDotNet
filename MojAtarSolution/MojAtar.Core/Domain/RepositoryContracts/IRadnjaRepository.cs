@@ -23,5 +23,6 @@ namespace MojAtar.Core.Domain.RepositoryContracts
 
         Task<List<Radnja>> GetLastRadnjeByKorisnik(Guid korisnikId, int broj);
         Task<int> CountByKorisnikId(Guid korisnikId);
+        Task<Parcela> GetParcelaSaSetvama(Guid idParcela);
     }
 }

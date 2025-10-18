@@ -29,7 +29,9 @@ namespace MojAtar.Core.Services
                 throw new ArgumentNullException("DTO ili ID vrednosti ne smeju biti null");
 
             var entity = dto.ToParcelaKultura();
+
             var added = await _parcelaKulturaRepository.Add(entity);
+
             return added.ToParcelaKulturaDTO();
         }
 
@@ -73,5 +75,15 @@ namespace MojAtar.Core.Services
 
             return updatedEntity?.ToParcelaKulturaDTO();
         }
+        public async Task<int> DeleteIfNotCompleted(Guid idParcela, Guid idKultura, DateTime datumSetve)
+        {
+            return await _parcelaKulturaRepository.DeleteAddedForParcelaKultura(idParcela, idKultura, datumSetve);
+        }
+        public async Task<ParcelaKulturaDTO?> GetNezavrsenaSetva(Guid idParcela, Guid idKultura)
+        {
+            var entity = await _parcelaKulturaRepository.GetNezavrsenaSetva(idParcela, idKultura);
+            return entity?.ToParcelaKulturaDTO();
+        }
+
     }
 }

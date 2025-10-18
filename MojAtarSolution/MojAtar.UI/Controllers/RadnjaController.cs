@@ -184,6 +184,17 @@ namespace MojAtar.UI.Controllers
             ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
             ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
+            if (radnja.TipRadnje == RadnjaTip.Setva)
+            {
+                var parcelaKultura = await _parcelaKulturaService
+                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                if (parcelaKultura != null)
+                {
+                    radnja.Povrsina = parcelaKultura.Povrsina;
+                }
+            }
+
             radnja.RadneMasine = povezaneMasine;
             radnja.PrikljucneMasine = povezanePrikljucne;
             radnja.Resursi = povezaniResursi;
@@ -283,8 +294,8 @@ namespace MojAtar.UI.Controllers
                 }
                 else if (dto.TipRadnje == RadnjaTip.Zetva)
                 {
-                    var unosZetva = await _parcelaKulturaService.GetByParcelaAndKulturaId(parcelaId, kulturaId);
-                    if (unosZetva != null && unosZetva.DatumZetve == null)
+                    var unosZetva = await _parcelaKulturaService.GetNezavrsenaSetva(parcelaId, kulturaId);
+                    if (unosZetva != null)
                     {
                         unosZetva.DatumZetve = dto.DatumIzvrsenja;
                         await _parcelaKulturaService.Update(unosZetva);
@@ -294,6 +305,7 @@ namespace MojAtar.UI.Controllers
                         ModelState.AddModelError("", "Zetva nije moguća jer kultura nije posejana na ovoj parceli.");
                         return false;
                     }
+
                 }
             }
             return true;

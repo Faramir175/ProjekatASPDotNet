@@ -1,4 +1,5 @@
 ﻿using MojAtar.Core.Domain;
+using MojAtar.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

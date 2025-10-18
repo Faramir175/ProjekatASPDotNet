@@ -55,7 +55,16 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.ParceleKulture
                            .Include(p => p.Parcela)
                            .Include(k => k.Kultura)
-                           .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura);
+                           .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura );
+        }
+
+        public async Task<Parcela_Kultura> GetNezavrsenaSetva(Guid idParcela, Guid idKultura)
+        {
+            return await _dbContext.ParceleKulture
+                .AsNoTracking()
+                .Include(pk => pk.Parcela)
+                .Include(pk => pk.Kultura)
+                .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura && pk.DatumZetve == null);
         }
 
         public async Task<Parcela_Kultura> Update(Parcela_Kultura entity)
@@ -63,7 +72,6 @@ namespace MojAtar.Infrastructure.Repositories
             var existing = await GetByParcelaAndKulturaId(entity.IdParcela.Value, entity.IdKultura.Value);
             if (existing == null) return null;
 
-            existing.Id = entity.Id;
             existing.Povrsina = entity.Povrsina;
             existing.DatumSetve = entity.DatumSetve;
             existing.DatumZetve = entity.DatumZetve;
@@ -86,5 +94,19 @@ namespace MojAtar.Infrastructure.Repositories
             .Include(pk => pk.Kultura)
             .FirstOrDefaultAsync(pk => pk.Id == id);
         }
+        public async Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, DateTime datumSetve)
+        {
+            var entities = await _dbContext.ParceleKulture
+                .Where(pk => pk.IdParcela == idParcela
+                          && pk.IdKultura == idKultura
+                          && pk.DatumSetve == datumSetve)
+                .ToListAsync();
+
+            if (entities.Any())
+                _dbContext.ParceleKulture.RemoveRange(entities);
+
+            return await _dbContext.SaveChangesAsync();
+        }
+
     }
 }
