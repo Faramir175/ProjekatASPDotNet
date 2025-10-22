@@ -45,7 +45,7 @@ namespace MojAtar.UI.Controllers
 
         // Prikaz poslednjih 10 radnji korisnika
         [HttpGet("")]
-        public async Task<IActionResult> Radnje(int skip = 0, int take = 10)
+        public async Task<IActionResult> Radnje(int skip = 0, int take = 9)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
@@ -56,18 +56,53 @@ namespace MojAtar.UI.Controllers
             ViewBag.Skip = skip + take;
             ViewBag.TotalCount = await _radnjaService.GetCountByKorisnik(idKorisnik);
 
-            return View(radnje);
+            foreach (var radnja in radnje)
+            {
+                if (radnja.TipRadnje == RadnjaTip.Setva &&
+                    radnja.IdParcela.HasValue &&
+                    radnja.IdKultura.HasValue)
+                {
+                    var parcelaKultura = await _parcelaKulturaService.GetByParcelaAndKulturaId(
+                        radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                    if (parcelaKultura != null &&
+                        parcelaKultura.DatumSetve != null &&
+                        parcelaKultura.DatumSetve == radnja.DatumIzvrsenja)
+                    {
+                        radnja.Povrsina = parcelaKultura.Povrsina;
+                    }
+                }
+            }
+                return View(radnje);
         }
 
 
         // Prikaz radnji za konkretnu parcelu
         [HttpGet("RadnjePoParceli/{idParcela}")]
-        public async Task<IActionResult> RadnjePoParceli(Guid idParcela, int skip = 0, int take = 10)
+        public async Task<IActionResult> RadnjePoParceli(Guid idParcela, int skip = 0, int take = 9)
         {
             var radnje = await _radnjaService.GetAllByParcelaPaged(idParcela, skip, take);
             ViewBag.Skip = skip + take;
             ViewBag.IdParcela = idParcela;
             ViewBag.TotalCount = await _radnjaService.GetCountByParcela(idParcela);
+
+            foreach (var radnja in radnje)
+            {
+                if (radnja.TipRadnje == RadnjaTip.Setva &&
+                    radnja.IdParcela.HasValue &&
+                    radnja.IdKultura.HasValue)
+                {
+                    var parcelaKultura = await _parcelaKulturaService.GetByParcelaAndKulturaId(
+                        radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                    if (parcelaKultura != null &&
+                        parcelaKultura.DatumSetve != null &&
+                        parcelaKultura.DatumSetve == radnja.DatumIzvrsenja)
+                    {
+                        radnja.Povrsina = parcelaKultura.Povrsina;
+                    }
+                }
+            }
 
             return View(radnje);
         }

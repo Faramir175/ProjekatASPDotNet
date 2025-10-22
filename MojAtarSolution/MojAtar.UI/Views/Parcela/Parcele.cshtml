@@ -29,9 +29,24 @@
                             <p class="card-text mb-1">
                                 <strong>Napomena:</strong> @parcela.Napomena
                             </p>
-                            <p class="card-text">
+                            <p class="card-text mb-1">
                                 <strong>Katastarska opština:</strong> @parcela.KatastarskaOpstinaNaziv
                             </p>
+                            @if (parcela.AktivneKulture != null && parcela.AktivneKulture.Any())
+                            {
+                                <p class="card-text mb-1"><strong>Trenutno posejane kulture:</strong></p>
+                                <ul class="mb-2">
+                                    @foreach (var kultura in parcela.AktivneKulture)
+                                    {
+                                        <li>@kultura.NazivKulture – @kultura.Povrsina ha</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="card-text text-muted mb-1">Nema posejanih kultura</p>
+                            }
+
                         </div>
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
                             <form asp-action="Izmeni" asp-route-id="@parcela.Id" method="get" class="flex-fill">

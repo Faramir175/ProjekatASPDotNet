@@ -4,54 +4,51 @@
     ViewData["Title"] = "Početna stranica";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body>
-    <div class="container-glass my-4 text-center">
-        <h2 class="mb-2">👋 Dobrodošli, <span style="color:white">@Model.Ime</span>!</h2>
+<div class="container mt-5">
+    <div class="container-glass mb-4 text-center">
+        <h2 class="mb-2">
+            👋 Dobrodošli, <em>@Model.Ime</em>!
+        </h2>
         <p class="lead">Ovde možete pratiti važne informacije o vašem ataru.</p>
     </div>
 
-    <div class="container-glass my-4">
+    <!-- Statistika -->
+    <div class="container-glass mb-4">
         <h2 class="text-center mb-4">📊 Statistika</h2>
-        <div class="row text-center">
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Parcele</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojParcela</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Radnje</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojRadnji</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Resursi</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojResursa</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Radne mašine</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojRadnihMasina</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Priključne mašine</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojPrikljucnihMasina</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow border-0 text-center p-3">
                     <h5>Kulture</h5>
                     <p class="fs-4 fw-bold text-success">@Model.BrojKultura</p>
                 </div>
@@ -59,11 +56,11 @@
         </div>
     </div>
 
-
+    <!-- Poslednje radnje -->
     @if (Model.PoslednjeRadnje.Any())
     {
-        <div class="mt-5">
-            <h4>📌 Poslednjih 5 radnji</h4>
+        <div class="container-glass mb-4">
+            <h4>📌 Poslednje 3 radnje</h4>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
                 @foreach (var radnja in Model.PoslednjeRadnje)
                 {
@@ -71,29 +68,15 @@
                         <div class="card h-100 shadow border-0">
                             <div class="card-body">
                                 <h5 class="card-title">@radnja.TipRadnje</h5>
-                                <p class="card-text mb-1">
-                                    <strong>Parcela:</strong> @radnja.Parcela?.Naziv
-                                </p>
-                                <p class="card-text mb-1">
-                                    <strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")
-                                </p>
-                                <p class="card-text mb-1">
-                                    <strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")
-                                </p>
-                                <p class="card-text mb-1">
-                                    <strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €
-                                </p>
-                                <p class="card-text mb-1">
-                                    <strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi
-                                </p>
-                                <p class="card-text mb-1">
-                                    <strong>Napomena:</strong> @radnja.Napomena
-                                </p>
+                                <p><strong>Parcela:</strong> @radnja.Parcela?.Naziv</p>
+                                <p><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
+                                <p><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
+                                <p><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €</p>
+                                <p><strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi</p>
+                                <p><strong>Napomena:</strong> @radnja.Napomena</p>
                                 @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
                                 {
-                                    <p class="card-text">
-                                        <strong>Prinos:</strong> @radnja.Prinos
-                                    </p>
+                                    <p><strong>Prinos:</strong> @radnja.Prinos</p>
                                 }
                             </div>
                             <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
@@ -118,7 +101,4 @@
     {
         <p class="text-muted mt-3">Nema zabeleženih radnji.</p>
     }
-
-</body>
-
-</html>
+</div>

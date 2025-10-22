@@ -2,36 +2,42 @@
     ViewData["Title"] = "Generisanje izveštaja";
 }
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">Generisanje izveštaja</h2>
-
-    <form asp-action="Generisi" asp-controller="Izvestaji" method="post" class="card p-4 shadow-sm">
-        <div class="mb-3">
-            <label for="parcelaId" class="form-label">Izaberi parcelu</label>
-            <select class="form-select" id="parcelaId" name="parcelaId">
-                <option value="">-- Sve parcele --</option>
-                @foreach (var parcela in ViewBag.Parcele as SelectList)
-                {
-                    <option value="@parcela.Value">@parcela.Text</option>
-                }
-            </select>
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">📊 Generisanje izveštaja</h2>
         </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="odDatuma" class="form-label">Od datuma</label>
-                <input type="date" class="form-control" id="odDatuma" name="odDatuma" required />
+        <form asp-action="Generisi" asp-controller="Izvestaji" method="post" class="card p-4 shadow border-0">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="parcelaId" class="form-label fw-bold">Izaberi parcelu</label>
+                    <select class="form-select" id="parcelaId" name="parcelaId">
+                        <option value="">-- Sve parcele --</option>
+                        @foreach (var parcela in ViewBag.Parcele as SelectList)
+                        {
+                            <option value="@parcela.Value">@parcela.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="odDatuma" class="form-label fw-bold">Od datuma</label>
+                        <input type="date" class="form-control" id="odDatuma" name="odDatuma" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="doDatuma" class="form-label fw-bold">Do datuma</label>
+                        <input type="date" class="form-control" id="doDatuma" name="doDatuma" required />
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="doDatuma" class="form-label">Do datuma</label>
-                <input type="date" class="form-control" id="doDatuma" name="doDatuma" required />
-            </div>
-        </div>
 
-        <div class="text-center mt-3">
-            <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-file-earmark-text"></i> Generiši izveštaj
-            </button>
-        </div>
-    </form>
+            <div class="card-footer bg-transparent border-top-0 text-center">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-file-earmark-text"></i> Generiši izveštaj
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

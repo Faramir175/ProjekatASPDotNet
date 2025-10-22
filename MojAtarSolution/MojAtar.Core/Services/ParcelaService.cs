@@ -71,6 +71,28 @@ namespace MojAtar.Core.Services
             return parcele.Select(p => p.ToParcelaDTO()).ToList();
         }
 
+        public async Task<List<ParcelaDTO>> GetAllWithActiveKulturaByKorisnik(Guid idKorisnika)
+        {
+            var parcele = await _parcelaRepository.GetAllWithActiveKulturaByKorisnik(idKorisnika);
+
+            return parcele.Select(p => new ParcelaDTO
+            {
+                Id = p.Id,
+                Naziv = p.Naziv,
+                BrojParcele = p.BrojParcele,
+                Povrsina = p.Povrsina,
+                Napomena = p.Napomena,
+                IdKatastarskaOpstina = (Guid)p.IdKatastarskaOpstina,
+                KatastarskaOpstinaNaziv = p.KatastarskaOpstina.Naziv,
+                IdKorisnik = (Guid)p.IdKorisnik,
+
+                AktivneKulture = p.ParceleKulture
+                .Where(pk => pk.DatumZetve == null)
+                .Select(pk => (pk.Kultura.Naziv, pk.Povrsina))
+                .ToList()
+
+            }).ToList();
+        }
 
 
         public async Task<ParcelaDTO> GetById(Guid? id)

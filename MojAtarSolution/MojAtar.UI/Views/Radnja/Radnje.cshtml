@@ -26,6 +26,18 @@
                             <p class="card-text mb-1">
                                 <strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")
                             </p>
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                            {
+                                <p class="card-text mb-1">
+                                    <strong>Posejana površina:</strong> @radnja.Povrsina
+                                </p>
+                            }
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                            {
+                                <p class="card-text mb-1">
+                                    <strong>Prinos:</strong> @radnja.Prinos tona
+                                </p>
+                            }
                             <p class="card-text mb-1">
                                 <strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")
                             </p>
@@ -38,12 +50,6 @@
                             <p class="card-text mb-1">
                                 <strong>Napomena:</strong> @radnja.Napomena
                             </p>
-                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
-                            {
-                                <p class="card-text">
-                                    <strong>Prinos:</strong> @radnja.Prinos
-                                </p>
-                            }
                         </div>
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
                             <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">

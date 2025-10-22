@@ -46,6 +46,7 @@ body {
     background: rgba(0, 0, 0, 0.9) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
+    z-index: 1050 !important;
 }
 
 .navbar-brand {
@@ -59,9 +60,13 @@ body {
     transition: 0.3s;
 }
 
-    .navbar-nav .nav-link:hover {
-        color: var(--secondary-color) !important;
-    }
+.navbar-nav .nav-link:hover {
+    color: var(--secondary-color) !important;
+}
+
+.dropdown-menu {
+    z-index: 2000 !important;
+}
 
 /* SIDEBAR */
 .sidebar {

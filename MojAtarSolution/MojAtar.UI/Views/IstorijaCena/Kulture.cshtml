@@ -1,22 +1,75 @@
 ﻿@model IEnumerable<MojAtar.Core.Domain.CenaKulture>
 
-<h3>Istorija cena kultura</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Kultura</th>
-            <th>Cena po jedinici (RSD)</th>
-            <th>Datum važenja</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model)
-        {
-            <tr>
-                <td>@c.Kultura.Naziv</td>
-                <td>@c.CenaPojedinici.ToString("N2")</td>
-                <td>@c.DatumVaznosti.ToShortDateString()</td>
-            </tr>
+@{
+    ViewData["Title"] = "Istorija cena kultura";
+}
+
+<div class="container mt-5">
+    <div class="container-glass p-4">
+        <h2 class="text-center mb-4">🌾 Istorija cena kultura</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle" id="kultureTabela">
+                <thead class="table-light">
+                    <tr>
+                        <th onclick="sortTable(0, 'kultureTabela')" style="cursor:pointer;">
+                            Kultura <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th onclick="sortTable(1, 'kultureTabela')" style="cursor:pointer;">
+                            Cena po jedinici (RSD) <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th onclick="sortTable(2, 'kultureTabela')" style="cursor:pointer;">
+                            Datum važenja <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.Kultura.Naziv</td>
+                            <td>@c.CenaPojedinici.ToString("N2")</td>
+                            <td>@c.DatumVaznosti.ToShortDateString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Isti sorter koristi se i ovde
+        function sortTable(columnIndex, tableId) {
+            const table = document.getElementById(tableId);
+            const rows = Array.from(table.rows).slice(1);
+            const isNumeric = columnIndex === 1;
+            const isDate = columnIndex === 2;
+            const dir = table.dataset.sortDir === "asc" ? "desc" : "asc";
+            table.dataset.sortDir = dir;
+
+            rows.sort((a, b) => {
+                let A = a.cells[columnIndex].innerText.trim();
+                let B = b.cells[columnIndex].innerText.trim();
+
+                if (isNumeric) {
+                    A = parseFloat(A.replace(",", ""));
+                    B = parseFloat(B.replace(",", ""));
+                } else if (isDate) {
+                    A = new Date(A.split(".").reverse().join("-"));
+                    B = new Date(B.split(".").reverse().join("-"));
+                } else {
+                    A = A.toLowerCase();
+                    B = B.toLowerCase();
+                }
+
+                if (A < B) return dir === "asc" ? -1 : 1;
+                if (A > B) return dir === "asc" ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(row => table.tBodies[0].appendChild(row));
         }
-    </tbody>
-</table>
+    </script>
+}

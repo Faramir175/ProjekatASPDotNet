@@ -23,13 +23,15 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Parcele()
+        public async Task<IActionResult> Parcele(bool saAktivnimKulturama = true)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             Guid idKorisnik = Guid.Parse(userId);
-            var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+            var parcele = saAktivnimKulturama
+                ? await _parcelaService.GetAllWithActiveKulturaByKorisnik(idKorisnik)
+                : await _parcelaService.GetAllForUser(idKorisnik);
 
             foreach (ParcelaDTO parcela in parcele)
             {
@@ -39,6 +41,7 @@ namespace MojAtar.UI.Controllers
 
             return View(parcele);
         }
+
 
         [HttpGet("dodaj")]
         public async Task<IActionResult> Dodaj()

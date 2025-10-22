@@ -19,6 +19,7 @@ namespace MojAtar.Core.DTO
         public string? KatastarskaOpstinaNaziv { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
+        public List<(string NazivKulture, double Povrsina)> AktivneKulture { get; set; } = new();
 
         public Parcela ToParcela() => new Parcela()
         {

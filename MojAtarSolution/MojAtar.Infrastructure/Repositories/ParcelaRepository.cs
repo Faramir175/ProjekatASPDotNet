@@ -92,5 +92,15 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return _dbContext.Parcele.CountAsync(p => p.IdKorisnik == korisnikId);
         }
+        public async Task<List<Parcela>> GetAllWithActiveKulturaByKorisnik(Guid idKorisnik)
+        {
+            return await _dbContext.Parcele
+                .Include(p => p.KatastarskaOpstina)
+                .Include(p => p.ParceleKulture)
+                    .ThenInclude(pk => pk.Kultura)
+                .Where(p => p.IdKorisnik == idKorisnik)
+                .ToListAsync();
+        }
+
     }
 }
