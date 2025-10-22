@@ -45,11 +45,13 @@ namespace MojAtar.Infrastructure.MojAtar
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasOne(pk => pk.Parcela)
                 .WithMany(p => p.ParceleKulture)
-                .HasForeignKey(pk => pk.IdParcela);
+                .HasForeignKey(pk => pk.IdParcela)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasOne(pk => pk.Kultura)
                 .WithMany(k => k.ParceleKulture)
-                .HasForeignKey(pk => pk.IdKultura);
+                .HasForeignKey(pk => pk.IdKultura)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Radnja_PrikljucnaMasina>()
                 .HasKey(rpm => new { rpm.IdRadnja, rpm.IdPrikljucnaMasina });
@@ -122,7 +124,6 @@ namespace MojAtar.Infrastructure.MojAtar
                 .HasDiscriminator<string>("RadnjaTip")
                 .HasValue<Radnja>("Radnja")
                 .HasValue<Zetva>("Zetva");
-
 
         }
 

@@ -163,6 +163,11 @@ namespace MojAtar.Core.Services
             var radnja = await _radnjaRepository.GetById(id);
             if (radnja == null) return false;
 
+            if (radnja.TipRadnje == RadnjaTip.Setva)
+            {
+                await _parcelaKulturaService.DeleteIfNotCompleted((Guid)radnja.IdParcela,(Guid)radnja.IdKultura,radnja.DatumIzvrsenja
+                );
+            }
             return await _radnjaRepository.Delete(radnja);
         }
 
