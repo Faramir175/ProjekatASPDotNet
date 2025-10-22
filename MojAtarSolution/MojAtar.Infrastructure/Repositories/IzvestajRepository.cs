@@ -17,30 +17,29 @@ namespace MojAtar.Infrastructure.Repositories
         }
 
         public async Task<List<ParcelaIzvestajDTO>> GetIzvestaj(
-            Guid korisnikId,
-            DateTime? odDatuma,
-            DateTime? doDatuma,
-            Guid? idParcele,
-            bool sveParcele)
+    Guid korisnikId,
+    DateTime? odDatuma,
+    DateTime? doDatuma,
+    Guid? idParcele,
+    bool sveParcele)
         {
             var query = _dbContext.Parcele
                 .Include(p => p.Radnje)
                     .ThenInclude(r => r.Kultura)
                         .ThenInclude(k => k.CeneKulture)
                 .Include(p => p.Radnje)
+                    .ThenInclude(r => r.RadnjeRadneMasine)
+                        .ThenInclude(rm => rm.RadnaMasina)
+                .Include(p => p.Radnje)
                     .ThenInclude(r => r.RadnjeResursi)
                         .ThenInclude(rr => rr.Resurs)
                             .ThenInclude(res => res.CeneResursa)
-                .Include(p => p.Radnje)
-                    .ThenInclude(r => r.RadnjeRadneMasine)
-                        .ThenInclude(rm => rm.RadnaMasina)
                 .Where(p => p.IdKorisnik == korisnikId);
 
             if (!sveParcele && idParcele.HasValue)
                 query = query.Where(p => p.Id == idParcele);
 
             var parcele = await query.ToListAsync();
-
             var rezultat = new List<ParcelaIzvestajDTO>();
 
             foreach (var parcela in parcele)
@@ -58,9 +57,9 @@ namespace MojAtar.Infrastructure.Repositories
 
                 foreach (var r in radnje)
                 {
-                    // --- Cena kulture (prema datumu radnje)
+                    // --- Cena kulture (najnovija do datuma radnje)
                     double cenaKulture = 0;
-                    if (r.Kultura != null && r.Kultura.CeneKulture != null)
+                    if (r.Kultura?.CeneKulture != null && r.Kultura.CeneKulture.Any())
                     {
                         cenaKulture = r.Kultura.CeneKulture
                             .Where(c => c.DatumVaznosti <= r.DatumIzvrsenja)
@@ -69,25 +68,11 @@ namespace MojAtar.Infrastructure.Repositories
                             .FirstOrDefault();
                     }
 
-                    // --- Trošak resursa (prema istoriji cena)
-                    double trosakResursa = 0;
-                    foreach (var rr in r.RadnjeResursi)
-                    {
-                        var cenaResursa = rr.Resurs?.CeneResursa?
-                            .Where(c => c.DatumVaznosti <= r.DatumIzvrsenja)
-                            .OrderByDescending(c => c.DatumVaznosti)
-                            .Select(c => c.CenaPojedinici)
-                            .FirstOrDefault() ?? 0;
-
-                        trosakResursa += rr.Kolicina * cenaResursa;
-                    }
-
-                    // --- Prihod od žetve (prinos u tonama * 1000 * cena po kg)
+                    // --- Trošak i prihod
+                    double trosak = r.UkupanTrosak;
                     double prihod = 0;
                     if (r.TipRadnje == RadnjaTip.Zetva && r is Zetva zetva)
-                    {
                         prihod = zetva.Prinos * 1000 * cenaKulture;
-                    }
 
                     var radnjaDto = new RadnjaIzvestajDTO
                     {
@@ -95,7 +80,7 @@ namespace MojAtar.Infrastructure.Repositories
                         NazivRadnje = r.TipRadnje.ToString(),
                         Datum = r.DatumIzvrsenja,
                         Kultura = r.Kultura?.Naziv ?? string.Empty,
-                        Trosak = trosakResursa,
+                        Trosak = trosak,
                         Prihod = prihod
                     };
 
@@ -105,18 +90,31 @@ namespace MojAtar.Infrastructure.Repositories
                         {
                             IdRadnja = m.IdRadnja,
                             IdRadnaMasina = m.IdRadnaMasina,
+                            NazivRadneMasine = m.RadnaMasina?.Naziv ?? "(nepoznata)",
                             BrojRadnihSati = m.BrojRadnihSati
                         }).ToList();
 
                     // --- Resursi
                     radnjaDto.Resursi = r.RadnjeResursi
-                        .Select(rr => new RadnjaResursDTO
-                        {
-                            IdRadnja = rr.IdRadnja,
-                            IdResurs = rr.IdResurs,
-                            Kolicina = rr.Kolicina,
-                            DatumKoriscenja = rr.DatumKoriscenja
-                        }).ToList();
+                            .Select(rr =>
+                            {
+                                double cenaResursa = rr.Resurs?.CeneResursa?
+                                    .Where(c => c.DatumVaznosti <= rr.DatumKoriscenja)
+                                    .OrderByDescending(c => c.DatumVaznosti)
+                                    .Select(c => c.CenaPojedinici)
+                                    .FirstOrDefault() ?? 0;
+
+                                return new RadnjaResursDTO
+                                {
+                                    IdRadnja = rr.IdRadnja,
+                                    IdResurs = rr.IdResurs,
+                                    NazivResursa = rr.Resurs?.Naziv ?? "Nepoznat",
+                                    Kolicina = rr.Kolicina,
+                                    DatumKoriscenja = rr.DatumKoriscenja,
+                                    JedinicnaCena = cenaResursa
+                                };
+                            })
+                            .ToList();
 
                     parcelaDto.Radnje.Add(radnjaDto);
                 }

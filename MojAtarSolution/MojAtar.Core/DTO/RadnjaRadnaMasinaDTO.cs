@@ -12,6 +12,7 @@ namespace MojAtar.Core.DTO
     {
         public Guid IdRadnja { get; set; }
         public Guid IdRadnaMasina { get; set; }
+        public string NazivRadneMasine { get; set; } = string.Empty;
         public int BrojRadnihSati { get; set; }
 
         public Radnja_RadnaMasina ToRadnaMasina() => new Radnja_RadnaMasina()

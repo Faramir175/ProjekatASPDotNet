@@ -43,7 +43,7 @@
                                         {
                                             @foreach (var m in r.RadneMasine)
                                             {
-                                                <div>• @m.IdRadnaMasina.ToString().Substring(0, 8) (@m.BrojRadnihSati sati)</div>
+                                                <div>• @m.NazivRadneMasine (@m.BrojRadnihSati sati)</div>
                                             }
                                         }
                                         else
@@ -56,7 +56,11 @@
                                         {
                                             @foreach (var res in r.Resursi)
                                             {
-                                                <div>• ID: @res.IdResurs.ToString().Substring(0, 8) – @res.Kolicina</div>
+                                                <div>
+                                                    • @res.NazivResursa —
+                                                    @res.Kolicina.ToString("N2") ×
+                                                    @res.JedinicnaCena.ToString("N2") RSD
+                                                </div>
                                             }
                                         }
                                         else
