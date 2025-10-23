@@ -16,25 +16,22 @@
 <div class="container py-5">
     <div class="container-glass" style="max-width: 600px; margin: auto;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-
             <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
+
             @if (Model.IdParcela != null)
             {
-                <form asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" method="get">
-                    <button type="submit" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Nazad
-                    </button>
-                </form>
+                <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Nazad
+                </a>
             }
             else
             {
-                <form asp-action="Radnje" method="get">
-                    <button type="submit" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Nazad
-                    </button>
-                </form>
+                <a asp-action="Radnje" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Nazad
+                </a>
             }
         </div>
+
 
             <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Radnja">
                 @if (Model.Id != null)

@@ -17,17 +17,19 @@
             <div class="shape"></div>
             <div class="shape"></div>
         </div>
-    <form asp-controller="Auth" asp-action="Login" method="post">
-            <h3>Prijava</h3>
-            <label for="username">Email</label>
-            <input type="text" placeholder="Unesite email" id="username" name="Email">
-            <label for="password">Lozinka</label>
-        <input type="password" placeholder="Unesite lozinku" id="password" name="Lozinka">
-        <button type="submit">Prijavite se</button>
-@*             <div class="social">
-                <div class="go"><i class="fab fa-google"></i> Google</div>
-            </div> *@
-        </form>
+    <div class="form-container">
+            <form asp-controller="Auth" asp-action="Login" method="post">
+                <h3>Prijava</h3>
+                <label for="username">Email</label>
+                <input type="text" placeholder="Unesite email" id="username" name="Email">
+                <label for="password">Lozinka</label>
+            <input type="password" placeholder="Unesite lozinku" id="password" name="Lozinka">
+            <button type="submit">Prijavite se</button>
+    @*             <div class="social">
+                    <div class="go"><i class="fab fa-google"></i> Google</div>
+                </div> *@
+            </form>
+        </div>
     </body>
 </html>
 

@@ -48,18 +48,18 @@
                             }
 
                         </div>
-                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
-                            <form asp-action="Izmeni" asp-route-id="@parcela.Id" method="get" class="flex-fill">
+                        <div class="card-footer bg-transparent border-top-0">
+                            <form asp-action="Izmeni" asp-route-id="@parcela.Id" method="get">
                                 <button type="submit" class="btn btn-sm btn-warning w-100">
                                     <i class="bi bi-pencil-square"></i> Izmeni
                                 </button>
                             </form>
-                            <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                            <form asp-action="Obrisi" asp-route-id="@parcela.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" >
                                 <button type="submit" class="btn btn-sm btn-danger w-100">
                                     <i class="bi bi-trash3"></i> Obriši
                                 </button>
                             </form>
-                            <form asp-controller="Radnja" asp-action="RadnjePoParceli" asp-route-idParcela="@parcela.Id" method="get" class="flex-fill">
+                            <form asp-controller="Radnja" asp-action="RadnjePoParceli" asp-route-idParcela="@parcela.Id" method="get">
                                 <button type="submit" class="btn btn-sm btn-info w-100">
                                     <i class="bi bi-list-ul"></i> Radnje
                                 </button>

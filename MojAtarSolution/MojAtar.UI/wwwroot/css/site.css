@@ -1,4 +1,12 @@
-﻿:root {
+﻿/* RESET */
+*, *:before, *:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* =============== GLOBAL VARS =============== */
+:root {
     --primary-color: #2d6a4f;
     --secondary-color: #74c69d;
     --bg-color: #f8f9fa;
@@ -6,93 +14,192 @@
     --glass-border: rgba(255, 255, 255, 0.2);
 }
 
-body {
+/* =============== AUTH STRANICE =============== */
+.auth-page {
+    background-color: #2d6a4f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    position: relative;
+}
+
+    .auth-page .background {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .auth-page .background .shape {
+            width: clamp(100px, 15vw, 200px);
+            aspect-ratio: 1/1;
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+    .auth-page .shape:first-child {
+        background: linear-gradient(#40916c, #52b788);
+        left: -8%;
+        top: -10%;
+    }
+
+    .auth-page .shape:last-child {
+        background: linear-gradient(to right, #74c69d, #b7e4c7);
+        right: -5%;
+        bottom: -8%;
+    }
+
+    .auth-page .form-container form {
+        width: 100%;
+        max-width: 450px;
+        background-color: rgba(255, 255, 255, 0.13);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .auth-page h3 {
+        font-size: 28px;
+        font-weight: 500;
+        color: black;
+    }
+
+    .auth-page label {
+        font-size: 16px;
+        color: black;
+        text-align: left;
+    }
+
+    .auth-page input {
+        width: 100%;
+        height: 45px;
+        background-color: rgba(255, 255, 255, 0.07);
+        border-radius: 5px;
+        padding: 0 10px;
+        font-size: 14px;
+        color: black;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .auth-page button {
+        width: 100%;
+        background-color: #52b788;
+        color: white;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .auth-page button:hover {
+            background-color: #40916c;
+        }
+
+/* =============== APP STRANICE =============== */
+.app-page {
     font-family: 'Poppins', sans-serif;
     background-color: var(--primary-color);
     color: #000;
 }
 
-/* GLASS CONTAINER */
-.container-glass {
-    background-color: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.container-glass h2 {
-    color: var(--primary-color);
-}
-
-.bg-white {
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.shadow-sm {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-
-.lead {
-    font-size: 1.25rem;
-    color: #333;
-}
-
-/* NAVBAR */
-.navbar {
-    background: rgba(0, 0, 0, 0.9) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    z-index: 1050 !important;
-}
-
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-.navbar-nav .nav-link {
-    color: white !important;
-    font-size: 1.1rem;
-    transition: 0.3s;
-}
-
-.navbar-nav .nav-link:hover {
-    color: var(--secondary-color) !important;
-}
-
-.dropdown-menu {
-    z-index: 2000 !important;
-}
-
-/* SIDEBAR */
-.sidebar {
-    width: 250px;
-    background: rgba(52, 58, 64, 0.9);
-    color: white;
-    height: 100vh;
-    backdrop-filter: blur(10px);
-}
-
-    .sidebar a {
-        color: white;
-        text-decoration: none;
-        display: block;
-        padding: 12px 20px;
-        transition: all 0.3s ease-in-out;
+    /* GLASS CONTAINER */
+    .app-page .container-glass {
+        background-color: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.5s ease-in-out;
     }
 
-        .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
+    /* NAVBAR */
+    .app-page .navbar {
+        background: rgba(0, 0, 0, 0.9) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        z-index: 1050 !important;
+    }
+
+    /* =============== DUGMAD I FORME U APPU =============== */
+    .app-page form {
+        background-color: rgba(255, 255, 255, 0.13);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 20px rgba(8, 7, 16, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 600px;
+        margin: auto;
+    }
+
+        .app-page form label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: block;
         }
 
-/* BUTTONS */
-button {
-    background-color: var(--secondary-color);
+        .app-page form input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(116, 198, 157, 0.3);
+        }
+
+    /* ✅ Card-footer dugmad: dve gore, treće ispod, bez pozadine */
+    .app-page .card-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+        background: transparent !important;
+        border: none !important;
+    }
+
+        /* Forme bez okvira, bez margine */
+        .app-page .card-footer form {
+            flex: 0 0 calc(50% - 4px);
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+            /* Ako ih ima tri, treća ide ispod (puna širina) */
+            .app-page .card-footer form:nth-child(3) {
+                flex: 0 0 100%;
+            }
+
+        /* Dugmad */
+        .app-page .card-footer .btn {
+            width: 100%;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+/* 📱 Na mobilnom sve 100% */
+@media (max-width: 576px) {
+    .app-page .card-footer form {
+        flex: 0 0 100%;
+    }
+}
+
+.btn1 {
+    width: 100%;
+    background-color: #52b788;
     color: white;
     padding: 12px;
     font-size: 18px;
@@ -102,75 +209,11 @@ button {
     transition: 0.3s;
 }
 
-    button:hover {
+    .btn1:hover {
         background-color: #40916c;
     }
 
-/* ACTION BUTTONS */
-.action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    font-size: 16px;
-    border-radius: 5px;
-    min-width: 120px;
-    height: 40px;
-    margin: 2px;
-}
-
-form .action-btn {
-    width: auto;
-}
-
-/* FORM STYLING */
-form {
-    background-color: rgba(255, 255, 255, 0.13);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 0 20px rgba(8, 7, 16, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 600px;
-    margin: auto;
-}
-
-    form button.submit-button {
-        width: 100%;
-    }
-
-    form label {
-        font-weight: 500;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    form input:focus {
-        outline: none;
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 2px rgba(116, 198, 157, 0.3);
-    }
-
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    color: black;
-    padding: 10px;
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-.logout-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-/* ANIMATIONS */
+/* ANIMACIJA */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -182,3 +225,21 @@ select {
         transform: translateY(0);
     }
 }
+
+/* ✅ Aktivni linkovi i dropdown stavke - zelena primarna boja */
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-link:hover {
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+/* Dropdown stavke kada su aktivne ili hoverovane */
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active,
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+}
+
