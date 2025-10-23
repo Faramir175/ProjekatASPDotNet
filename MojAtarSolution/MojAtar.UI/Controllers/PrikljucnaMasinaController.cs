@@ -21,16 +21,21 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> PrikljucneMasine()
+        public async Task<IActionResult> PrikljucneMasine(int skip = 0, int take = 9)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             Guid idKorisnik = Guid.Parse(userId);
-            var radneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
 
-            return View(radneMasine);
+            var masine = await _prikljucnaMasinaService.GetAllByKorisnikPaged(idKorisnik, skip, take);
+
+            ViewBag.Skip = skip + take;
+            ViewBag.TotalCount = await _prikljucnaMasinaService.GetCountByKorisnik(idKorisnik);
+
+            return View(masine);
         }
+
 
         [HttpGet("dodaj")]
         public async Task<IActionResult> Dodaj()

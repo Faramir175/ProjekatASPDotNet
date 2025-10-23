@@ -1,4 +1,5 @@
 ﻿using MojAtar.Core.Domain.Enums;
+using MojAtar.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         public Task<bool> DeleteParcelaById(Guid? id);
         public Task<List<Parcela>> GetAllByKorisnik(Guid idKorisnik);
         Task<int> CountByKorisnikId(Guid korisnikId);
-        Task<List<Parcela>> GetAllWithActiveKulturaByKorisnik(Guid idKorisnik);
+        Task<List<ParcelaDTO>> GetPagedWithActiveKulture(Guid idKorisnik, int skip, int take);
+
+        Task<int> GetCountByKorisnik(Guid idKorisnik);
+        Task<List<Parcela>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
+
     }
 }

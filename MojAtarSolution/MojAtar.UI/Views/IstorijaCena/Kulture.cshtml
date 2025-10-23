@@ -34,6 +34,26 @@
                     }
                 </tbody>
             </table>
+            <div class="d-flex justify-content-between align-items-center mt-4 w-100">
+                <a class="btn btn-success @(ViewBag.Skip <= ViewBag.Take ? "disabled" : "")"
+                   asp-action="Kulture"
+                   asp-route-skip="@(ViewBag.Skip - 2 * ViewBag.Take)"
+                   asp-route-take="@ViewBag.Take">
+                    <i class="bi bi-arrow-left"></i> Prethodna
+                </a>
+
+                <span class="fw-bold text-center flex-grow-1">
+                    Stranica @(Math.Ceiling((decimal)(ViewBag.Skip / ViewBag.Take))) od @(Math.Ceiling((decimal)ViewBag.TotalCount / ViewBag.Take))
+                </span>
+
+                <a class="btn btn-success @(ViewBag.Skip >= ViewBag.TotalCount ? "disabled" : "")"
+                   asp-action="Kulture"
+                   asp-route-skip="@(ViewBag.Skip)"
+                   asp-route-take="@ViewBag.Take">
+                    Sledeća <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
         </div>
     </div>
 </div>

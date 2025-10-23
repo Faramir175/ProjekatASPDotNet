@@ -15,6 +15,8 @@ namespace MojAtar.Core.ServiceContracts
         public Task<ResursDTO> GetByNaziv(string? naziv);
         public Task<ResursDTO> Update(Guid? id, ResursDTO dto);
         public Task<bool> DeleteById(Guid? id);
+        Task<List<ResursDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
+        Task<int> GetCountByKorisnik(Guid idKorisnik);
 
     }
 }

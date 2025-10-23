@@ -2,6 +2,7 @@
 using MojAtar.Core.Domain;
 using MojAtar.Core.Domain.Enums;
 using MojAtar.Core.Domain.RepositoryContracts;
+using MojAtar.Core.DTO;
 using MojAtar.Infrastructure.MojAtar;
 using System;
 using System.Collections.Generic;
@@ -92,15 +93,55 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return _dbContext.Parcele.CountAsync(p => p.IdKorisnik == korisnikId);
         }
-        public async Task<List<Parcela>> GetAllWithActiveKulturaByKorisnik(Guid idKorisnik)
+
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _dbContext.Parcele.CountAsync(p => p.IdKorisnik == idKorisnik);
+        }
+        public async Task<List<Parcela>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
             return await _dbContext.Parcele
                 .Include(p => p.KatastarskaOpstina)
                 .Include(p => p.ParceleKulture)
                     .ThenInclude(pk => pk.Kultura)
                 .Where(p => p.IdKorisnik == idKorisnik)
+                .OrderBy(p => p.Naziv)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync();
         }
+        public async Task<List<ParcelaDTO>> GetPagedWithActiveKulture(Guid idKorisnik, int skip, int take)
+        {
+            var parcele = await _dbContext.Parcele
+                .Include(p => p.KatastarskaOpstina)
+                .Include(p => p.ParceleKulture)
+                    .ThenInclude(pk => pk.Kultura)
+                .Where(p => p.IdKorisnik == idKorisnik)
+                .OrderBy(p => p.Naziv)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return parcele.Select(p => new ParcelaDTO
+            {
+                Id = p.Id,
+                Naziv = p.Naziv,
+                BrojParcele = p.BrojParcele,
+                Povrsina = p.Povrsina,
+                Napomena = p.Napomena,
+                IdKatastarskaOpstina = (Guid)p.IdKatastarskaOpstina,
+                KatastarskaOpstinaNaziv = p.KatastarskaOpstina?.Naziv,
+                IdKorisnik = (Guid)p.IdKorisnik,
+
+                AktivneKulture = p.ParceleKulture
+                    .Where(pk => pk.DatumZetve == null)
+                    .Select(pk => (pk.Kultura.Naziv, pk.Povrsina))
+                    .ToList()
+
+            }).ToList();
+        }
+
+
 
     }
 }

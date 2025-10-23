@@ -30,6 +30,20 @@ namespace MojAtar.Infrastructure.Repositories
                 .Where(p => p.IdKorisnik == idKorisnik)
                 .ToListAsync();
         }
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _dbContext.Kulture.CountAsync(x => x.IdKorisnik == idKorisnik);
+        }
+
+        public async Task<List<Kultura>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            return await _dbContext.Kulture
+                .Where(x => x.IdKorisnik == idKorisnik)
+                .OrderBy(x => x.Naziv)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+        }
 
 
         public async Task<Kultura> GetById(Guid? id)

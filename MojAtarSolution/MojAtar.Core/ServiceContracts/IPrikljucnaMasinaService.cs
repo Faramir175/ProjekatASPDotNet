@@ -15,6 +15,8 @@ namespace MojAtar.Core.ServiceContracts
         public Task<PrikljucnaMasinaDTO> GetByNaziv(string? naziv);
         public Task<PrikljucnaMasinaDTO> Update(Guid? id, PrikljucnaMasinaDTO dto);
         public Task<bool> DeleteById(Guid? id);
+        Task<List<PrikljucnaMasinaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
+        Task<int> GetCountByKorisnik(Guid idKorisnik);
 
     }
 }

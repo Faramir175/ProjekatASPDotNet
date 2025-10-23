@@ -143,6 +143,16 @@ namespace MojAtar.Core.Services
 
             return staraKultura.ToKulturaDTO();
         }
+        public async Task<List<KulturaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            var kulture = await _kulturaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            return kulture.Select(k => k.ToKulturaDTO()).ToList();
+        }
+        
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _kulturaRepository.GetCountByKorisnik(idKorisnik);
+        }
 
     }
 }

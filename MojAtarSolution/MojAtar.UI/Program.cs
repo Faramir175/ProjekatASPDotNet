@@ -69,6 +69,13 @@ builder.Services.AddScoped<IParcelaKulturaService, ParcelaKulturaService>();
 builder.Services.AddScoped<IIzvestajRepository, IzvestajRepository>();
 builder.Services.AddScoped<IIzvestajService, IzvestajService>();
 
+builder.Services.AddScoped<ICenaResursaRepository, CenaResursaRepository>();
+builder.Services.AddScoped<ICenaKultureRepository, CenaKultureRepository>();
+
+builder.Services.AddScoped<ICenaResursaService, CenaResursaService>();
+builder.Services.AddScoped<ICenaKultureService, CenaKultureService>();
+
+
 builder.Services.AddScoped<IPocetnaService, PocetnaService>();
 
 var app = builder.Build();

@@ -71,30 +71,6 @@ namespace MojAtar.Core.Services
             return parcele.Select(p => p.ToParcelaDTO()).ToList();
         }
 
-        public async Task<List<ParcelaDTO>> GetAllWithActiveKulturaByKorisnik(Guid idKorisnika)
-        {
-            var parcele = await _parcelaRepository.GetAllWithActiveKulturaByKorisnik(idKorisnika);
-
-            return parcele.Select(p => new ParcelaDTO
-            {
-                Id = p.Id,
-                Naziv = p.Naziv,
-                BrojParcele = p.BrojParcele,
-                Povrsina = p.Povrsina,
-                Napomena = p.Napomena,
-                IdKatastarskaOpstina = (Guid)p.IdKatastarskaOpstina,
-                KatastarskaOpstinaNaziv = p.KatastarskaOpstina.Naziv,
-                IdKorisnik = (Guid)p.IdKorisnik,
-
-                AktivneKulture = p.ParceleKulture
-                .Where(pk => pk.DatumZetve == null)
-                .Select(pk => (pk.Kultura.Naziv, pk.Povrsina))
-                .ToList()
-
-            }).ToList();
-        }
-
-
         public async Task<ParcelaDTO> GetById(Guid? id)
         {
             if (id == null)
@@ -145,6 +121,21 @@ namespace MojAtar.Core.Services
 
             if (parcela == null) return null;
             return parcela.ToParcelaDTO();
+        }
+        public async Task<List<ParcelaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            var parcele = await _parcelaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            return parcele.Select(p => p.ToParcelaDTO()).ToList();
+        }
+
+
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _parcelaRepository.GetCountByKorisnik(idKorisnik);
+        }
+        public async Task<List<ParcelaDTO>> GetAllByKorisnikPagedWithActiveKulture(Guid idKorisnik, int skip, int take)
+        {
+            return await _parcelaRepository.GetPagedWithActiveKulture(idKorisnik, skip, take);
         }
 
     }

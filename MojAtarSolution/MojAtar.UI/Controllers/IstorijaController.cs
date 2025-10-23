@@ -1,38 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MojAtar.Infrastructure.MojAtar;
+using MojAtar.Core.ServiceContracts;
 
 namespace MojAtar.UI.Controllers
 {
     [Route("istorija-cena")]
     public class IstorijaCenaController : Controller
     {
-        private readonly MojAtarDbContext _dbContext;
+        private readonly ICenaResursaService _cenaResursaService;
+        private readonly ICenaKultureService _cenaKultureService;
 
-        public IstorijaCenaController(MojAtarDbContext dbContext)
+        public IstorijaCenaController(
+            ICenaResursaService cenaResursaService,
+            ICenaKultureService cenaKultureService)
         {
-            _dbContext = dbContext;
+            _cenaResursaService = cenaResursaService;
+            _cenaKultureService = cenaKultureService;
         }
 
         [HttpGet("resursi")]
-        public async Task<IActionResult> Resursi()
+        public async Task<IActionResult> Resursi(int skip = 0, int take = 20)
         {
-            var cene = await _dbContext.CeneResursa
-                .Include(c => c.Resurs)
-                .OrderByDescending(c => c.DatumVaznosti)
-                .ToListAsync();
-
+            var cene = await _cenaResursaService.GetPaged(skip, take);
+            ViewBag.Skip = skip + take;
+            ViewBag.Take = take;
+            ViewBag.TotalCount = await _cenaResursaService.GetTotalCount();
             return View(cene);
         }
 
         [HttpGet("kulture")]
-        public async Task<IActionResult> Kulture()
+        public async Task<IActionResult> Kulture(int skip = 0, int take = 20)
         {
-            var cene = await _dbContext.CeneKultura
-                .Include(c => c.Kultura)
-                .OrderByDescending(c => c.DatumVaznosti)
-                .ToListAsync();
-
+            var cene = await _cenaKultureService.GetPaged(skip, take);
+            ViewBag.Skip = skip + take;
+            ViewBag.Take = take;
+            ViewBag.TotalCount = await _cenaKultureService.GetTotalCount();
             return View(cene);
         }
     }

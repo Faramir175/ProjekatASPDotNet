@@ -21,13 +21,16 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Kulture()
+        public async Task<IActionResult> Kulture(int skip = 0, int take = 9)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             Guid idKorisnik = Guid.Parse(userId);
-            var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+
+            var kulture = await _kulturaService.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            ViewBag.Skip = skip + take;
+            ViewBag.TotalCount = await _kulturaService.GetCountByKorisnik(idKorisnik);
 
             return View(kulture);
         }

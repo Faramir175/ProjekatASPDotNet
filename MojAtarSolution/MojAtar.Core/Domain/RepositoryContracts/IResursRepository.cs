@@ -14,5 +14,8 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         public Task<List<Resurs>> GetAllByKorisnik(Guid idKorisnik);
         public Task DodajCenu(CenaResursa cena);
         Task<int> CountByKorisnikId(Guid korisnikId);
+        Task<List<Resurs>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
+        Task<int> GetCountByKorisnik(Guid idKorisnik);
+
     }
 }

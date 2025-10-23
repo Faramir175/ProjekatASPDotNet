@@ -93,5 +93,20 @@ namespace MojAtar.Infrastructure.Repositories
         public Task<int> CountByKorisnikId(Guid korisnikId) => 
             _dbContext.Resursi.CountAsync(r => r.IdKorisnik == korisnikId);
 
+        public async Task<List<Resurs>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            return await _dbContext.Resursi
+                .Where(r => r.IdKorisnik == idKorisnik)
+                .OrderBy(r => r.Naziv)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _dbContext.Resursi.CountAsync(r => r.IdKorisnik == idKorisnik);
+        }
+
     }
 }

@@ -122,6 +122,16 @@ namespace MojAtar.Core.Services
             if (prikljucnaMasina == null) return null;
             return prikljucnaMasina.ToPrikljucnaMasinaDTO();
         }
+        public async Task<List<PrikljucnaMasinaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            var masine = await _prikljucnaMasinaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            return masine.Select(pm => pm.ToPrikljucnaMasinaDTO()).ToList();
+        }
+
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _prikljucnaMasinaRepository.GetCountByKorisnik(idKorisnik);
+        }
 
     }
 }

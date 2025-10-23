@@ -142,6 +142,16 @@ namespace MojAtar.Core.Services
 
             return stariResurs.ToResursDTO();
         }
+        public async Task<List<ResursDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            var resursi = await _resursRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            return resursi.Select(r => r.ToResursDTO()).ToList();
+        }
+
+        public async Task<int> GetCountByKorisnik(Guid idKorisnik)
+        {
+            return await _resursRepository.GetCountByKorisnik(idKorisnik);
+        }
 
     }
 }
