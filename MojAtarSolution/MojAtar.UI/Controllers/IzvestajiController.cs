@@ -48,11 +48,12 @@ namespace MojAtar.UI.Controllers
 
             var izvestaj = await _izvestajiService.GenerisiIzvestaj(Guid.Parse(userId), parcelaId, odDatuma, doDatuma, sveParcele);
 
-            return new ViewAsPdf("Prikaz", izvestaj)
+            return new ViewAsPdf("PdfIzvestaj", izvestaj) // 👈 novi view bez layouta
             {
                 FileName = "izvestaj.pdf",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--disable-smart-shrinking"
             };
         }
     }

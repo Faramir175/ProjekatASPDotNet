@@ -158,51 +158,61 @@ namespace MojAtar.UI.Controllers
 
             var result = _passwordHasher.VerifyHashedPassword(null, logovaniKorisnik.Lozinka, trenutnaLozinka);
 
-            if (result== PasswordVerificationResult.Success)
+            if (result == PasswordVerificationResult.Success)
             {
                 try
                 {
-                    // Uzima se korisnik koji se menja iz baze
-                    KorisnikResponseDTO? originalniKorisnik = await _korisnikService.GetById(korisnikId);
+                    var originalniKorisnik = await _korisnikService.GetById(korisnikId);
                     if (originalniKorisnik == null)
                     {
                         ModelState.AddModelError("", $"Korisnik sa ID-em {korisnikId} ne postoji.");
                         return View(korisnik);
                     }
 
-                    // Atributi koji nisu prosledjeni upitom se popunjavaju
                     if (string.IsNullOrEmpty(korisnik.Ime)) korisnik.Ime = originalniKorisnik.Ime;
                     if (string.IsNullOrEmpty(korisnik.Prezime)) korisnik.Prezime = originalniKorisnik.Prezime;
-                    if (string.IsNullOrEmpty(korisnik.Email)) korisnik.Email = originalniKorisnik.Email; 
+                    if (string.IsNullOrEmpty(korisnik.Email)) korisnik.Email = originalniKorisnik.Email;
                     if (!korisnik.TipKorisnika.HasValue) korisnik.TipKorisnika = originalniKorisnik.TipKorisnika;
                     if (!korisnik.DatumRegistracije.HasValue) korisnik.DatumRegistracije = originalniKorisnik.DatumRegistracije;
-                    if (string.IsNullOrEmpty(korisnik.Lozinka)) korisnik.Lozinka = originalniKorisnik.Lozinka;
                     if (korisnik.Parcele == null) korisnik.Parcele = originalniKorisnik.Parcele;
 
-                    korisnik.Lozinka = _passwordHasher.HashPassword(korisnik, korisnik.Lozinka);
-
-                    var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, korisnik.Email),
-                            new Claim(ClaimTypes.Role, korisnik.TipKorisnika.ToString()),
-                            new Claim("Ime", korisnik.Ime),
-                            new Claim("Prezime", korisnik.Prezime),
-                            new Claim("DatumRegistracije", korisnik.DatumRegistracije?.ToString("o")) // ISO format
-                        };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
+                    // 🔹 samo ako je uneo novu lozinku — hashuj novu
+                    if (!string.IsNullOrEmpty(korisnik.Lozinka))
                     {
-                        IsPersistent = true, // Omogućava trajni cookie
-                        ExpiresUtc = DateTime.UtcNow.AddHours(5) // Cookie ističe nakon 5 sati
-                    };
+                        korisnik.Lozinka = _passwordHasher.HashPassword(korisnik, korisnik.Lozinka);
+                    }
+                    else
+                    {
+                        // ako nije uneo novu — zadrži staru hashovanu
+                        korisnik.Lozinka = originalniKorisnik.Lozinka;
+                    }
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
+                    // 🔹 Sačuvaj izmene
+                    await _korisnikService.Update(korisnikId, korisnik);
 
-                    // Sačuvaj ažuriranog korisnika
-                    KorisnikResponseDTO? updatedKorisnik = await _korisnikService.Update(korisnikId, korisnik);
+                    // 🔹 I odmah obnovi cookie sa novim claimovima
+                    var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, korisnikId.ToString()),
+            new Claim(ClaimTypes.Name, korisnik.Email),
+            new Claim(ClaimTypes.Role, korisnik.TipKorisnika.ToString()),
+            new Claim("Ime", korisnik.Ime),
+            new Claim("Prezime", korisnik.Prezime),
+            new Claim("DatumRegistracije", korisnik.DatumRegistracije?.ToString("o") ?? "")
+        };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal,
+                        new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTime.UtcNow.AddHours(5)
+                        });
+
                     TempData["SuccessMessage"] = "Podaci su uspešno ažurirani.";
                     return RedirectToAction("Podesavanja");
                 }
@@ -212,6 +222,7 @@ namespace MojAtar.UI.Controllers
                     return View(korisnik);
                 }
             }
+
             return RedirectToAction("Podesavanja");
         }
 

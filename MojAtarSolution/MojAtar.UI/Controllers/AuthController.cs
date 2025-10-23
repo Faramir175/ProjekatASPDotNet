@@ -60,7 +60,7 @@ namespace MojAtar.UI.Controllers
             {
                 // 1. Pronaći korisnika po emailu
                 KorisnikResponseDTO? korisnik = await _korisnikService.GetByEmail(korisnikRequest.Email);
-
+                //korisnikRequest.Lozinka = _passwordHasher.HashPassword(korisnikRequest, korisnikRequest.Lozinka);
                 if (korisnik != null)
                 {
                     // 2. Verifikovati lozinku

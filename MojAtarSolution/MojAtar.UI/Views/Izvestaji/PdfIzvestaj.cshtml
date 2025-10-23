@@ -1,0 +1,147 @@
+﻿@model MojAtar.Core.DTO.IzvestajDTO
+@{
+    Layout = null; // 🚫 Bez glavnog layouta (nema navigacije ni footera)
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Izveštaj o radu i troškovima</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            margin: 30px;
+        }
+
+        h2, h4, h5 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #555;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #e5e5e5;
+        }
+
+        .section-title {
+            background: #b6d7a8;
+            padding: 5px;
+            font-weight: bold;
+        }
+
+        .totals {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+            .summary h4 {
+                margin: 5px 0;
+            }
+
+        .text-success {
+            color: green;
+        }
+
+        .text-danger {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>📋 Izveštaj o radu i troškovima</h2>
+    <h5>Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()</h5>
+
+    @foreach (var parcela in Model.Parcele)
+    {
+        <h4 class="section-title">@parcela.NazivParcele</h4>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Radnja</th>
+                    <th>Kultura</th>
+                    <th>Radne mašine</th>
+                    <th>Resursi</th>
+                    <th>Trošak (RSD)</th>
+                    <th>Prihod (RSD)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in parcela.Radnje)
+                {
+                    <tr>
+                        <td>@r.Datum.ToShortDateString()</td>
+                        <td>@r.NazivRadnje</td>
+                        <td>@r.Kultura</td>
+                        <td>
+                            @if (r.RadneMasine.Any())
+                            {
+                                foreach (var m in r.RadneMasine)
+                                {
+                                    <div>• @m.NazivRadneMasine (@m.BrojRadnihSati sati)</div>
+                                }
+                            }
+                            else
+                            {
+
+                                <span>Nema</span>
+                                ;
+                            }
+                        </td>
+                        <td>
+                            @if (r.Resursi.Any())
+                            {
+                                foreach (var res in r.Resursi)
+                                {
+                                    <div>• @res.NazivResursa — @res.Kolicina × @res.JedinicnaCena.ToString("N2") RSD</div>
+                                }
+                            }
+                            else
+                            {
+
+                                <span>Nema</span>
+                                ;
+                            }
+                        </td>
+                        <td>@r.Trosak.ToString("N2")</td>
+                        <td>@r.Prihod.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="totals">Ukupno:</td>
+                    <td>@parcela.Trosak.ToString("N2")</td>
+                    <td>@parcela.Prihod.ToString("N2")</td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+
+    <div class="summary">
+        <h4 class="text-danger">Ukupan trošak: @Model.UkupanTrosak.ToString("N2") RSD</h4>
+        <h4 class="text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
+        <h4>Profit: @Model.Profit.ToString("N2") RSD</h4>
+    </div>
+</body>
+</html>
