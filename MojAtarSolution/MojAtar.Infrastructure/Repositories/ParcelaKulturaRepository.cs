@@ -61,7 +61,6 @@ namespace MojAtar.Infrastructure.Repositories
         public async Task<Parcela_Kultura> GetNezavrsenaSetva(Guid idParcela, Guid idKultura)
         {
             return await _dbContext.ParceleKulture
-                .AsNoTracking()
                 .Include(pk => pk.Parcela)
                 .Include(pk => pk.Kultura)
                 .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura && pk.DatumZetve == null);
@@ -69,8 +68,10 @@ namespace MojAtar.Infrastructure.Repositories
 
         public async Task<Parcela_Kultura> Update(Parcela_Kultura entity)
         {
-            var existing = await GetByParcelaAndKulturaId(entity.IdParcela.Value, entity.IdKultura.Value);
-            if (existing == null) return null;
+            var existing = await _dbContext.ParceleKulture.FirstOrDefaultAsync(pk => pk.Id == entity.Id);
+
+            if (existing == null)
+                return null;
 
             existing.Povrsina = entity.Povrsina;
             existing.DatumSetve = entity.DatumSetve;
@@ -79,6 +80,7 @@ namespace MojAtar.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return existing;
         }
+
         public async Task<bool> DeleteById(Guid id)
         {
             var entity = await GetById(id);

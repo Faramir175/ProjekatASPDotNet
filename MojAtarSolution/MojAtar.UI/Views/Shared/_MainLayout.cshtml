@@ -11,18 +11,20 @@
         <!-- Gornja navigacija -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
             <div class="container-fluid">
-                <a class="navbar-brand ms-4" href="#">Moj Atar</a>
+                <a class="navbar-brand ms-4" asp-controller="Pocetna" asp-action="Pocetna">Moj Atar</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto me-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Početna</a>
+                            <a class="nav-link" asp-controller="Pocetna" asp-action="Pocetna">Početna</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/parcele">Parcele</a>
+                            <a class="nav-link" asp-controller="Parcela" asp-action="Parcele">Parcele</a>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -30,25 +32,25 @@
                                 Mašine
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMasine">
-                                <li><a class="dropdown-item" href="/radne-masine">Radne mašine</a></li>
-                                <li><a class="dropdown-item" href="/prikljucne-masine">Priključne mašine</a></li>
+                                <li><a class="dropdown-item" asp-controller="RadnaMasina" asp-action="RadneMasine">Radne mašine</a></li>
+                                <li><a class="dropdown-item" asp-controller="PrikljucnaMasina" asp-action="PrikljucneMasine">Priključne mašine</a></li>
                             </ul>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/resursi">Resursi</a>
+                            <a class="nav-link" asp-controller="Resurs" asp-action="Resursi">Resursi</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/kulture">Kulture</a>
+                            <a class="nav-link" asp-controller="Kultura" asp-action="Kulture">Kulture</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/radnje">Radnje</a>
+                            <a class="nav-link" asp-controller="Radnja" asp-action="Radnje">Radnje</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/izvestaji">Izveštaji</a>
+                            <a class="nav-link" asp-controller="Izvestaji" asp-action="Izvestaj">Izveštaji</a>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -56,8 +58,8 @@
                                 Istorija cena
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownIstorija">
-                                <li><a class="dropdown-item" href="/istorija-cena/resursi">Resursi</a></li>
-                                <li><a class="dropdown-item" href="/istorija-cena/kulture">Kulture</a></li>
+                                <li><a class="dropdown-item" asp-controller="IstorijaCena" asp-action="Resursi">Resursi</a></li>
+                                <li><a class="dropdown-item" asp-controller="IstorijaCena" asp-action="Kulture">Kulture</a></li>
                             </ul>
                         </li>
 
@@ -67,8 +69,8 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNalog">
                                 <li>
-                                    <a class="dropdown-item" href="/korisnici/podesavanja">
-                                        <i class="bi bi-gear me-2"></i> Podesavanja naloga
+                                    <a class="dropdown-item" asp-controller="Korisnik" asp-action="Podesavanja">
+                                        <i class="bi bi-gear me-2"></i> Podešavanja naloga
                                     </a>
                                 </li>
                                 <li>
@@ -82,15 +84,13 @@
                         </li>
                     </ul>
                 </div>
-
             </div>
         </nav>
 
-            <!-- Glavni sadržaj -->
-            <div class="flex-grow-1 p-4">
-                <div class="container-fluid">
-                    @RenderBody()
-                </div>
+        <!-- Glavni sadržaj -->
+        <div class="flex-grow-1 p-4">
+            <div class="container-fluid">
+                @RenderBody()
             </div>
         </div>
     </div>

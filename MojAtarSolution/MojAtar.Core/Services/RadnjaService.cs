@@ -61,15 +61,19 @@ namespace MojAtar.Core.Services
             }
             else if (dto.TipRadnje == RadnjaTip.Zetva)
             {
-                // Nađi postojeću setvu za tu parcelu i kulturu
-                var setva = await _parcelaKulturaService.GetByParcelaAndKulturaId((Guid)dto.IdParcela, (Guid)dto.IdKultura);
-                if (setva == null)
-                    throw new Exception("Nema pronađene setve za ovu kulturu na parceli.");
+                // ✅ Tražimo samo setvu koja još NEMA DatumZetve (nezavršena)
+                var nezavrsenaSetva = await _parcelaKulturaService.GetNezavrsenaSetva(
+                    (Guid)dto.IdParcela,
+                    (Guid)dto.IdKultura
+                );
 
-                setva.DatumZetve = dto.DatumIzvrsenja;
+                if (nezavrsenaSetva == null)
+                    throw new Exception("Nema aktivne (nezavršene) setve za ovu kulturu na parceli.");
 
-                await _parcelaKulturaService.Update(setva);
+                nezavrsenaSetva.DatumZetve = dto.DatumIzvrsenja;
+                await _parcelaKulturaService.Update(nezavrsenaSetva);
             }
+
             Radnja novaRadnja;
 
             // Ako je u ComboBox-u izabrana Zetva

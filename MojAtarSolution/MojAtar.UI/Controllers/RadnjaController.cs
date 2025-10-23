@@ -143,45 +143,56 @@ namespace MojAtar.UI.Controllers
             if (!ModelState.IsValid)
                 return View(dto);
 
-            if (!await ObradiParcelaKulturaAsync(dto))
+            try
             {
-                Guid idKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var kulture = await _kulturaService.GetAllForUser(idKorisnik);
-                var parcele = await _parcelaService.GetAllForUser(idKorisnik);
-                var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
-                var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
-                var resursi = await _resursService.GetAllForUser(idKorisnik);
+                if (!await ObradiParcelaKulturaAsync(dto))
+                {
+                    Guid idKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    var kulture = await _kulturaService.GetAllForUser(idKorisnik);
+                    var parcele = await _parcelaService.GetAllForUser(idKorisnik);
+                    var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
+                    var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
+                    var resursi = await _resursService.GetAllForUser(idKorisnik);
 
-                ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
-                ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
-                ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
-                ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
-                ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
+                    ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
+                    ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
+                    ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
+                    ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
+                    ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
+                    return View(dto);
+                }
+
+                var novaRadnja = await _radnjaService.Add(dto);
+
+                foreach (var radnjaMasina in dto.RadneMasine)
+                {
+                    radnjaMasina.IdRadnja = (Guid)novaRadnja.Id;
+                    await _radnjaRadnaMasinaService.Add(radnjaMasina);
+                }
+
+                foreach (var prikljucna in dto.PrikljucneMasine)
+                {
+                    prikljucna.IdRadnja = (Guid)novaRadnja.Id;
+                    await _radnjaPrikljucnaMasinaService.Add(prikljucna);
+                }
+
+                foreach (var resurs in dto.Resursi)
+                {
+                    resurs.IdRadnja = (Guid)novaRadnja.Id;
+                    await _radnjaResursService.Add(resurs);
+                }
+
+                return RedirectToAction("Radnje");
+            }
+            catch (Exception ex)
+            {
+                // 🔴 Greška (npr. pokušaj žetve bez setve)
+                ViewBag.ErrorMessage = ex.Message;
+
+                await UcitajViewBagove();
                 return View(dto);
             }
-
-            var novaRadnja = await _radnjaService.Add(dto);
-
-            foreach (var radnjaMasina in dto.RadneMasine)
-            {
-                radnjaMasina.IdRadnja = (Guid)novaRadnja.Id;
-                await _radnjaRadnaMasinaService.Add(radnjaMasina);
-            }
-
-            foreach (var prikljucna in dto.PrikljucneMasine)
-            {
-                prikljucna.IdRadnja = (Guid)novaRadnja.Id;
-                await _radnjaPrikljucnaMasinaService.Add(prikljucna);
-            }
-
-            foreach (var resurs in dto.Resursi)
-            {
-                resurs.IdRadnja = (Guid)novaRadnja.Id;
-                await _radnjaResursService.Add(resurs);
-            }
-
-            return RedirectToAction("Radnje");
         }
 
 
@@ -333,17 +344,25 @@ namespace MojAtar.UI.Controllers
                     if (unosZetva != null)
                     {
                         unosZetva.DatumZetve = dto.DatumIzvrsenja;
-                        await _parcelaKulturaService.Update(unosZetva);
                     }
                     else
                     {
                         ModelState.AddModelError("", "Zetva nije moguća jer kultura nije posejana na ovoj parceli.");
                         return false;
                     }
-
                 }
             }
             return true;
+        }
+        private async Task UcitajViewBagove()
+        {
+            Guid idKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            ViewBag.KultureSelectList = new SelectList(await _kulturaService.GetAllForUser(idKorisnik), "Id", "Naziv");
+            ViewBag.ParceleSelectList = new SelectList(await _parcelaService.GetAllForUser(idKorisnik), "Id", "Naziv");
+            ViewBag.RadneMasineSelectList = new SelectList(await _radnaMasinaService.GetAllForUser(idKorisnik), "Id", "Naziv");
+            ViewBag.PrikljucneMasineSelectList = new SelectList(await _prikljucnaMasinaService.GetAllForUser(idKorisnik), "Id", "Naziv");
+            ViewBag.ResursiSelectList = new SelectList(await _resursService.GetAllForUser(idKorisnik), "Id", "Naziv");
         }
 
     }

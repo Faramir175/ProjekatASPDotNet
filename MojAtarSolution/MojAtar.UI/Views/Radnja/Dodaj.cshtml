@@ -14,6 +14,15 @@
 }
 
 <div class="container py-5">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @ViewBag.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
+        </div>
+    }
+
     <div class="container-glass" style="max-width: 600px; margin: auto;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
