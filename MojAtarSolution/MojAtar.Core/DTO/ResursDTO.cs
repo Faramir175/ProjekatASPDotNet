@@ -18,6 +18,8 @@ namespace MojAtar.Core.DTO
         //Za filtriranje
         public Guid IdKorisnik { get; set; }
 
+        public DateTime DatumVaznostiCene { get; set; }
+
         public Resurs ToResurs() => new Resurs()
         {
             Id = Id,

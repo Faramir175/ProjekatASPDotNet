@@ -51,7 +51,7 @@ namespace MojAtar.Core.Services
                 Id = Guid.NewGuid(),
                 IdKultura = kultura.Id.Value,
                 CenaPojedinici = kultura.AktuelnaCena,
-                DatumVaznosti = DateTime.Now
+                DatumVaznosti = kulturaAdd.DatumVaznostiCene != DateTime.MinValue ? kulturaAdd.DatumVaznostiCene : DateTime.Now
             };
             await _kulturaRepository.DodajCenu(cena); 
 
@@ -128,7 +128,7 @@ namespace MojAtar.Core.Services
                     Id = Guid.NewGuid(),
                     IdKultura = id.Value,
                     CenaPojedinici = dto.AktuelnaCena,
-                    DatumVaznosti = DateTime.Now
+                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
                 };
 
                 await _kulturaRepository.DodajCenu(novaCena);

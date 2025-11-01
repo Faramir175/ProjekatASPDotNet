@@ -41,6 +41,12 @@
                 <span asp-validation-for="AktuelnaCena" class="text-danger"></span>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Datum važenja cene</label>
+                <input asp-for="DatumVaznostiCene" type="date" class="form-control"
+                       value="@(Model.DatumVaznostiCene == DateTime.MinValue ? DateTime.Now.ToString("yyyy-MM-dd") : Model.DatumVaznostiCene.ToString("yyyy-MM-dd"))" />
+            </div>
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">
                     @(Model.Id == null ? "Dodaj resurs" : "Sačuvaj izmene")

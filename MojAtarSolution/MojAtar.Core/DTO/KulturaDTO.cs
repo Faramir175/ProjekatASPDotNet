@@ -14,6 +14,8 @@ namespace MojAtar.Core.DTO
         public string Naziv { get; set; }
         public string Hibrid { get; set; }
         public double AktuelnaCena { get; set; }
+        public DateTime DatumVaznostiCene { get; set; }
+
 
         //Za filtriranje
         public Guid IdKorisnik { get; set; }

@@ -51,7 +51,7 @@ namespace MojAtar.Core.Services
                 Id = Guid.NewGuid(),
                 IdResurs = resurs.Id.Value,
                 CenaPojedinici = resurs.AktuelnaCena,
-                DatumVaznosti = DateTime.Now
+                DatumVaznosti = resursAdd.DatumVaznostiCene != DateTime.MinValue ? resursAdd.DatumVaznostiCene : DateTime.Now
             };
             await _resursRepository.DodajCenu(cena);
 
@@ -127,7 +127,7 @@ namespace MojAtar.Core.Services
                     Id = Guid.NewGuid(),
                     IdResurs = id.Value,
                     CenaPojedinici = dto.AktuelnaCena,
-                    DatumVaznosti = DateTime.Now
+                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
                 };
 
                 await _resursRepository.DodajCenu(novaCena);
