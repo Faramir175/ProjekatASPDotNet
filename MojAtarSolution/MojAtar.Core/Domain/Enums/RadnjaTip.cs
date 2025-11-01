@@ -12,6 +12,7 @@ namespace MojAtar.Core.Domain.Enums
         Priprema,
         Djubrenje,
         Setva,
+        Prehrana,
         ZastitaOdBolesti,
         ZastitaOdKorova,
         Zetva

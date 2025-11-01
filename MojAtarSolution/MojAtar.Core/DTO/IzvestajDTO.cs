@@ -27,8 +27,10 @@
         public string NazivRadnje { get; set; } = string.Empty;
         public DateTime Datum { get; set; } = DateTime.Now;
         public string Kultura { get; set; } = string.Empty;
+        public Guid? IdKultura { get; set; }
         public double Trosak { get; set; }
         public double Prihod { get; set; }
+        public double Prinos { get; set; }
 
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
         public List<RadnjaResursDTO> Resursi { get; set; } = new();

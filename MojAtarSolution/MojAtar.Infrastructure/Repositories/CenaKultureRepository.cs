@@ -36,5 +36,14 @@ namespace MojAtar.Infrastructure.Repositories
                 .CountAsync(c => c.Kultura.IdKorisnik == idKorisnik);
         }
 
+        public async Task<double> GetAktuelnaCena(Guid idKorisnik, Guid idKultura, DateTime datum)
+        {
+            return await _dbContext.CeneKultura
+                .Where(c => c.IdKultura == idKultura && c.DatumVaznosti <= datum)
+                .OrderByDescending(c => c.DatumVaznosti)
+                .Select(c => c.CenaPojedinici)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

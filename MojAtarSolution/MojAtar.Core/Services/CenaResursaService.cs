@@ -27,5 +27,11 @@ namespace MojAtar.Core.Services
         {
             return await _repo.GetTotalCount(idKorisnik);
         }
+
+        public async Task<double> GetAktuelnaCena(Guid idKorisnik, Guid idResurs, DateTime datum)
+        {
+            return await _repo.GetAktuelnaCena(idKorisnik, idResurs, datum);
+        }
+
     }
 }
