@@ -15,7 +15,6 @@ namespace MojAtar.Core.DTO.Extensions
             {
                 Id = kultura.Id,
                 Naziv = kultura.Naziv,
-                Hibrid = kultura.Hibrid,
                 AktuelnaCena = kultura.AktuelnaCena,
                 IdKorisnik = (Guid)kultura.IdKorisnik
             };

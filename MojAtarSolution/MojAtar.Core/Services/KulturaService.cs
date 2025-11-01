@@ -137,7 +137,6 @@ namespace MojAtar.Core.Services
             }
 
             staraKultura.Naziv = dto.Naziv;
-            staraKultura.Hibrid = dto.Hibrid;
             staraKultura.AktuelnaCena = dto.AktuelnaCena;
             staraKultura.IdKorisnik = dto.IdKorisnik;
 

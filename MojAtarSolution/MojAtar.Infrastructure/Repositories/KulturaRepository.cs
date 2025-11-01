@@ -73,7 +73,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             kulturaZaUpdate.Id = entity.Id;
             kulturaZaUpdate.Naziv = entity.Naziv;
-            kulturaZaUpdate.Hibrid = entity.Hibrid;
             kulturaZaUpdate.AktuelnaCena = entity.AktuelnaCena;
             kulturaZaUpdate.IdKorisnik = entity.IdKorisnik;
 

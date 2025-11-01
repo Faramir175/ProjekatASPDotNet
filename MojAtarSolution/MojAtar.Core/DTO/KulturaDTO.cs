@@ -12,7 +12,6 @@ namespace MojAtar.Core.DTO
     {
         public Guid? Id { get; set; }
         public string Naziv { get; set; }
-        public string Hibrid { get; set; }
         public double AktuelnaCena { get; set; }
         public DateTime DatumVaznostiCene { get; set; }
 
@@ -24,7 +23,6 @@ namespace MojAtar.Core.DTO
         {
             Id = Id,
             Naziv = Naziv,
-            Hibrid = Hibrid,
             AktuelnaCena = AktuelnaCena,
             IdKorisnik = IdKorisnik
         };
