@@ -23,13 +23,15 @@ namespace MojAtar.UI.Controllers
         private readonly IRadnjaPrikljucnaMasinaService _radnjaPrikljucnaMasinaService;
         private readonly IRadnjaResursService _radnjaResursService;
         private readonly IParcelaKulturaService _parcelaKulturaService;
+        private readonly ICenaResursaService _cenaResursaService;
 
 
         public RadnjaController(IRadnjaService radnjaService, IKulturaService kulturaService,
             IParcelaService parcelaService, IRadnjaRadnaMasinaService radnjaRadnaMasinaService, 
             IRadnaMasinaService radnaMasinaService, IRadnjaPrikljucnaMasinaService radnjaPrikljucnaMasinaService,
             IPrikljucnaMasinaService prikljucnaMasinaService, IResursService resursService, 
-            IRadnjaResursService radnjaResursService, IParcelaKulturaService parcelaKulturaService)
+            IRadnjaResursService radnjaResursService, IParcelaKulturaService parcelaKulturaService, 
+            ICenaResursaService cenaResursaService)
         {
             _radnjaService = radnjaService;
             _kulturaService = kulturaService;
@@ -41,6 +43,7 @@ namespace MojAtar.UI.Controllers
             _resursService = resursService;
             _radnjaResursService = radnjaResursService;
             _parcelaKulturaService = parcelaKulturaService;
+            _cenaResursaService = cenaResursaService;
         }
 
         // Prikaz poslednjih 10 radnji korisnika
@@ -221,8 +224,17 @@ namespace MojAtar.UI.Controllers
             var resursi = await _resursService.GetAllForUser(idKorisnik);
             var povezaniResursi = await _radnjaResursService.GetAllByRadnjaId(id);
 
-            var ceneResursa = resursi.ToDictionary(r => r.Id.ToString(), r => r.AktuelnaCena);
+            var ceneResursa = new Dictionary<string, double>();
+
+            // 🔽 Uzimamo cene koje su važile NA DATUM IZVRŠENJA radnje
+            foreach (var res in resursi)
+            {
+                var cena = await _cenaResursaService.GetAktuelnaCena(idKorisnik, (Guid)res.Id, radnja.DatumIzvrsenja);
+                ceneResursa[res.Id.ToString()] = cena;
+            }
+
             ViewBag.CeneResursa = ceneResursa;
+
 
             ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
             ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");

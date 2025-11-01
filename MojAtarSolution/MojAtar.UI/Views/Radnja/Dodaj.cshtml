@@ -58,10 +58,22 @@
                     </select>
                 </div>
 
+            @if (Model.Id == null)
+            {
                 <div class="mb-3">
                     <label asp-for="DatumIzvrsenja" class="form-label">Datum izvršenja</label>
                     <input asp-for="DatumIzvrsenja" class="form-control" type="date" />
                 </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label asp-for="DatumIzvrsenja" class="form-label">Datum izvršenja</label>
+                    <input asp-for="DatumIzvrsenja" class="form-control" type="date" readonly />
+                    <small class="text-muted">Datum izvršenja se ne može menjati nakon unosa radnje.</small>
+                </div>
+            }
+
 
                 @if (Model.Id == null)
                 {
