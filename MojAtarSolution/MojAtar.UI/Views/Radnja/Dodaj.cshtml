@@ -100,7 +100,7 @@
 
                 <div class="mb-3" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
                     <label asp-for="Povrsina" class="form-label">Površina za setvu (ha)</label>
-                    <input asp-for="Povrsina" class="form-control" type="number" step="0.01" min="0.01" />
+                    <input asp-for="Povrsina" class="form-control" type="number" step="0.0001" min="0.0001" />
                 </div>
 
 

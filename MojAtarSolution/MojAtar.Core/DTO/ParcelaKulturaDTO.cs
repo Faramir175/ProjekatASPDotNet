@@ -13,7 +13,7 @@ namespace MojAtar.Core.DTO
         public Guid? Id { get; set; }
         public Guid? IdParcela { get; set; }
         public Guid? IdKultura { get; set; }
-        public double Povrsina { get; set; }
+        public decimal Povrsina { get; set; }
         public DateTime DatumSetve { get; set; }
         public DateTime? DatumZetve { get; set; }
 

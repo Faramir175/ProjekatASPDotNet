@@ -12,14 +12,14 @@ namespace MojAtar.Core.DTO
         public Guid? Id { get; set; }
         public string BrojParcele { get; set; }
         public string Naziv { get; set; }
-        public double Povrsina { get; set; }
+        public decimal Povrsina { get; set; }
         public string? Napomena { get; set; }
         public Guid IdKatastarskaOpstina { get; set; }
         public Guid IdKorisnik { get; set; }
         public string? KatastarskaOpstinaNaziv { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        public List<(string NazivKulture, double Povrsina)> AktivneKulture { get; set; } = new();
+        public List<(string NazivKulture, decimal Povrsina)> AktivneKulture { get; set; } = new();
 
         public Parcela ToParcela() => new Parcela()
         {

@@ -17,7 +17,7 @@ namespace MojAtar.Core.Domain
         public Kultura Kultura { get; set; }
 
         [Range(0.01,double.MaxValue,ErrorMessage = "Cena po jedinici mora biti veca od 0.")]
-        public double Povrsina { get; set; }
+        public decimal Povrsina { get; set; }
         public DateTime DatumSetve { get; set; }
         public DateTime? DatumZetve { get; set; }
     }

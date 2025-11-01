@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,8 +16,9 @@ namespace MojAtar.Core.Domain
         public string BrojParcele { get; set; }
         [StringLength(40, ErrorMessage = $"Duzina stringa mora biti manja od 40 karaktera")]
         public string Naziv { get; set; }
-        [Range(0.01, double.MaxValue, ErrorMessage = "Cena po jedinici mora biti veca od 0.")]
-        public double Povrsina { get; set; }
+        [Range(0.0001, double.MaxValue, ErrorMessage = "Cena po jedinici mora biti veca od 0.")]
+        [Precision(18, 4)]
+        public decimal Povrsina { get; set; }
         [StringLength(175, ErrorMessage = $"Duzina stringa mora biti manja od 175 karaktera")]
         public string Napomena { get; set; }
         [Range(-90, 90)]

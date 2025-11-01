@@ -46,7 +46,7 @@ namespace MojAtar.Core.Services
                     .ToList();
 
 
-                double slobodno = parcela.Povrsina - setveZaRacunanje.Sum(pk => pk.Povrsina);
+                decimal slobodno = parcela.Povrsina - setveZaRacunanje.Sum(pk => pk.Povrsina);
 
                 if (dto.Povrsina > slobodno)
                 {
@@ -135,14 +135,14 @@ namespace MojAtar.Core.Services
                     .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
 
                 // Izračunaj trenutno zauzetu površinu bez ove setve
-                double trenutnoZauzeto = parcela.ParceleKulture
+                decimal trenutnoZauzeto = parcela.ParceleKulture
                     .Where(pk => pk.DatumZetve == null && pk.Id != parcelaKultura.Id)
                     .Sum(pk => pk.Povrsina);
 
-                double slobodno = parcela.Povrsina - trenutnoZauzeto;
+                decimal slobodno = parcela.Povrsina - trenutnoZauzeto;
 
                 if (dto.Povrsina > slobodno)
-                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
+                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F4} ha.");
 
                 // Update površine
                 parcelaKultura.Povrsina = dto.Povrsina ?? parcelaKultura.Povrsina;

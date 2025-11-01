@@ -125,6 +125,16 @@ namespace MojAtar.Infrastructure.MojAtar
                 .HasValue<Radnja>("Radnja")
                 .HasValue<Zetva>("Zetva");
 
+            // Preciznost površine (hektari)
+            modelBuilder.Entity<Parcela>()
+                .Property(p => p.Povrsina)
+                .HasColumnType("decimal(18,4)");
+
+            // Preciznost površine u relaciji Parcela_Kultura (zasejana površina)
+            modelBuilder.Entity<Parcela_Kultura>()
+                .Property(pk => pk.Povrsina)
+                .HasColumnType("decimal(18,4)");
+
         }
 
     }

@@ -24,7 +24,7 @@ namespace MojAtar.Core.DTO
         // Dodatno ako je zetva
         public double? Prinos { get; set; }
         //Za tabelu ParceleKulture
-        public double? Povrsina { get; set; }
+        public decimal? Povrsina { get; set; }
 
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
         public List<RadnjaPrikljucnaMasinaDTO> PrikljucneMasine { get; set; } = new();
