@@ -35,10 +35,9 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(resursAdd.Naziv));
             }
 
-            if (await _resursRepository.GetByNaziv(resursAdd.Naziv) != null)
-            {
-                throw new ArgumentException("Uneti naziv resursa vec postoji");
-            }
+            var existing = await _resursRepository.GetByNazivIKorisnik(resursAdd.Naziv, resursAdd.IdKorisnik);
+            if (existing != null)
+                throw new ArgumentException("Već postoji resurs sa ovim nazivom za vaš nalog.");
 
             Resurs resurs = resursAdd.ToResurs();
 
@@ -95,14 +94,14 @@ namespace MojAtar.Core.Services
 
             return resurs.ToResursDTO();
         }
-        public async Task<ResursDTO> GetByNaziv(string? naziv)
+        public async Task<ResursDTO> GetByNaziv(string? naziv, Guid idKorisnik)
         {
             if (naziv == null)
             {
                 throw new ArgumentNullException(nameof(naziv));
             }
 
-            Resurs? resurs = await _resursRepository.GetByNaziv(naziv);
+            Resurs? resurs = await _resursRepository.GetByNazivIKorisnik(naziv, idKorisnik);
 
             if (resurs == null) return null;
 

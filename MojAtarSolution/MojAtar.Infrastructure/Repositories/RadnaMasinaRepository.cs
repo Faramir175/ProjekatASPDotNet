@@ -37,9 +37,9 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.RadneMasine.FindAsync(id);
         }
 
-        public async Task<RadnaMasina> GetByNaziv(string naziv)
+        public async Task<RadnaMasina> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
-            return await _dbContext.RadneMasine.FirstOrDefaultAsync(k => k.Naziv == naziv);
+            return await _dbContext.RadneMasine.FirstOrDefaultAsync(k => k.Naziv == naziv && k.IdKorisnik == idKorisnik);
 
         }
 

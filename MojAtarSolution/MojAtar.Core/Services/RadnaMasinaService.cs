@@ -35,7 +35,7 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(radnaMasinaAdd.Naziv));
             }
 
-            if (await _radnaMasinaRepository.GetByNaziv(radnaMasinaAdd.Naziv) != null)
+            if (await _radnaMasinaRepository.GetByNazivIKorisnik(radnaMasinaAdd.Naziv, radnaMasinaAdd.IdKorisnik) != null)
             {
                 throw new ArgumentException("Uneti naziv parcele vec postoji");
             }
@@ -86,14 +86,14 @@ namespace MojAtar.Core.Services
 
             return radnaMasina.ToRadnaMasinaDTO();
         }
-        public async Task<RadnaMasinaDTO> GetByNaziv(string? naziv)
+        public async Task<RadnaMasinaDTO> GetByNaziv(string? naziv, Guid idKorisnik)
         {
             if (naziv == null)
             {
                 throw new ArgumentNullException(nameof(naziv));
             }
 
-            RadnaMasina? radnaMasina = await _radnaMasinaRepository.GetByNaziv(naziv);
+            RadnaMasina? radnaMasina = await _radnaMasinaRepository.GetByNazivIKorisnik(naziv, idKorisnik);
 
             if (radnaMasina == null) return null;
 

@@ -51,10 +51,10 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Kulture.FindAsync(id);
         }
 
-        public async Task<Kultura> GetByNaziv(string naziv)
+        public async Task<Kultura> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
-            return await _dbContext.Kulture.FirstOrDefaultAsync(k => k.Naziv == naziv);
-
+            return await _dbContext.Kulture
+                .FirstOrDefaultAsync(k => k.Naziv == naziv && k.IdKorisnik == idKorisnik);
         }
 
         public async Task<Kultura> Add(Kultura entity)

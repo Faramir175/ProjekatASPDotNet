@@ -9,7 +9,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
 {
     public interface IPrikljucnaMasinaRepository : IRepository<PrikljucnaMasina>
     {
-        public Task<PrikljucnaMasina> GetByNaziv(string naziv);
+        public Task<PrikljucnaMasina> GetByNazivIKorisnik(string naziv, Guid idKorisnik);
         public Task<bool> DeletePrikljucnaMasinaById(Guid? id);
         public Task<List<PrikljucnaMasina>> GetAllByKorisnik(Guid idKorisnik);
         Task<int> CountByKorisnikId(Guid korisnikId);

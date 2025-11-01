@@ -35,10 +35,9 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(parcelaAdd.Naziv));
             }
 
-            if (await _parcelaRepository.GetByNaziv(parcelaAdd.Naziv) != null)
-            {
-                throw new ArgumentException("Uneti naziv parcele vec postoji");
-            }
+            var existing = await _parcelaRepository.GetByNazivIKorisnik(parcelaAdd.Naziv, parcelaAdd.IdKorisnik);
+            if (existing != null)
+                throw new ArgumentException("Već postoji parcela sa ovim nazivom za vaš nalog.");
 
             Parcela parcela = parcelaAdd.ToParcela();
 
@@ -84,14 +83,14 @@ namespace MojAtar.Core.Services
 
             return parcela.ToParcelaDTO();
         }
-        public async Task<ParcelaDTO> GetByNaziv(string? naziv)
+        public async Task<ParcelaDTO> GetByNaziv(string? naziv, Guid idKorisnik)
         {
             if (naziv == null)
             {
                 throw new ArgumentNullException(nameof(naziv));
             }
 
-            Parcela? parcela = await _parcelaRepository.GetByNaziv(naziv);
+            Parcela? parcela = await _parcelaRepository.GetByNazivIKorisnik(naziv, idKorisnik);
 
             if (parcela == null) return null;
 

@@ -12,7 +12,7 @@ namespace MojAtar.Core.ServiceContracts
         public Task<RadnaMasinaDTO> Add(RadnaMasinaDTO dto);
         public Task<List<RadnaMasinaDTO>> GetAllForUser(Guid idKorisnika);
         public Task<RadnaMasinaDTO> GetById(Guid? id);
-        public Task<RadnaMasinaDTO> GetByNaziv(string? naziv);
+        public Task<RadnaMasinaDTO> GetByNaziv(string? naziv, Guid idKorisnik);
         public Task<RadnaMasinaDTO> Update(Guid? id, RadnaMasinaDTO dto);
         public Task<bool> DeleteById(Guid? id);
         Task<List<RadnaMasinaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);

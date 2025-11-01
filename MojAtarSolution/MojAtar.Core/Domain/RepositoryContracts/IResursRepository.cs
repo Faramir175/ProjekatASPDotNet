@@ -9,7 +9,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
 {
     public interface IResursRepository : IRepository<Resurs>
     {
-        public Task<Resurs> GetByNaziv(string naziv);
+        public Task<Resurs> GetByNazivIKorisnik(string naziv, Guid idKorisnik);
         public Task<bool> DeleteResursById(Guid? id);
         public Task<List<Resurs>> GetAllByKorisnik(Guid idKorisnik);
         public Task DodajCenu(CenaResursa cena);

@@ -35,10 +35,12 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(kulturaAdd.Naziv));
             }
 
-            if (await _kulturaRepository.GetByNaziv(kulturaAdd.Naziv) != null)
+            var existing = await _kulturaRepository.GetByNazivIKorisnik(kulturaAdd.Naziv, kulturaAdd.IdKorisnik);
+            if (existing != null)
             {
-                throw new ArgumentException("Uneti naziv kulture vec postoji");
+                throw new ArgumentException("Već postoji entitet sa ovim nazivom za vaš nalog.");
             }
+
 
             Kultura kultura = kulturaAdd.ToKultura();
 
@@ -96,14 +98,14 @@ namespace MojAtar.Core.Services
 
             return kultura.ToKulturaDTO();
         }
-        public async Task<KulturaDTO> GetByNaziv(string? naziv)
+        public async Task<KulturaDTO> GetByNaziv(string? naziv, Guid idKorisnik)
         {
             if (naziv == null)
             {
                 throw new ArgumentNullException(nameof(naziv));
             }
 
-            Kultura? kultura = await _kulturaRepository.GetByNaziv(naziv);
+            Kultura? kultura = await _kulturaRepository.GetByNazivIKorisnik(naziv, idKorisnik);
 
             if (kultura == null) return null;
 

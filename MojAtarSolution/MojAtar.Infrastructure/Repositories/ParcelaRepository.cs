@@ -38,11 +38,12 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Parcele.FindAsync(id);
         }
 
-        public async Task<Parcela> GetByNaziv(string naziv)
+        public async Task<Parcela> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
-            return await _dbContext.Parcele.FirstOrDefaultAsync(k => k.Naziv == naziv);
-
+            return await _dbContext.Parcele
+                .FirstOrDefaultAsync(p => p.Naziv == naziv && p.IdKorisnik == idKorisnik);
         }
+
 
         public async Task<Parcela> Add(Parcela entity)
         {

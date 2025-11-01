@@ -35,10 +35,16 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(prikljucnaMasinaAdd.Naziv));
             }
 
-            if (await _prikljucnaMasinaRepository.GetByNaziv(prikljucnaMasinaAdd.Naziv) != null)
+            var existing = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(
+                prikljucnaMasinaAdd.Naziv,
+                prikljucnaMasinaAdd.IdKorisnik
+            );
+
+            if (existing != null)
             {
-                throw new ArgumentException("Uneti naziv prikljucne masine vec postoji");
+                throw new ArgumentException("Već postoji priključna mašina sa ovim nazivom za vaš nalog.");
             }
+
 
             PrikljucnaMasina prikljucnaMasina = prikljucnaMasinaAdd.ToPrikljucnaMasina();
 
@@ -86,14 +92,14 @@ namespace MojAtar.Core.Services
 
             return prikljucnaMasina.ToPrikljucnaMasinaDTO();
         }
-        public async Task<PrikljucnaMasinaDTO> GetByNaziv(string? naziv)
+        public async Task<PrikljucnaMasinaDTO> GetByNaziv(string? naziv, Guid idKorisnik)
         {
             if (naziv == null)
             {
                 throw new ArgumentNullException(nameof(naziv));
             }
 
-            PrikljucnaMasina? prikljucnaMasina = await _prikljucnaMasinaRepository.GetByNaziv(naziv);
+            PrikljucnaMasina? prikljucnaMasina = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(naziv,idKorisnik);
 
             if (prikljucnaMasina == null) return null;
 

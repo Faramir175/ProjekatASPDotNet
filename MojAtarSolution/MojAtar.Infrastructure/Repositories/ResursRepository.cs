@@ -37,11 +37,12 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Resursi.FindAsync(id);
         }
 
-        public async Task<Resurs> GetByNaziv(string naziv)
+        public async Task<Resurs> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
-            return await _dbContext.Resursi.FirstOrDefaultAsync(k => k.Naziv == naziv);
-
+            return await _dbContext.Resursi
+                .FirstOrDefaultAsync(r => r.Naziv == naziv && r.IdKorisnik == idKorisnik);
         }
+
 
         public async Task<Resurs> Add(Resurs entity)
         {
