@@ -23,7 +23,6 @@
                             <h5 class="card-title">@radnja.TipRadnje</h5>
                             <p class="card-text mb-1"><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
                             <p class="card-text mb-1"><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €</p>
-                            <p class="card-text mb-1"><strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi</p>
                             <p class="card-text mb-1"><strong>Napomena:</strong> @radnja.Napomena</p>
                             <p class="card-text mb-1"><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
                             @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)

@@ -49,7 +49,6 @@ namespace MojAtar.UI.Controllers
         IdParcela = r.IdParcela,
         IdKultura = r.IdKultura,
         DatumIzvrsenja = r.DatumIzvrsenja,
-        VremenskiUslovi = r.VremenskiUslovi,
         Napomena = r.Napomena,
         UkupanTrosak = r.UkupanTrosak,
         TipRadnje = r.TipRadnje,

@@ -94,14 +94,11 @@
                 }
 
                 <div class="mb-3">
-                    <label asp-for="VremenskiUslovi" class="form-label">Vremenski uslovi</label>
-                    <input asp-for="VremenskiUslovi" class="form-control" />
+                    <label asp-for="Napomena" class="form-label">Napomena</label>
+                    <textarea asp-for="Napomena" class="form-control" rows="4" style="min-height: 120px; resize: vertical;"></textarea>
+                    <small class="text-muted">Unesi dodatne detalje o radnji (opciono).</small>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Napomena" class="form-label">Napomena</label>
-                    <textarea asp-for="Napomena" class="form-control"></textarea>
-                </div>
 
                 <div class="mb-3">
                     <label for="IdKultura">Kultura</label>
@@ -226,7 +223,6 @@
                             <div class="mb-3" id="unos-resurs-@resurs.Value" style="display: block;">
                                 <label class="form-label">Resurs: @resurs.Text – količina i datum</label>
                                 <input type="hidden" name="Resursi[@indexResurs].IdResurs" value="@resurs.Value" />
-                                <input type="number" name="Resursi[@indexResurs].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" value="@resData.Item1" required />
                                 <input type="date" name="Resursi[@indexResurs].DatumKoriscenja" class="form-control" value="@resData.Item2.ToString("yyyy-MM-dd")" required />
                             </div>
                             indexResurs++;

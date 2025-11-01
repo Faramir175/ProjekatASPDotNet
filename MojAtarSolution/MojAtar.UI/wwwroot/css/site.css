@@ -243,3 +243,9 @@
     color: #fff !important;
 }
 
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+

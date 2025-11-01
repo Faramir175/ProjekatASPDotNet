@@ -18,7 +18,6 @@ namespace MojAtar.Core.DTO.Extensions
                 IdParcela = radnja.IdParcela,
                 IdKultura = radnja.IdKultura,
                 DatumIzvrsenja = radnja.DatumIzvrsenja,
-                VremenskiUslovi = radnja.VremenskiUslovi,
                 Napomena = radnja.Napomena,
                 UkupanTrosak = radnja.UkupanTrosak,
                 TipRadnje = radnja.TipRadnje,

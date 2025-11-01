@@ -18,7 +18,7 @@ namespace MojAtar.Core.Domain
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public int RadniSatiServis { get; set; }
         public DateTime PoslednjiServis { get; set; }
-        [StringLength(175,ErrorMessage =$"Duzina stringa mora biti manja od 175 karaktera")]
+        [StringLength(500,ErrorMessage =$"Duzina stringa mora biti manja od 175 karaktera")]
         public string OpisServisa { get; set; }
         [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public int UkupanBrojRadnihSati { get; set; }

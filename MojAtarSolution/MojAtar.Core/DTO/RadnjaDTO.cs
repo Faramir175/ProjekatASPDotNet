@@ -14,7 +14,6 @@ namespace MojAtar.Core.DTO
         public Guid? IdParcela { get; set; }
         public Guid? IdKultura { get; set; }
         public DateTime DatumIzvrsenja { get; set; } = DateTime.Now;
-        public string? VremenskiUslovi { get; set; }
         public string? Napomena { get; set; }
         public double UkupanTrosak { get; set; }
         public RadnjaTip TipRadnje { get; set; }
@@ -44,7 +43,6 @@ namespace MojAtar.Core.DTO
                     IdParcela = this.IdParcela,
                     IdKultura = this.IdKultura,
                     DatumIzvrsenja = this.DatumIzvrsenja,
-                    VremenskiUslovi = this.VremenskiUslovi,
                     Napomena = this.Napomena,
                     UkupanTrosak = this.UkupanTrosak,
                     TipRadnje = this.TipRadnje,
@@ -61,7 +59,6 @@ namespace MojAtar.Core.DTO
                     IdParcela = this.IdParcela,
                     IdKultura = this.IdKultura,
                     DatumIzvrsenja = this.DatumIzvrsenja,
-                    VremenskiUslovi = this.VremenskiUslovi,
                     Napomena = this.Napomena,
                     UkupanTrosak = this.UkupanTrosak,
                     TipRadnje = this.TipRadnje,

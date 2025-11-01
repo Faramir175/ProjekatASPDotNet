@@ -74,7 +74,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             radnjaIzBaze.IdParcela = entity.IdParcela;
             radnjaIzBaze.DatumIzvrsenja = entity.DatumIzvrsenja;
-            radnjaIzBaze.VremenskiUslovi = entity.VremenskiUslovi;
             radnjaIzBaze.Napomena = entity.Napomena;
             radnjaIzBaze.UkupanTrosak = entity.UkupanTrosak;
             radnjaIzBaze.TipRadnje = entity.TipRadnje;

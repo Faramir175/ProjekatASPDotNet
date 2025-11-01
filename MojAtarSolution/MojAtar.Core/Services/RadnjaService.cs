@@ -87,7 +87,6 @@ namespace MojAtar.Core.Services
                     IdKultura = dto.IdKultura,
                     Napomena = dto.Napomena,
                     UkupanTrosak = dto.UkupanTrosak,
-                    VremenskiUslovi = dto.VremenskiUslovi,
                     Prinos = (double)dto.Prinos // <--- samo za žetvu
                 };
             }
@@ -102,7 +101,6 @@ namespace MojAtar.Core.Services
                     IdKultura = dto.IdKultura,
                     Napomena = dto.Napomena,
                     UkupanTrosak = dto.UkupanTrosak,
-                    VremenskiUslovi = dto.VremenskiUslovi
                 };
             }
 
@@ -121,7 +119,6 @@ namespace MojAtar.Core.Services
             // 1️⃣ Ažuriraj osnovne podatke radnje
             radnja.DatumIzvrsenja = dto.DatumIzvrsenja;
             radnja.Napomena = dto.Napomena;
-            radnja.VremenskiUslovi = dto.VremenskiUslovi;
             radnja.UkupanTrosak = dto.UkupanTrosak;
 
             // 2️⃣ Update Povrsine za setvu sa validacijom

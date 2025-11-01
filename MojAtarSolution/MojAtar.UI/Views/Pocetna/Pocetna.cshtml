@@ -72,7 +72,6 @@
                                 <p><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
                                 <p><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
                                 <p><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") €</p>
-                                <p><strong>Vremenski uslovi:</strong> @radnja.VremenskiUslovi</p>
                                 <p><strong>Napomena:</strong> @radnja.Napomena</p>
                                 @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
                                 {
