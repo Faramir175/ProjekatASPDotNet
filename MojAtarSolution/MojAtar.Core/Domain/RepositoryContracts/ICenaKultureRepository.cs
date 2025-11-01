@@ -8,7 +8,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
 {
     public interface ICenaKultureRepository
     {
-        Task<List<CenaKulture>> GetPaged(int skip, int take);
-        Task<int> GetTotalCount();
+        Task<List<CenaKulture>> GetPaged(Guid idKorisnik,int skip, int take);
+        Task<int> GetTotalCount(Guid idKorisnik);
     }
 }

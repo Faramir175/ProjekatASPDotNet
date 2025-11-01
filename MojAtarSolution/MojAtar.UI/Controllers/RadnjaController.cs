@@ -187,7 +187,7 @@ namespace MojAtar.UI.Controllers
             }
             catch (Exception ex)
             {
-                // 🔴 Greška (npr. pokušaj žetve bez setve)
+                
                 ViewBag.ErrorMessage = ex.Message;
 
                 await UcitajViewBagove();

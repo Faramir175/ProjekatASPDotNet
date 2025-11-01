@@ -9,7 +9,7 @@ namespace MojAtar.Core.ServiceContracts
 {
     public interface ICenaResursaService
     {
-        Task<List<CenaResursa>> GetPaged(int skip, int take);
-        Task<int> GetTotalCount();
+        Task<List<CenaResursa>> GetPaged(Guid idKorisnik,int skip, int take);
+        Task<int> GetTotalCount(Guid idKorisnik);
     }
 }

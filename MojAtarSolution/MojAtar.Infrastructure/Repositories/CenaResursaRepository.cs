@@ -19,19 +19,22 @@ namespace MojAtar.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<CenaResursa>> GetPaged(int skip, int take)
+        public async Task<List<CenaResursa>> GetPaged(Guid idKorisnik, int skip, int take)
         {
             return await _dbContext.CeneResursa
                 .Include(c => c.Resurs)
+                .Where(c => c.Resurs.IdKorisnik == idKorisnik)
                 .OrderByDescending(c => c.DatumVaznosti)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
         }
 
-        public async Task<int> GetTotalCount()
+        public async Task<int> GetTotalCount(Guid idKorisnik)
         {
-            return await _dbContext.CeneResursa.CountAsync();
+            return await _dbContext.CeneResursa
+                .CountAsync(c => c.Resurs.IdKorisnik == idKorisnik);
         }
+
     }
 }

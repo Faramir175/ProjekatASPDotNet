@@ -18,14 +18,14 @@ namespace MojAtar.Core.Services
             _repo = repo;
         }
 
-        public async Task<List<CenaResursa>> GetPaged(int skip, int take)
+        public async Task<List<CenaResursa>> GetPaged(Guid idKorisnik, int skip, int take)
         {
-            return await _repo.GetPaged(skip, take);
+            return await _repo.GetPaged(idKorisnik, skip, take);
         }
 
-        public async Task<int> GetTotalCount()
+        public async Task<int> GetTotalCount(Guid idKorisnik)
         {
-            return await _repo.GetTotalCount();
+            return await _repo.GetTotalCount(idKorisnik);
         }
     }
 }
