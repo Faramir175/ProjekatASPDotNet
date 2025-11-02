@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MojAtar.Infrastructure.MojAtar;
 
@@ -11,9 +12,11 @@ using MojAtar.Infrastructure.MojAtar;
 namespace MojAtar.Infrastructure.Migrations
 {
     [DbContext(typeof(MojAtarDbContext))]
-    partial class MojAtarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251101225143_StrukturnaOgranicenjaDelete")]
+    partial class StrukturnaOgranicenjaDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,9 +349,14 @@ namespace MojAtar.Infrastructure.Migrations
                     b.Property<Guid>("IdPrikljucnaMasina")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("RadnjaId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("IdRadnja", "IdPrikljucnaMasina");
 
                     b.HasIndex("IdPrikljucnaMasina");
+
+                    b.HasIndex("RadnjaId");
 
                     b.ToTable("RadnjePrikljucneMasine");
                 });
@@ -509,10 +517,14 @@ namespace MojAtar.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("MojAtar.Core.Domain.Radnja", "Radnja")
-                        .WithMany("RadnjePrikljucneMasine")
+                        .WithMany()
                         .HasForeignKey("IdRadnja")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MojAtar.Core.Domain.Radnja", null)
+                        .WithMany("RadnjePrikljucneMasine")
+                        .HasForeignKey("RadnjaId");
 
                     b.Navigation("PrikljucnaMasina");
 

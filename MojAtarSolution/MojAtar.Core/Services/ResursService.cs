@@ -17,11 +17,19 @@ namespace MojAtar.Core.Services
     public class ResursService : IResursService
     {
         private readonly IResursRepository _resursRepository;
+        private readonly IRadnjaService _radnjaService;
+        private readonly IRadnjaResursService _radnjaResursService;
 
-        public ResursService(IResursRepository resursRepository)
+        public ResursService(
+            IResursRepository resursRepository,
+            IRadnjaService radnjaService,
+            IRadnjaResursService radnjaResursService)
         {
             _resursRepository = resursRepository;
+            _radnjaService = radnjaService;
+            _radnjaResursService = radnjaResursService;
         }
+
 
         public async Task<ResursDTO> Add(ResursDTO resursAdd)
         {
@@ -60,18 +68,37 @@ namespace MojAtar.Core.Services
         public async Task<bool> DeleteById(Guid? id)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
 
-            Resurs? resurs = await _resursRepository.GetById(id.Value);
+            var resurs = await _resursRepository.GetById(id.Value);
             if (resurs == null)
                 return false;
 
-            await _resursRepository.DeleteResursById(id.Value);
+            // 1️⃣ Nađi sve radnje koje koriste ovaj resurs
+            var radnjeResursi = await _radnjaResursService.GetAllByUser(resurs.IdKorisnik);
+            var vezaneRadnje = radnjeResursi
+                .Where(rr => rr.IdResurs == id.Value)
+                .Select(rr => rr.IdRadnja)
+                .Distinct()
+                .ToList();
 
+            // 2️⃣ Obriši veze resursa i radnji
+            foreach (var idRadnja in vezaneRadnje)
+            {
+                await _radnjaResursService.Delete(idRadnja, id.Value);
+            }
+
+            // 3️⃣ Ažuriraj ukupne troškove svake radnje koja je koristila resurs
+            foreach (var idRadnja in vezaneRadnje)
+            {
+                await _radnjaService.UpdateUkupanTrosak(idRadnja);
+            }
+
+            // 4️⃣ Obriši sam resurs
+            await _resursRepository.DeleteResursById(id.Value);
             return true;
         }
+
 
         public async Task<List<ResursDTO>> GetAllForUser(Guid idKorisnika)
         {

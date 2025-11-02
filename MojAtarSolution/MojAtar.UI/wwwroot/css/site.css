@@ -120,7 +120,9 @@
         background-color: var(--glass-bg);
         border: 1px solid var(--glass-border);
         border-radius: 10px;
-        padding: 30px;
+        max-width: 1000px;
+        margin: 40px auto; 
+        padding: 40px 50px; 
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         backdrop-filter: blur(10px);
         animation: fadeIn 0.5s ease-in-out;
@@ -142,7 +144,7 @@
         padding: 30px;
         box-shadow: 0 0 20px rgba(8, 7, 16, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        max-width: 600px;
+        max-width: 1000px;
         margin: auto;
     }
 
@@ -226,26 +228,112 @@
     }
 }
 
-/* ✅ Aktivni linkovi i dropdown stavke - zelena primarna boja */
-.navbar-dark .navbar-nav .nav-link.active,
-.navbar-dark .navbar-nav .nav-link:focus,
-.navbar-dark .navbar-nav .nav-link:hover {
-    background-color: var(--primary-color) !important;
-    color: #fff !important;
-    border-radius: 6px;
+/* ========= GRID RASPORED ========= */
+#listaMasina .d-flex,
+#listaPrikljucnihMasina .d-flex,
+#listaResursa .d-flex {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    gap: 14px !important;
 }
 
-/* Dropdown stavke kada su aktivne ili hoverovane */
-.dropdown-menu .dropdown-item.active,
-.dropdown-menu .dropdown-item:active,
-.dropdown-menu .dropdown-item:hover {
-    background-color: var(--primary-color) !important;
-    color: #fff !important;
+/* ========= IZGLED KARTICA ========= */
+.form-check.masina-card,
+.form-check.prikljucna-card,
+.form-check.resurs-card {
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: all 0.2s ease-in-out;
 }
 
-textarea.form-control {
-    min-height: 120px;
-    resize: vertical;
+    /* Hover efekat */
+    .form-check.masina-card:hover,
+    .form-check.prikljucna-card:hover,
+    .form-check.resurs-card:hover {
+        transform: translateY(-2px);
+        border-color: #74c69d;
+    }
+
+/* Sakrij checkbox */
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
+/* Labela */
+.form-check-label.fw-semibold {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #212529;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* ========= MAGIJA :has() ========= */
+/* Kada je checkbox unutar kartice čekiran, oboji ceo kontejner */
+.form-check.masina-card:has(input:checked),
+.form-check.prikljucna-card:has(input:checked),
+.form-check.resurs-card:has(input:checked) {
+    background-color: #d1f7e0;
+    border-color: #2d6a4f;
+    box-shadow: 0 0 10px rgba(45,106,79,0.4);
+}
+
+    /* Boja teksta kad je aktivno */
+    .form-check.masina-card:has(input:checked) label,
+    .form-check.prikljucna-card:has(input:checked) label,
+    .form-check.resurs-card:has(input:checked) label {
+        color: #1b4332;
+        font-weight: 600;
+    }
+
+/* Mobilna verzija – 2 po redu */
+@media (max-width: 768px) {
+    #listaMasina .d-flex,
+    #listaPrikljucnihMasina .d-flex,
+    #listaResursa .d-flex {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    }
+}
+
+.container .container-glass {
+    width: 100% !important;
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+    display: block;
+}
+
+.app-page .container-glass,
+.container .container-glass {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 50px;
+    background-color: var(--glass-bg);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Razmak između sekcija unutar istog kontejnera */
+.container-glass > div + div {
+    margin-top: 60px;
+}
+
+/* Kartice */
+.container-glass .card {
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+    .container-glass .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 

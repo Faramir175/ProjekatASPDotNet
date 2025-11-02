@@ -23,7 +23,7 @@
         </div>
     }
 
-    <div class="container-glass" style="max-width: 600px; margin: auto;">
+    <div class="container-glass">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
 
@@ -51,12 +51,26 @@
                 <div id="obrisanePrikljucneContainer"></div>
                 <div id="obrisaniResursiContainer"></div>
 
+            @if (Model.Id == null)
+            {
                 <div class="mb-3">
                     <label class="form-label" for="IdParcela">Parcela</label>
                     <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList">
                         <option value="">-- Izaberite parcelu --</option>
                     </select>
                 </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label class="form-label" for="IdParcela">Parcela</label>
+                    <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList" disabled>
+                        <option value="">-- Izaberite parcelu --</option>
+                    </select>
+                    <input type="hidden" asp-for="IdParcela" />
+                    <small class="text-muted">Parcela se ne može menjati nakon kreiranja radnje.</small>
+                </div>
+            }
 
             @if (Model.Id == null)
             {
@@ -118,96 +132,112 @@
                     <input asp-for="Prinos" class="form-control" type="number" step="0.01" />
                 </div>
 
-                <div id="listaMasina">
-                    <label class="form-label">Izaberi radne masine koje koristis na ovoj radnji</label>
+            <div id="listaMasina" class="mb-4">
+                <label class="form-label d-block mb-2">Radne mašine</label>
 
+                <!-- ✅ kartice -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
                     @{
                         var povezaneMasine = Model.RadneMasine?.ToDictionary(rm => rm.IdRadnaMasina, rm => (double)rm.BrojRadnihSati)
                         ?? new Dictionary<Guid, double>();
-
                         int index = 0;
                     }
 
                     @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
                     {
                         var isChecked = povezaneMasine.ContainsKey(Guid.Parse(masina.Value));
-                        <div class="form-check">
+                        <div class="form-check masina-card shadow-sm">
                             <input class="form-check-input masina-checkbox" type="checkbox"
                                    id="masinaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
-                            @(isChecked ? "checked" : "") />
-                            <label class="form-label" for="masinaCheckbox_@masina.Value">
+                                   @(isChecked ? "checked" : "") />
+                            <label class="form-check-label fw-semibold" for="masinaCheckbox_@masina.Value">
                                 @masina.Text
                             </label>
                         </div>
+                    }
+                </div>
+
+                <!-- ✅ ispod kartica prikaz broja sati -->
+                <div id="masineDetaljiContainer">
+                    @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.RadneMasineSelectList)
+                    {
+                        var isChecked = povezaneMasine.ContainsKey(Guid.Parse(masina.Value));
                         if (isChecked)
                         {
                             <div class="mb-3" id="unos-masina-@masina.Value">
                                 <label class="form-label">Radna mašina: @masina.Text – broj sati</label>
                                 <input type="hidden" name="RadneMasine[@index].IdRadnaMasina" value="@masina.Value" />
-                                <input type="number" name="RadneMasine[@index].BrojRadnihSati" class="form-control" step="1" min="1" value="@povezaneMasine[Guid.Parse(masina.Value)]" required />
+                                <input type="number" name="RadneMasine[@index].BrojRadnihSati"
+                                       class="form-control" step="1" min="1"
+                                       value="@povezaneMasine[Guid.Parse(masina.Value)]" required />
                             </div>
                             index++;
                         }
                     }
                 </div>
+            </div>
 
-                <div id="masineDetaljiContainer"></div>
 
-                <div id="listaPrikljucnihMasina">
-                    <label class="form-label">Izaberi priključne mašine koje koristis na ovoj radnji</label>
 
+            <div id="listaPrikljucnihMasina" class="mb-4">
+                <label class="form-label d-block mb-2">Priključne mašine</label>
+                <div class="d-flex flex-wrap gap-2">
                     @{
                         var povezanePrikljucne = Model.PrikljucneMasine?
                         .Select(pm => pm.IdPrikljucnaMasina)
                         .ToHashSet()
                         ?? new HashSet<Guid>();
-
                         int indexPrik = 0;
                     }
 
                     @foreach (var masina in (IEnumerable<SelectListItem>)ViewBag.PrikljucneMasineSelectList)
                     {
                         var isChecked = povezanePrikljucne.Contains(Guid.Parse(masina.Value));
-                        <div class="form-check">
+                        <div class="form-check prikljucna-card shadow-sm">
                             <input class="form-check-input prikljucna-checkbox" type="checkbox"
                                    id="prikljucnaCheckbox_@masina.Value" value="@masina.Value" data-naziv="@masina.Text"
-                            @(isChecked ? "checked" : "") />
-                            <label class="form-label" for="prikljucnaCheckbox_@masina.Value">
+                                   @(isChecked ? "checked" : "") />
+                            <label class="form-check-label fw-semibold" for="prikljucnaCheckbox_@masina.Value">
                                 @masina.Text
                             </label>
                         </div>
+
                         if (isChecked)
                         {
                             <input type="hidden" name="PrikljucneMasine[@indexPrik].IdPrikljucnaMasina" value="@masina.Value" />
                             indexPrik++;
                         }
                     }
-
                 </div>
+            </div>
+
 
                 <div id="prikljucneDetaljiContainer"></div>
 
-                <div id="listaResursa">
-                    <label class="form-label">Izaberi resurse koje koristiš u ovoj radnji</label>
-
+            <div id="listaResursa" class="mb-4">
+                <label class="form-label d-block mb-2">Resursi</label>
+                <div class="d-flex flex-wrap gap-2">
                     @{
-                        var povezaniResursi = Model.Resursi?.ToDictionary(r => r.IdResurs, r => (r.Kolicina, r.DatumKoriscenja))
-                        ?? new Dictionary<Guid, (double, DateTime)>();
+                        var povezaniResursi = (Model.Resursi ?? new List<MojAtar.Core.DTO.RadnjaResursDTO>())
+                        .ToDictionary(r => r.IdResurs, r => r.Kolicina);
+
                     }
 
                     @foreach (var resurs in (IEnumerable<SelectListItem>)ViewBag.ResursiSelectList)
                     {
                         var isChecked = povezaniResursi.ContainsKey(Guid.Parse(resurs.Value));
-                        <div class="form-check">
+                        <div class="form-check resurs-card shadow-sm">
                             <input class="form-check-input resurs-checkbox" type="checkbox"
                                    id="resursCheckbox_@resurs.Value" value="@resurs.Value" data-naziv="@resurs.Text"
-                            @(isChecked ? "checked" : "") />
-                            <label class="form-label" for="resursCheckbox_@resurs.Value">
+                                   @(isChecked ? "checked" : "") />
+                            <label class="form-check-label fw-semibold" for="resursCheckbox_@resurs.Value">
                                 @resurs.Text
                             </label>
                         </div>
                     }
                 </div>
+            </div>
+
 
                 <div id="resursDetaljiContainer">
                     @{
@@ -221,9 +251,11 @@
                             var resData = povezaniResursi[Guid.Parse(resurs.Value)];
 
                             <div class="mb-3" id="unos-resurs-@resurs.Value" style="display: block;">
-                                <label class="form-label">Resurs: @resurs.Text – količina i datum</label>
+                                <label class="form-label">Resurs: @resurs.Text – količina</label>
+                            <input type="number" name="Resursi[@indexResurs].Kolicina"
+                                   class="form-control mb-2 resurs-kolicina-input"
+                                   step="0.1" min="0" value="@resData" required />
                                 <input type="hidden" name="Resursi[@indexResurs].IdResurs" value="@resurs.Value" />
-                                <input type="date" name="Resursi[@indexResurs].DatumKoriscenja" class="form-control" value="@resData.Item2.ToString("yyyy-MM-dd")" required />
                             </div>
                             indexResurs++;
                         }
@@ -472,10 +504,9 @@
                             existingDiv.id = `unos-resurs-${id}`;
                             const index = resursBrojac++; // Koristi i inkrementiraj brojač
                             existingDiv.innerHTML = `
-                                                <label class="form-label">Resurs: ${naziv} – količina i datum</label>
+                                        <label class="form-label">Resurs: ${naziv} – količina</label>
                                         <input type="hidden" name="Resursi[${index}].IdResurs" value="${id}" />
-                                        <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />
-                                        <input type="date" name="Resursi[${index}].DatumKoriscenja" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />`;
+                                        <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />`;
                             resursDetaljiContainer.appendChild(existingDiv);
                         }
                         // Ukloni iz liste za brisanje ako je bio dodat

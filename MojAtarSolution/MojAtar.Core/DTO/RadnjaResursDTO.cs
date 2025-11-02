@@ -14,7 +14,7 @@ namespace MojAtar.Core.DTO
         public Guid IdResurs { get; set; }
         public string NazivResursa { get; set; } = string.Empty;
         public double Kolicina { get; set; }
-        public DateTime DatumKoriscenja { get; set; } = DateTime.Now;
+        public DateTime DatumKoriscenja { get; set; }
         public double JedinicnaCena { get; set; } = 0;
 
         public Radnja_Resurs ToResurs() => new Radnja_Resurs()

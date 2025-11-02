@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MojAtar.Core.Domain;
+using MojAtar.Core.Domain.Enums;
 using MojAtar.Core.Domain.RepositoryContracts;
 using MojAtar.Core.DTO;
 using MojAtar.Core.DTO.ExtensionKlase;
@@ -17,11 +18,15 @@ namespace MojAtar.Core.Services
     public class KulturaService : IKulturaService
     {
         private readonly IKulturaRepository _kulturaRepository;
+        private readonly IRadnjaService _radnjaService;
 
-        public KulturaService(IKulturaRepository kulturaRepository)
+        public KulturaService(IKulturaRepository kulturaRepository,
+                              IRadnjaService radnjaService)
         {
             _kulturaRepository = kulturaRepository;
+            _radnjaService = radnjaService;
         }
+
 
         public async Task<KulturaDTO> Add(KulturaDTO kulturaAdd)
         {
@@ -64,18 +69,30 @@ namespace MojAtar.Core.Services
         public async Task<bool> DeleteById(Guid? id)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
 
-            Kultura? kultura = await _kulturaRepository.GetById(id.Value);
+            var kultura = await _kulturaRepository.GetById(id.Value);
             if (kultura == null)
                 return false;
 
-            await _kulturaRepository.DeleteKulturaById(id.Value);
+            // 🔹 Nađi sve radnje za ovu kulturu
+            var radnjeZaKulturu = await _radnjaService.GetAllByKultura(id.Value);
 
+            foreach (var radnja in radnjeZaKulturu)
+            {
+                // 🔹 Ako je tip Setva ili Žetva — obriši celu radnju
+                if (radnja.TipRadnje == RadnjaTip.Setva || radnja.TipRadnje == RadnjaTip.Zetva)
+                {
+                    await _radnjaService.DeleteById(radnja.Id.Value);
+                }
+                // Ostale radnje (oranje, prskanje...) ostaju netaknute
+            }
+
+            // 🔹 Obriši samu kulturu
+            await _kulturaRepository.DeleteKulturaById(id.Value);
             return true;
         }
+
 
         public async Task<List<KulturaDTO>> GetAllForUser(Guid idKorisnika)
         {

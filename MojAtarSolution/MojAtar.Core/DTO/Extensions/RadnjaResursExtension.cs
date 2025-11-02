@@ -17,6 +17,7 @@ namespace MojAtar.Core.DTO.Extensions
                 IdResurs = (Guid)radnjaResurs.IdResurs,
                 Kolicina = radnjaResurs.Kolicina,
                 DatumKoriscenja = radnjaResurs.DatumKoriscenja,
+                NazivResursa = radnjaResurs.Resurs?.Naziv ?? string.Empty,
             };
         }
     }

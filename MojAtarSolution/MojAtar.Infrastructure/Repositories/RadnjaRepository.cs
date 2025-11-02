@@ -173,13 +173,33 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return _dbContext.Radnje.CountAsync(p => p.Parcela.IdKorisnik == korisnikId);
         }
-        // ✅ Dohvata parcelu sa svim vezama na kulture (za proveru zauzetosti)
+        // Dohvata parcelu sa svim vezama na kulture (za proveru zauzetosti)
         public async Task<Parcela> GetParcelaSaSetvama(Guid idParcela)
         {
             return await _dbContext.Parcele
                 .Include(p => p.ParceleKulture.Where(pk => pk.DatumZetve == null))
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == idParcela);
+        }
+        public async Task UpdateUkupanTrosak(Guid idRadnja)
+        {
+            var radnja = await _dbContext.Radnje
+                .Include(r => r.RadnjeResursi)
+                    .ThenInclude(rr => rr.Resurs)
+                .FirstOrDefaultAsync(r => r.Id == idRadnja);
+
+            if (radnja == null)
+                return;
+
+            double noviTrosak = 0;
+            foreach (var rr in radnja.RadnjeResursi)
+            {
+                if (rr.Resurs != null)
+                    noviTrosak += (double)(rr.Kolicina * rr.Resurs.AktuelnaCena);
+            }
+
+            radnja.UkupanTrosak = noviTrosak;
+            await _dbContext.SaveChangesAsync();
         }
 
     }

@@ -9,9 +9,10 @@ namespace MojAtar.Core.Domain
 {
     public class Radnja_PrikljucnaMasina
     {
-        public Guid? IdRadnja { get; set; }
+        [Required]
+        public Guid IdRadnja { get; set; }
         public Radnja Radnja { get; set; }
-
+        [Required]
         public Guid? IdPrikljucnaMasina { get; set; }
         public PrikljucnaMasina PrikljucnaMasina { get; set; }
 

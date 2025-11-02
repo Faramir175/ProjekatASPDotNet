@@ -183,6 +183,7 @@ namespace MojAtar.UI.Controllers
                 foreach (var resurs in dto.Resursi)
                 {
                     resurs.IdRadnja = (Guid)novaRadnja.Id;
+                    resurs.DatumKoriscenja = dto.DatumIzvrsenja;
                     await _radnjaResursService.Add(resurs);
                 }
 
@@ -242,16 +243,19 @@ namespace MojAtar.UI.Controllers
             ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
             ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
-            if (radnja.TipRadnje == RadnjaTip.Setva)
+            if (radnja.TipRadnje == RadnjaTip.Setva && radnja.IdParcela.HasValue)
             {
-                var parcelaKultura = await _parcelaKulturaService
-                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
-
-                if (parcelaKultura != null)
+                //  Ako radnja nema kulturu (obrisana iz baze), samo preskoči učitavanje
+                if (radnja.IdKultura.HasValue)
                 {
-                    radnja.Povrsina = parcelaKultura.Povrsina;
+                    var parcelaKultura = await _parcelaKulturaService
+                        .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+
+                    if (parcelaKultura != null)
+                        radnja.Povrsina = parcelaKultura.Povrsina;
                 }
             }
+
 
             radnja.RadneMasine = povezaneMasine;
             radnja.PrikljucneMasine = povezanePrikljucne;

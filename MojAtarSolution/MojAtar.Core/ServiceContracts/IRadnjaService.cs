@@ -23,5 +23,7 @@ namespace MojAtar.Core.ServiceContracts
         Task<int> GetCountByParcela(Guid idParcela);
         Task<List<RadnjaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
         Task<int> GetCountByKorisnik(Guid idKorisnik);
+        Task UpdateUkupanTrosak(Guid idRadnja);
+
     }
 }

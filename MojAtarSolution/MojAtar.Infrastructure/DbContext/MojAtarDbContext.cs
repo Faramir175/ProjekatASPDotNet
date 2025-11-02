@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using MojAtar.Core.Domain;
 
 namespace MojAtar.Infrastructure.MojAtar
@@ -26,7 +25,9 @@ namespace MojAtar.Infrastructure.MojAtar
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Podešavanje auto-incrementa za primarne ključeve
+            // =====================================
+            // AUTO-INCREMENT za primarne ključeve
+            // =====================================
             modelBuilder.Entity<Korisnik>().Property(k => k.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Parcela>().Property(p => p.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<KatastarskaOpstina>().Property(k => k.Id).ValueGeneratedOnAdd();
@@ -39,103 +40,128 @@ namespace MojAtar.Infrastructure.MojAtar
             modelBuilder.Entity<CenaKulture>().Property(ck => ck.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<CenaResursa>().Property(cr => cr.Id).ValueGeneratedOnAdd();
 
-            // Podešavanje relacija M:N
+            // =====================================
+            // M:N RELACIJE
+            // =====================================
+
+            //  Parcela_Kultura — briše se ako se obriše parcela ili kultura
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasKey(pk => pk.Id);
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasOne(pk => pk.Parcela)
                 .WithMany(p => p.ParceleKulture)
                 .HasForeignKey(pk => pk.IdParcela)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); //  Briše ako se obriše parcela
             modelBuilder.Entity<Parcela_Kultura>()
                 .HasOne(pk => pk.Kultura)
                 .WithMany(k => k.ParceleKulture)
                 .HasForeignKey(pk => pk.IdKultura)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade); //  Briše ako se obriše kultura
 
+            //  Radnja_PrikljucnaMasina — veza nestaje ako se obriše radnja ili priključna mašina
             modelBuilder.Entity<Radnja_PrikljucnaMasina>()
                 .HasKey(rpm => new { rpm.IdRadnja, rpm.IdPrikljucnaMasina });
             modelBuilder.Entity<Radnja_PrikljucnaMasina>()
                 .HasOne(rpm => rpm.Radnja)
-                .WithMany()
-                .HasForeignKey(rpm => rpm.IdRadnja);
+                .WithMany(r => r.RadnjePrikljucneMasine)
+                .HasForeignKey(rpm => rpm.IdRadnja)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Radnja_PrikljucnaMasina>()
                 .HasOne(rpm => rpm.PrikljucnaMasina)
                 .WithMany()
-                .HasForeignKey(rpm => rpm.IdPrikljucnaMasina);
+                .HasForeignKey(rpm => rpm.IdPrikljucnaMasina)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            //  Radnja_RadnaMasina — veza nestaje ako se obriše radnja ili radna mašina
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasKey(rrm => new { rrm.IdRadnja, rrm.IdRadnaMasina });
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasOne(rrm => rrm.Radnja)
                 .WithMany(r => r.RadnjeRadneMasine)
-                .HasForeignKey(rrm => rrm.IdRadnja);
+                .HasForeignKey(rrm => rrm.IdRadnja)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Radnja_RadnaMasina>()
                 .HasOne(rrm => rrm.RadnaMasina)
                 .WithMany()
-                .HasForeignKey(rrm => rrm.IdRadnaMasina);
+                .HasForeignKey(rrm => rrm.IdRadnaMasina)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            //  Radnja_Resurs — briše se ako se obriše radnja ili resurs
             modelBuilder.Entity<Radnja_Resurs>()
                 .HasKey(rr => new { rr.IdRadnja, rr.IdResurs });
             modelBuilder.Entity<Radnja_Resurs>()
                 .HasOne(rr => rr.Radnja)
                 .WithMany(r => r.RadnjeResursi)
-                .HasForeignKey(rr => rr.IdRadnja);
+                .HasForeignKey(rr => rr.IdRadnja)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Radnja_Resurs>()
                 .HasOne(rr => rr.Resurs)
                 .WithMany()
-                .HasForeignKey(rr => rr.IdResurs);
+                .HasForeignKey(rr => rr.IdResurs)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // =====================================
+            // POJEDINAČNE RELACIJE
+            // =====================================
 
             modelBuilder.Entity<Parcela>()
                 .HasOne(p => p.KatastarskaOpstina)
                 .WithMany(k => k.Parcele)
-                .HasForeignKey(p => p.IdKatastarskaOpstina);
+                .HasForeignKey(p => p.IdKatastarskaOpstina)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Parcela>()
                 .HasOne(p => p.Korisnik)
                 .WithMany(k => k.Parcele)
-                .HasForeignKey(p => p.IdKorisnik);
+                .HasForeignKey(p => p.IdKorisnik)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            //  Cene Kulture i Resursa — brišu se ako se obriše kultura/resurs
             modelBuilder.Entity<CenaKulture>()
                 .HasOne(ck => ck.Kultura)
                 .WithMany(k => k.CeneKulture)
-                .HasForeignKey(ck => ck.IdKultura);
+                .HasForeignKey(ck => ck.IdKultura)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CenaResursa>()
                 .HasOne(cr => cr.Resurs)
-                .WithMany(k => k.CeneResursa)
-                .HasForeignKey(cr => cr.IdResurs);
+                .WithMany(r => r.CeneResursa)
+                .HasForeignKey(cr => cr.IdResurs)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacija Radnja - Parcela
+            //  Radnja - Parcela: ako se obriše parcela, brišu se i radnje
             modelBuilder.Entity<Radnja>()
                 .HasOne(r => r.Parcela)
                 .WithMany(p => p.Radnje)
-                .HasForeignKey(r => r.IdParcela);
+                .HasForeignKey(r => r.IdParcela)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacija Radnja - Kultura (pošto više nije u Zetvi)
+            //  Radnja - Kultura: ako se obriše kultura, postaje null
             modelBuilder.Entity<Radnja>()
                 .HasOne(r => r.Kultura)
                 .WithMany(k => k.Radnje)
                 .HasForeignKey(r => r.IdKultura)
-                .IsRequired(false); // jer nije obavezna za sve radnje
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            // Nasleđivanje Radnja - Zetva
+            // =====================================
+            // NASLEĐIVANJE RADNJA - ŽETVA
+            // =====================================
             modelBuilder.Entity<Radnja>()
                 .HasDiscriminator<string>("RadnjaTip")
                 .HasValue<Radnja>("Radnja")
                 .HasValue<Zetva>("Zetva");
 
-            // Preciznost površine (hektari)
+            // =====================================
+            // PRECIZNOST POVRŠINA
+            // =====================================
             modelBuilder.Entity<Parcela>()
                 .Property(p => p.Povrsina)
                 .HasColumnType("decimal(18,4)");
 
-            // Preciznost površine u relaciji Parcela_Kultura (zasejana površina)
             modelBuilder.Entity<Parcela_Kultura>()
                 .Property(pk => pk.Povrsina)
                 .HasColumnType("decimal(18,4)");
-
         }
-
     }
 }

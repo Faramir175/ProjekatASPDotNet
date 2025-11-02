@@ -120,6 +120,7 @@ namespace MojAtar.Core.Services
             radnja.DatumIzvrsenja = dto.DatumIzvrsenja;
             radnja.Napomena = dto.Napomena;
             radnja.UkupanTrosak = dto.UkupanTrosak;
+            radnja.IdKultura = dto.IdKultura;
 
             // 2️⃣ Update Povrsine za setvu sa validacijom
             if (radnja.TipRadnje == RadnjaTip.Setva)
@@ -228,5 +229,11 @@ namespace MojAtar.Core.Services
         {
             return await _radnjaRepository.GetCountByKorisnik(idKorisnik);
         }
+
+        public async Task UpdateUkupanTrosak(Guid idRadnja)
+        {
+            await _radnjaRepository.UpdateUkupanTrosak(idRadnja);
+        }
+
     }
 }
