@@ -75,6 +75,12 @@ namespace MojAtar.Core.Services
 
             return updatedEntity?.ToParcelaKulturaDTO();
         }
+        public async Task<ParcelaKulturaDTO?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina)
+        {
+            var entity = await _parcelaKulturaRepository.UpdateNezavrsena(idParcela, idKultura, novaPovrsina);
+            return entity?.ToParcelaKulturaDTO();
+        }
+
         public async Task<int> DeleteIfNotCompleted(Guid idParcela, Guid idKultura, DateTime datumSetve)
         {
             return await _parcelaKulturaRepository.DeleteAddedForParcelaKultura(idParcela, idKultura, datumSetve);

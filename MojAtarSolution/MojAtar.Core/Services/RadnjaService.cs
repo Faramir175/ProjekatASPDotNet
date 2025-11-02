@@ -112,52 +112,127 @@ namespace MojAtar.Core.Services
 
         public async Task<RadnjaDTO> Update(Guid id, RadnjaDTO dto)
         {
-            var radnja = await _radnjaRepository.GetById(id);
-            if (radnja == null)
-                throw new Exception("Radnja nije pronađena.");
+            var staraRadnja = await _radnjaRepository.GetById(id);
+            if (staraRadnja == null)
+                throw new ArgumentException("Radnja ne postoji.");
 
-            // 1️⃣ Ažuriraj osnovne podatke radnje
-            radnja.DatumIzvrsenja = dto.DatumIzvrsenja;
-            radnja.Napomena = dto.Napomena;
-            radnja.UkupanTrosak = dto.UkupanTrosak;
-            radnja.IdKultura = dto.IdKultura;
+            // Ako se tip radnje promenio, možemo baciti grešku jer to ne bi trebalo da se dešava
+            if (staraRadnja.TipRadnje != dto.TipRadnje)
+                throw new InvalidOperationException("Tip radnje se ne može menjati.");
 
-            // 2️⃣ Update Povrsine za setvu sa validacijom
-            if (radnja.TipRadnje == RadnjaTip.Setva)
+            // Ako je obična radnja
+            if (dto.TipRadnje != RadnjaTip.Setva && dto.TipRadnje != RadnjaTip.Zetva)
             {
-                var parcela = await _radnjaRepository.GetParcelaSaSetvama(radnja.IdParcela.Value);
+                await _radnjaRepository.Update(dto.ToRadnja());
+                return dto;
+            }
+
+            // --- SETVA ---
+            if (dto.TipRadnje == RadnjaTip.Setva)
+            {
+                var parcela = await _radnjaRepository.GetParcelaSaSetvama((Guid)dto.IdParcela);
                 if (parcela == null)
                     throw new Exception("Parcela nije pronađena.");
 
-                var parcelaKultura = await _parcelaKulturaService
-                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+                var nezavrseneSetve = parcela.ParceleKulture
+                    .Where(pk => pk.DatumZetve == null)
+                    .ToList();
 
-                // Izračunaj trenutno zauzetu površinu bez ove setve
-                decimal trenutnoZauzeto = parcela.ParceleKulture
-                    .Where(pk => pk.DatumZetve == null && pk.Id != parcelaKultura.Id)
-                    .Sum(pk => pk.Povrsina);
+                // Isključi trenutnu setvu koja se menja, da ne računa samu sebe dvaput
+                var setveZaRacunanje = nezavrseneSetve
+                    .Where(pk => !(pk.IdKultura == dto.IdKultura && pk.DatumSetve == staraRadnja.DatumIzvrsenja))
+                    .ToList();
 
-                decimal slobodno = parcela.Povrsina - trenutnoZauzeto;
+                decimal slobodno = parcela.Povrsina - setveZaRacunanje.Sum(pk => pk.Povrsina);
 
                 if (dto.Povrsina > slobodno)
-                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F4} ha.");
+                {
+                    throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
+                }
+                // Ako se promenila kultura
+                if (staraRadnja.IdKultura != dto.IdKultura)
+                {
+                    // proveri da li postoji zavrsena setva (ima DatumZetve)
+                    var staraPK = await _parcelaKulturaService
+                        .GetByParcelaAndKulturaId(staraRadnja.IdParcela.Value, staraRadnja.IdKultura.Value);
 
-                // Update površine
-                parcelaKultura.Povrsina = dto.Povrsina ?? parcelaKultura.Povrsina;
-                await _parcelaKulturaService.Update(parcelaKultura);
+                    if (staraPK != null && staraPK.DatumZetve != null)
+                    {
+                        throw new InvalidOperationException(
+                            "Nije dozvoljeno menjati kulturu setve za koju je već unešena žetva."
+                        );
+                    }
+
+                    // Ako nije završena, briši staru i dodaj novu
+                    var nezavrsena = await _parcelaKulturaService.GetNezavrsenaSetva(
+                        staraRadnja.IdParcela.Value, staraRadnja.IdKultura.Value);
+
+                    if (nezavrsena != null)
+                        await _parcelaKulturaService.Delete(nezavrsena.Id.Value);
+
+                    await _parcelaKulturaService.Add(new ParcelaKulturaDTO
+                    {
+                        IdParcela = dto.IdParcela,
+                        IdKultura = dto.IdKultura,
+                        Povrsina = (decimal)dto.Povrsina,
+                        DatumSetve = dto.DatumIzvrsenja,
+                    });
+                }
+                else
+                {
+                    var postojeca = await _parcelaKulturaService
+                        .GetNezavrsenaSetva(dto.IdParcela.Value, dto.IdKultura.Value);
+
+                    if (postojeca != null && postojeca.Povrsina != dto.Povrsina)
+                    {
+                        await _parcelaKulturaService.UpdateNezavrsena(
+                            dto.IdParcela.Value, dto.IdKultura.Value, (decimal)dto.Povrsina
+                        );
+                    }
+                }
             }
-            else if (radnja.TipRadnje == RadnjaTip.Zetva)
+
+            // --- ŽETVA ---
+            if (dto.TipRadnje == RadnjaTip.Zetva)
             {
-                var parcelaKultura = await _parcelaKulturaService
-                    .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+                if (staraRadnja.IdKultura != dto.IdKultura)
+                {
+                    // poništi stari datum žetve za staru kulturu
+                    var staraSetva = await _parcelaKulturaService.GetByParcelaAndKulturaId(
+                        staraRadnja.IdParcela.Value, staraRadnja.IdKultura.Value);
 
-                parcelaKultura.DatumZetve = dto.DatumIzvrsenja;
-                await _parcelaKulturaService.Update(parcelaKultura);
+                    if (staraSetva != null)
+                    {
+                        staraSetva.DatumZetve = null;
+                        await _parcelaKulturaService.Update(staraSetva);
+                    }
+
+                    // pronađi novu kulturu i postavi datum žetve
+                    var novaSetva = await _parcelaKulturaService.GetNezavrsenaSetva(
+                        dto.IdParcela.Value, dto.IdKultura.Value);
+
+                    if (novaSetva == null)
+                        throw new InvalidOperationException("Ne postoji aktivna setva za novu kulturu!");
+
+                    novaSetva.DatumZetve = dto.DatumIzvrsenja;
+                    await _parcelaKulturaService.Update(novaSetva);
+                }
+                else
+                {
+                    // ako kultura nije promenjena, samo osveži prinos i eventualno datum žetve
+                    var setva = await _parcelaKulturaService.GetNezavrsenaSetva(
+                        dto.IdParcela.Value, dto.IdKultura.Value);
+
+                    if (setva != null)
+                    {
+                        setva.DatumZetve = dto.DatumIzvrsenja;
+                        await _parcelaKulturaService.Update(setva);
+                    }
+                }
             }
 
-            // 3️⃣ Update radnje
-            var updated = await _radnjaRepository.Update(radnja);
-            return updated.ToRadnjaDTO();
+            await _radnjaRepository.Update(dto.ToRadnja());
+            return dto;
         }
 
         public async Task<bool> DeleteById(Guid id)
@@ -170,6 +245,19 @@ namespace MojAtar.Core.Services
                 await _parcelaKulturaService.DeleteIfNotCompleted((Guid)radnja.IdParcela,(Guid)radnja.IdKultura,radnja.DatumIzvrsenja
                 );
             }
+            if (radnja.TipRadnje == RadnjaTip.Zetva)
+            {
+                // poništava datum žetve ako je radnja obrisana
+                var parcelaKultura = await _parcelaKulturaService
+                    .GetByParcelaAndKulturaId((Guid)radnja.IdParcela, (Guid)radnja.IdKultura);
+
+                if (parcelaKultura != null && parcelaKultura.DatumZetve != null)
+                {
+                    parcelaKultura.DatumZetve = null;
+                    await _parcelaKulturaService.Update(parcelaKultura);
+                }
+            }
+
             return await _radnjaRepository.Delete(radnja);
         }
 

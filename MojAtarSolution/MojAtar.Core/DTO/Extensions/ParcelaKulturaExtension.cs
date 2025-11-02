@@ -18,7 +18,9 @@ namespace MojAtar.Core.DTO.Extensions
                 IdParcela = parcelaKultura.IdParcela,
                 Povrsina = parcelaKultura.Povrsina,
                 DatumSetve = parcelaKultura.DatumSetve,
-                DatumZetve = parcelaKultura.DatumZetve
+                DatumZetve = parcelaKultura.DatumZetve,
+                IdSetvaRadnja = parcelaKultura.IdSetvaRadnja,
+                IdZetvaRadnja = parcelaKultura.IdZetvaRadnja
             };
         }
     }

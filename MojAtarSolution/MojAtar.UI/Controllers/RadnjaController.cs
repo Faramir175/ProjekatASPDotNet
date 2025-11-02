@@ -150,24 +150,47 @@ namespace MojAtar.UI.Controllers
         public async Task<IActionResult> Dodaj(RadnjaDTO dto)
         {
             if (!ModelState.IsValid)
+            {
+                await UcitajViewBagove();
                 return View(dto);
+            }
+            if (dto.TipRadnje == RadnjaTip.Setva && (!dto.Povrsina.HasValue || dto.Povrsina <= 0))
+                ModelState.AddModelError(nameof(dto.Povrsina), "Površina mora biti uneta za setvu.");
+
+            if (dto.TipRadnje == RadnjaTip.Zetva && (!dto.Prinos.HasValue || dto.Prinos <= 0))
+                ModelState.AddModelError(nameof(dto.Prinos), "Prinos mora biti unet za žetvu.");
+
+            // Validacija povezanih mašina i resursa
+            if (dto.RadneMasine != null)
+            {
+                foreach (var masina in dto.RadneMasine)
+                {
+                    if (masina.BrojRadnihSati <= 0)
+                        ModelState.AddModelError("", "Morate uneti broj radnih sati za selektovanu mašinu.");
+                }
+            }
+
+            if (dto.Resursi != null)
+            {
+                foreach (var resurs in dto.Resursi)
+                {
+                    if (resurs.Kolicina <= 0)
+                        ModelState.AddModelError("", "Morate uneti količinu za selektovani resurs.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await UcitajViewBagove();
+                return View(dto);
+            }
+
 
             try
             {
                 if (!await ObradiParcelaKulturaAsync(dto))
                 {
-                    Guid idKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    var kulture = await _kulturaService.GetAllForUser(idKorisnik);
-                    var parcele = await _parcelaService.GetAllForUser(idKorisnik);
-                    var radneMasine = await _radnaMasinaService.GetAllForUser(idKorisnik);
-                    var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
-                    var resursi = await _resursService.GetAllForUser(idKorisnik);
-
-                    ViewBag.KultureSelectList = new SelectList(kulture, "Id", "Naziv");
-                    ViewBag.ParceleSelectList = new SelectList(parcele, "Id", "Naziv");
-                    ViewBag.RadneMasineSelectList = new SelectList(radneMasine, "Id", "Naziv");
-                    ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
-                    ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
+                    await UcitajViewBagove();
 
                     return View(dto);
                 }
@@ -193,12 +216,13 @@ namespace MojAtar.UI.Controllers
                     await _radnjaResursService.Add(resurs);
                 }
 
+                TempData["SuccessMessage"] = "Radnja je uspešno dodata!";
+
                 return RedirectToAction("Radnje");
             }
             catch (Exception ex)
             {
-                
-                ViewBag.ErrorMessage = ex.Message;
+                ModelState.AddModelError("", ex.Message);
 
                 await UcitajViewBagove();
                 return View(dto);
@@ -273,63 +297,100 @@ namespace MojAtar.UI.Controllers
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, RadnjaDTO dto, List<Guid> ObrisaneRadneMasineId, List<Guid> ObrisanePrikljucneMasineId, List<Guid> ObrisaniResursiId)
         {
-            if (ObrisaneRadneMasineId != null)
+            if (dto.TipRadnje == RadnjaTip.Setva && (!dto.Povrsina.HasValue || dto.Povrsina <= 0))
+                ModelState.AddModelError(nameof(dto.Povrsina), "Površina mora biti uneta za setvu.");
+
+            if (dto.TipRadnje == RadnjaTip.Zetva && (!dto.Prinos.HasValue || dto.Prinos <= 0))
+                ModelState.AddModelError(nameof(dto.Prinos), "Prinos mora biti unet za žetvu.");
+
+            if (dto.RadneMasine != null)
             {
-                foreach (var idOM in ObrisaneRadneMasineId)
+                foreach (var masina in dto.RadneMasine)
                 {
-                    await _radnjaRadnaMasinaService.Delete(dto.Id.Value, idOM);
+                    if (masina.BrojRadnihSati <= 0)
+                        ModelState.AddModelError("", "Morate uneti broj radnih sati za selektovanu mašinu.");
                 }
             }
 
-            if (ObrisanePrikljucneMasineId != null)
+            if (dto.Resursi != null)
             {
-                foreach (var idPM in ObrisanePrikljucneMasineId)
-                    await _radnjaPrikljucnaMasinaService.Delete(dto.Id.Value, idPM);
-            }
-
-            if (ObrisaniResursiId != null)
-            {
-                foreach (var idR in ObrisaniResursiId)
-                    await _radnjaResursService.Delete(dto.Id.Value, idR);
+                foreach (var resurs in dto.Resursi)
+                {
+                    if (resurs.Kolicina <= 0)
+                        ModelState.AddModelError("", "Morate uneti količinu za selektovani resurs.");
+                }
             }
 
             if (!ModelState.IsValid)
-                return View(dto);
-
-            foreach (var masina in dto.RadneMasine)
             {
-                await _radnjaRadnaMasinaService.Delete(id, masina.IdRadnaMasina);
+                await UcitajViewBagove();
+                return View("Dodaj", dto);
             }
 
-            foreach (var masina in dto.RadneMasine)
+            try
             {
-                masina.IdRadnja = id;
-                await _radnjaRadnaMasinaService.Add(masina);
-            }
+                if (ObrisaneRadneMasineId != null)
+                {
+                    foreach (var idOM in ObrisaneRadneMasineId)
+                    {
+                        await _radnjaRadnaMasinaService.Delete(dto.Id.Value, idOM);
+                    }
+                }
 
-            foreach (var prikljucna in dto.PrikljucneMasine)
-            {
-                await _radnjaPrikljucnaMasinaService.Delete(id, prikljucna.IdPrikljucnaMasina);
-            }
-            foreach (var prikljucna in dto.PrikljucneMasine)
-            {
-                prikljucna.IdRadnja = id;
-                await _radnjaPrikljucnaMasinaService.Add(prikljucna);
-            }
+                if (ObrisanePrikljucneMasineId != null)
+                {
+                    foreach (var idPM in ObrisanePrikljucneMasineId)
+                        await _radnjaPrikljucnaMasinaService.Delete(dto.Id.Value, idPM);
+                }
 
-            foreach (var resurs in dto.Resursi)
-            {
-                await _radnjaResursService.Delete(id, resurs.IdResurs);
-            }
-            foreach (var resurs in dto.Resursi)
-            {
-                resurs.IdRadnja = id;
-                await _radnjaResursService.Add(resurs);
-            }
+                if (ObrisaniResursiId != null)
+                {
+                    foreach (var idR in ObrisaniResursiId)
+                        await _radnjaResursService.Delete(dto.Id.Value, idR);
+                }
 
-            await _radnjaService.Update(id, dto);
+                foreach (var masina in dto.RadneMasine)
+                {
+                    await _radnjaRadnaMasinaService.Delete(id, masina.IdRadnaMasina);
+                }
 
-            return RedirectToAction("Radnje");
+                foreach (var masina in dto.RadneMasine)
+                {
+                    masina.IdRadnja = id;
+                    await _radnjaRadnaMasinaService.Add(masina);
+                }
+
+                foreach (var prikljucna in dto.PrikljucneMasine)
+                {
+                    await _radnjaPrikljucnaMasinaService.Delete(id, prikljucna.IdPrikljucnaMasina);
+                }
+                foreach (var prikljucna in dto.PrikljucneMasine)
+                {
+                    prikljucna.IdRadnja = id;
+                    await _radnjaPrikljucnaMasinaService.Add(prikljucna);
+                }
+
+                foreach (var resurs in dto.Resursi)
+                {
+                    await _radnjaResursService.Delete(id, resurs.IdResurs);
+                }
+                foreach (var resurs in dto.Resursi)
+                {
+                    resurs.IdRadnja = id;
+                    await _radnjaResursService.Add(resurs);
+                }
+
+                await _radnjaService.Update(id, dto);
+
+                TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
+                return RedirectToAction("Radnje");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                await UcitajViewBagove();
+                return View("Dodaj", dto);
+            }
         }
 
         [HttpPost("obrisi/{id}")]

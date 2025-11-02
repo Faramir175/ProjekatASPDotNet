@@ -12,14 +12,11 @@ namespace MojAtar.Core.Domain
     {
         [Key]
         public Guid? Id { get; set; }
-
         // Veza sa Parcelom
         public Guid? IdParcela { get; set; }
         public Parcela Parcela { get; set; }
         public DateTime DatumIzvrsenja { get; set; }
-        [StringLength(500,ErrorMessage =$"Duzina stringa mora biti manja od 500 karaktera")]
         public string? Napomena { get; set; }
-        [Range(0.01, double.MaxValue, ErrorMessage = "Vrednost mora biti veca od 0.")]
         public double UkupanTrosak { get; set; }
         public RadnjaTip TipRadnje { get; set; }
         public Guid? IdKultura { get; set; } 

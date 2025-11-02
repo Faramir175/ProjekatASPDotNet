@@ -76,7 +76,22 @@ namespace MojAtar.Infrastructure.Repositories
             existing.Povrsina = entity.Povrsina;
             existing.DatumSetve = entity.DatumSetve;
             existing.DatumZetve = entity.DatumZetve;
+            existing.IdSetvaRadnja = entity.IdSetvaRadnja;
+            existing.IdZetvaRadnja = entity.IdZetvaRadnja;
 
+            await _dbContext.SaveChangesAsync();
+            return existing;
+        }
+
+        public async Task<Parcela_Kultura?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina)
+        {
+            var existing = await _dbContext.ParceleKulture
+                .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura && pk.DatumZetve == null);
+
+            if (existing == null)
+                return null;
+
+            existing.Povrsina = novaPovrsina;
             await _dbContext.SaveChangesAsync();
             return existing;
         }

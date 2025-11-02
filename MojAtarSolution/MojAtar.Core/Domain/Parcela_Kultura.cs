@@ -20,5 +20,7 @@ namespace MojAtar.Core.Domain
         public decimal Povrsina { get; set; }
         public DateTime DatumSetve { get; set; }
         public DateTime? DatumZetve { get; set; }
+        public Guid? IdSetvaRadnja { get; set; }
+        public Guid? IdZetvaRadnja { get; set; }
     }
 }

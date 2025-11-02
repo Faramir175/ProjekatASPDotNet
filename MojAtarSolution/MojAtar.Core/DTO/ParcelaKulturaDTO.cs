@@ -17,6 +17,9 @@ namespace MojAtar.Core.DTO
         public DateTime DatumSetve { get; set; }
         public DateTime? DatumZetve { get; set; }
 
+        public Guid? IdSetvaRadnja { get; set; }
+        public Guid? IdZetvaRadnja { get; set; }
+
         //Za filtriranje
         public Guid IdKorisnik { get; set; }
 
@@ -27,7 +30,9 @@ namespace MojAtar.Core.DTO
             IdParcela = IdParcela,
             Povrsina = Povrsina,
             DatumSetve = DatumSetve,
-            DatumZetve = DatumZetve
+            DatumZetve = DatumZetve,
+            IdSetvaRadnja = IdSetvaRadnja,
+            IdZetvaRadnja = IdZetvaRadnja
         };
     }
 }
