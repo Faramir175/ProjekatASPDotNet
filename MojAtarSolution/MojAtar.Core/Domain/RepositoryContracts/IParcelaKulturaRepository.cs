@@ -16,6 +16,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, Guid idSetvaRadnja);
         Task<Parcela_Kultura> GetNezavrsenaSetva(Guid idParcela, Guid idKultura);
         Task<Parcela_Kultura?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina);
+        Task<List<Parcela_Kultura>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura);
 
     }
 }

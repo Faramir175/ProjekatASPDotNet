@@ -96,19 +96,23 @@ namespace MojAtar.Core.Services
                 };
                 await _parcelaKulturaService.Add(pkDto);
             }
-            //  4. Ako je ŽETVA → dopuni postojeću ParcelaKultura sa IdZetvaRadnja
+            // 4. Ako je ŽETVA → dopuni sve nezavršene setve za tu parcelu i kulturu
             else if (dto.TipRadnje == RadnjaTip.Zetva)
             {
-                var aktivna = await _parcelaKulturaService.GetNezavrsenaSetva(
+                var aktivneSetve = await _parcelaKulturaService.GetSveNezavrseneSetve(
                     dto.IdParcela.Value, dto.IdKultura.Value);
 
-                if (aktivna != null)
+                if (aktivneSetve == null || !aktivneSetve.Any())
+                    throw new Exception("Nema aktivnih setvi za ovu kulturu na parceli.");
+
+                foreach (var setva in aktivneSetve)
                 {
-                    aktivna.DatumZetve = dto.DatumIzvrsenja;
-                    aktivna.IdZetvaRadnja = entity.Id;
-                    await _parcelaKulturaService.Update(aktivna);
+                    setva.DatumZetve = dto.DatumIzvrsenja;
+                    setva.IdZetvaRadnja = entity.Id;
+                    await _parcelaKulturaService.Update(setva.ToParcelaKulturaDTO());
                 }
             }
+
 
             return entity.ToRadnjaDTO();
         }
@@ -127,6 +131,13 @@ namespace MojAtar.Core.Services
             //  Ako je SETVA
             if (dto.TipRadnje == RadnjaTip.Setva)
             {
+                var pk = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
+                var target = pk.FirstOrDefault(x => x.IdSetvaRadnja == id);
+
+                //  Ako setva ima žetvu — zabrani izmenu
+                if (target != null && target.IdZetvaRadnja != null)
+                    throw new Exception("Setva ne može da se menja jer je već obavljena žetva.");
+
                 var parcela = await _radnjaRepository.GetParcelaSaSetvama(dto.IdParcela.Value);
                 if (parcela == null)
                     throw new Exception("Parcela nije pronađena.");
@@ -141,9 +152,6 @@ namespace MojAtar.Core.Services
                     throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
 
                 // ažuriraj postojeći ParcelaKultura zapis
-                var pk = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
-                var target = pk.FirstOrDefault(x => x.IdSetvaRadnja == id);
-
                 if (target != null)
                 {
                     target.Povrsina = dto.Povrsina ?? target.Povrsina;
@@ -165,10 +173,11 @@ namespace MojAtar.Core.Services
                 }
             }
 
-            //  na kraju ažuriraj i radnju
+            //  Na kraju ažuriraj samu radnju
             await _radnjaRepository.Update(dto.ToRadnja());
             return dto;
         }
+
 
 
         public async Task<bool> DeleteById(Guid id)
@@ -204,15 +213,13 @@ namespace MojAtar.Core.Services
             //  Ako je ŽETVA
             else if (radnja.TipRadnje == RadnjaTip.Zetva)
             {
-                // Dohvati bilo koju setvu (završenu ili ne) za tu parcelu i kulturu
-                var parcelaKultura = await _parcelaKulturaService.GetByParcelaAndKulturaId(
-                    radnja.IdParcela!.Value, radnja.IdKultura!.Value);
-
-                if (parcelaKultura != null && parcelaKultura.IdZetvaRadnja == id)
+                // Resetuj sve setve iste kulture koje su imale ovu žetvu
+                var sveSetve = await _parcelaKulturaService.GetAllByParcelaId(radnja.IdParcela!.Value);
+                foreach (var pk in sveSetve.Where(x => x.IdKultura == radnja.IdKultura && x.IdZetvaRadnja == id))
                 {
-                    parcelaKultura.DatumZetve = null;
-                    parcelaKultura.IdZetvaRadnja = null;
-                    await _parcelaKulturaService.Update(parcelaKultura);
+                    pk.IdZetvaRadnja = null;
+                    pk.DatumZetve = null;
+                    await _parcelaKulturaService.Update(pk);
                 }
             }
 

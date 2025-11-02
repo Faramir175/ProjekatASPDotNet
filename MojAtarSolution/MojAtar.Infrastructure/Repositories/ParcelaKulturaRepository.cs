@@ -132,6 +132,16 @@ namespace MojAtar.Infrastructure.Repositories
 
             return await _dbContext.SaveChangesAsync();
         }
+        public async Task<List<Parcela_Kultura>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura)
+        {
+            return await _dbContext.ParceleKulture
+                .Include(pk => pk.Parcela)
+                .Include(pk => pk.Kultura)
+                .Where(pk => pk.IdParcela == idParcela &&
+                             pk.IdKultura == idKultura &&
+                             pk.IdZetvaRadnja == null)
+                .ToListAsync();
+        }
 
     }
 }
