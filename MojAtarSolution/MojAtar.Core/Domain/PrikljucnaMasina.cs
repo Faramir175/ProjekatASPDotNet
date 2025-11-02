@@ -11,17 +11,12 @@ namespace MojAtar.Core.Domain
     {
         [Key]
         public Guid? Id { get; set; }
-        [StringLength(50,ErrorMessage =$"Duzina stringa mora biti manja od 50 karaktera")]
         public string Naziv { get; set; }
         public string TipMasine { get; set; }
-        [Range(0.01,double.MaxValue,ErrorMessage = "Vrednost mora biti veca od 0.")]
         public double SirinaObrade { get; set; }
         public DateTime PoslednjiServis { get; set; }
-        [StringLength(500,ErrorMessage =$"Duzina stringa mora biti manja od 175 karaktera")]
         public string OpisServisa { get; set; }
 
-        //Za filtriranje
         public Guid IdKorisnik { get; set; }
-
     }
 }

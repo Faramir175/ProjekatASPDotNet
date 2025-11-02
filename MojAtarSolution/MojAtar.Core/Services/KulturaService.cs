@@ -132,35 +132,40 @@ namespace MojAtar.Core.Services
         public async Task<KulturaDTO> Update(Guid? id, KulturaDTO dto)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
 
             var staraKultura = await _kulturaRepository.GetById(id.Value);
             if (staraKultura == null)
                 return null;
 
+            //  Provera da li već postoji druga kultura sa istim nazivom
+            var postoji = await _kulturaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+            if (postoji != null && postoji.Id != id)
+                throw new ArgumentException("Već postoji kultura sa ovim nazivom za vaš nalog.");
+
+            //  Provera da li se cena promenila
             if (staraKultura.AktuelnaCena != dto.AktuelnaCena)
             {
                 CenaKulture novaCena = new CenaKulture
                 {
                     Id = Guid.NewGuid(),
                     IdKultura = id.Value,
-                    CenaPojedinici = dto.AktuelnaCena,
+                    CenaPojedinici = (double)dto.AktuelnaCena,
                     DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
                 };
 
                 await _kulturaRepository.DodajCenu(novaCena);
             }
 
+            // Update polja
             staraKultura.Naziv = dto.Naziv;
-            staraKultura.AktuelnaCena = dto.AktuelnaCena;
+            staraKultura.AktuelnaCena = (double)dto.AktuelnaCena;
             staraKultura.IdKorisnik = dto.IdKorisnik;
 
             await _kulturaRepository.Update(staraKultura);
-
             return staraKultura.ToKulturaDTO();
         }
+
         public async Task<List<KulturaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
             var kulture = await _kulturaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);

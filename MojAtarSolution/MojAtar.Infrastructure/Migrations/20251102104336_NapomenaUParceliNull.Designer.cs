@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MojAtar.Infrastructure.MojAtar;
 
@@ -11,9 +12,11 @@ using MojAtar.Infrastructure.MojAtar;
 namespace MojAtar.Infrastructure.Migrations
 {
     [DbContext(typeof(MojAtarDbContext))]
-    partial class MojAtarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251102104336_NapomenaUParceliNull")]
+    partial class NapomenaUParceliNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

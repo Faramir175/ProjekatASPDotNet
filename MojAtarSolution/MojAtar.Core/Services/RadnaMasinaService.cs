@@ -103,26 +103,29 @@ namespace MojAtar.Core.Services
         public async Task<RadnaMasinaDTO> Update(Guid? id, RadnaMasinaDTO dto)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
-            RadnaMasina? radnaMasina = new RadnaMasina()
+
+            // Provera da li već postoji druga mašina sa istim nazivom
+            var postoji = await _radnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+            if (postoji != null && postoji.Id != id)
+                throw new ArgumentException("Već postoji radna mašina sa ovim nazivom za vaš nalog.");
+
+            var radnaMasina = new RadnaMasina()
             {
                 Id = id.Value,
                 Naziv = dto.Naziv,
                 TipUlja = dto.TipUlja,
-                RadniSatiServis = dto.RadniSatiServis,
+                RadniSatiServis = (int)dto.RadniSatiServis,
                 PoslednjiServis = dto.PoslednjiServis,
                 OpisServisa = dto.OpisServisa,
-                UkupanBrojRadnihSati = dto.UkupanBrojRadnihSati,
+                UkupanBrojRadnihSati = (int)dto.UkupanBrojRadnihSati,
                 IdKorisnik = dto.IdKorisnik
             };
 
             await _radnaMasinaRepository.Update(radnaMasina);
-
-            if (radnaMasina == null) return null;
             return radnaMasina.ToRadnaMasinaDTO();
         }
+
 
         public async Task<List<RadnaMasinaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {

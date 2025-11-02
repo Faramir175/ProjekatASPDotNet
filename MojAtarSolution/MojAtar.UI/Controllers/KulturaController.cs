@@ -45,18 +45,37 @@ namespace MojAtar.UI.Controllers
         [HttpPost("dodaj")]
         public async Task<IActionResult> Dodaj(KulturaDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View(dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
-            await _kulturaService.Add(dto);
-            return RedirectToAction("Kulture");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.UserId = userId;
+                return View(dto);
+            }
+
+            try
+            {
+                await _kulturaService.Add(dto);
+                TempData["SuccessMessage"] = "Kultura je uspešno dodata!";
+                return RedirectToAction("Kulture");
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji kultura sa ovim nazivom za vaš nalog.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Došlo je do greške pri čuvanju. Proverite unos.");
+            }
+
+            ViewBag.UserId = userId;
+            return View(dto);
         }
+
 
         [HttpGet("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id)
@@ -71,18 +90,36 @@ namespace MojAtar.UI.Controllers
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, KulturaDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View("Dodaj", dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
             dto.Id = id;
-            await _kulturaService.Update(dto.Id,dto);
-            return RedirectToAction("Kulture");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.UserId = userId;
+                return View("Dodaj", dto);
+            }
+
+            try
+            {
+                await _kulturaService.Update(dto.Id, dto);
+                TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
+                return RedirectToAction("Kulture");
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji kultura sa ovim nazivom za vaš nalog.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Greška pri ažuriranju. Proverite unos.");
+            }
+
+            ViewBag.UserId = userId;
+            return View("Dodaj", dto);
         }
 
         [HttpPost("obrisi/{id}")]

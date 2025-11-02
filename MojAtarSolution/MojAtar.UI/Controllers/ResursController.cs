@@ -47,17 +47,35 @@ namespace MojAtar.UI.Controllers
         [HttpPost("dodaj")]
         public async Task<IActionResult> Dodaj(ResursDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View(dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
-            await _resursService.Add(dto);
-            return RedirectToAction("Resursi");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.UserId = userId;
+                return View(dto);
+            }
+
+            try
+            {
+                await _resursService.Add(dto);
+                TempData["SuccessMessage"] = "Resurs je uspešno dodat!";
+                return RedirectToAction("Resursi");
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji resurs sa ovim nazivom za vaš nalog.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Došlo je do greške pri čuvanju. Proverite unos.");
+            }
+
+            ViewBag.UserId = userId;
+            return View(dto);
         }
 
         [HttpGet("izmeni/{id}")]
@@ -73,18 +91,36 @@ namespace MojAtar.UI.Controllers
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, ResursDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View("Dodaj", dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
             dto.Id = id;
-            await _resursService.Update(dto.Id,dto);
-            return RedirectToAction("Resursi");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.UserId = userId;
+                return View("Dodaj", dto);
+            }
+
+            try
+            {
+                await _resursService.Update(dto.Id, dto);
+                TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
+                return RedirectToAction("Resursi");
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji resurs sa ovim nazivom za vaš nalog.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Greška pri ažuriranju. Proverite unos.");
+            }
+
+            ViewBag.UserId = userId;
+            return View("Dodaj", dto);
         }
 
         [HttpPost("obrisi/{id}")]

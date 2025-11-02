@@ -54,7 +54,7 @@ namespace MojAtar.Infrastructure.Repositories
         public async Task<Kultura> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
             return await _dbContext.Kulture
-                .FirstOrDefaultAsync(k => k.Naziv == naziv && k.IdKorisnik == idKorisnik);
+                .FirstOrDefaultAsync(k => k.Naziv.ToLower() == naziv.ToLower() && k.IdKorisnik == idKorisnik);
         }
 
         public async Task<Kultura> Add(Kultura entity)

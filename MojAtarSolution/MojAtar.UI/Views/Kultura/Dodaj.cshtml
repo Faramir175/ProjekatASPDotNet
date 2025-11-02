@@ -39,6 +39,8 @@
                 <label class="form-label">Datum važenja cene</label>
                 <input asp-for="DatumVaznostiCene" type="date" class="form-control"
                        value="@(Model.DatumVaznostiCene == DateTime.MinValue ? DateTime.Now.ToString("yyyy-MM-dd") : Model.DatumVaznostiCene.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="DatumVaznostiCene" class="text-danger"></span>
+
             </div>
 
             <div class="text-center">

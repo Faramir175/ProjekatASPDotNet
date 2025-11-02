@@ -26,14 +26,10 @@ namespace MojAtar.Core.Services
         public async Task<PrikljucnaMasinaDTO> Add(PrikljucnaMasinaDTO prikljucnaMasinaAdd)
         {
             if (prikljucnaMasinaAdd == null)
-            {
                 throw new ArgumentNullException(nameof(prikljucnaMasinaAdd));
-            }
 
-            if (prikljucnaMasinaAdd.Naziv == null)
-            {
+            if (string.IsNullOrWhiteSpace(prikljucnaMasinaAdd.Naziv))
                 throw new ArgumentException(nameof(prikljucnaMasinaAdd.Naziv));
-            }
 
             var existing = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(
                 prikljucnaMasinaAdd.Naziv,
@@ -41,17 +37,12 @@ namespace MojAtar.Core.Services
             );
 
             if (existing != null)
-            {
                 throw new ArgumentException("Već postoji priključna mašina sa ovim nazivom za vaš nalog.");
-            }
 
-
-            PrikljucnaMasina prikljucnaMasina = prikljucnaMasinaAdd.ToPrikljucnaMasina();
-
+            var prikljucnaMasina = prikljucnaMasinaAdd.ToPrikljucnaMasina();
             prikljucnaMasina.Id = Guid.NewGuid();
 
             await _prikljucnaMasinaRepository.Add(prikljucnaMasina);
-
             return prikljucnaMasina.ToPrikljucnaMasinaDTO();
         }
 
@@ -109,24 +100,26 @@ namespace MojAtar.Core.Services
         public async Task<PrikljucnaMasinaDTO> Update(Guid? id, PrikljucnaMasinaDTO dto)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
-            PrikljucnaMasina? prikljucnaMasina = new PrikljucnaMasina()
-            {
-                Id = id.Value,
-                Naziv = dto.Naziv,
-                TipMasine = dto.TipMasine,
-                SirinaObrade = dto.SirinaObrade,
-                PoslednjiServis = dto.PoslednjiServis,
-                OpisServisa = dto.OpisServisa,
-                IdKorisnik = dto.IdKorisnik
-            };
 
-            await _prikljucnaMasinaRepository.Update(prikljucnaMasina);
+            var stara = await _prikljucnaMasinaRepository.GetById(id.Value);
+            if (stara == null)
+                return null;
 
-            if (prikljucnaMasina == null) return null;
-            return prikljucnaMasina.ToPrikljucnaMasinaDTO();
+            // Provera duplikata — ako postoji druga mašina sa istim nazivom
+            var postoji = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+            if (postoji != null && postoji.Id != id)
+                throw new ArgumentException("Već postoji priključna mašina sa ovim nazivom za vaš nalog.");
+
+            stara.Naziv = dto.Naziv;
+            stara.TipMasine = dto.TipMasine;
+            stara.SirinaObrade = (double)dto.SirinaObrade;
+            stara.PoslednjiServis = dto.PoslednjiServis;
+            stara.OpisServisa = dto.OpisServisa;
+            stara.IdKorisnik = dto.IdKorisnik;
+
+            await _prikljucnaMasinaRepository.Update(stara);
+            return stara.ToPrikljucnaMasinaDTO();
         }
         public async Task<List<PrikljucnaMasinaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {

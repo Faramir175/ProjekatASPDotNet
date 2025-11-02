@@ -24,7 +24,7 @@
                                 <strong>Vrsta:</strong> @resurs.Vrsta
                             </p>
                             <p class="card-text">
-                                <strong>Aktuelna cena:</strong> @resurs.AktuelnaCena.ToString("0.00") RSD
+                                <strong>Aktuelna cena:</strong> @(resurs.AktuelnaCena ?? 0) RSD
                             </p>
                         </div>
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">

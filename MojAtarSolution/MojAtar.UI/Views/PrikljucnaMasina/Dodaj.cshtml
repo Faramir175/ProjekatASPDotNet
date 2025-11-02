@@ -15,7 +15,8 @@
             </a>
         </div>
 
-        <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="PrikljucnaMasina">
+        <form method="post" asp-action="@(Model.Id == null || Model.Id == Guid.Empty ? "Dodaj priključnu mašinu" : "Sačuvaj izmene")
+" asp-controller="PrikljucnaMasina">
             @if (Model.Id != null)
             {
                 <input type="hidden" asp-for="Id" />
@@ -56,7 +57,7 @@
 
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">
-                    @(Model.Id == null ? "Dodaj priključnu mašinu" : "Sačuvaj izmene")
+                    @(Model.Id == null || Model.Id == Guid.Empty ? "Dodaj priključnu mašinu" : "Sačuvaj izmene")
                 </button>
             </div>
         </form>

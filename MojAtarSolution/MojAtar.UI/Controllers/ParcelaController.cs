@@ -51,18 +51,43 @@ namespace MojAtar.UI.Controllers
         [HttpPost("dodaj")]
         public async Task<IActionResult> Dodaj(ParcelaDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View(dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
-            await _parcelaService.Add(dto);
-            return RedirectToAction("Parcele");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.KatastarskeOpstine = new SelectList(
+                    await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", dto.IdKatastarskaOpstina);
+                ViewBag.UserId = userId;
+                return View(dto);
+            }
+
+            try
+            {
+                await _parcelaService.Add(dto);
+                TempData["SuccessMessage"] = "Parcela je uspešno dodata!";
+                return RedirectToAction("Parcele");
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji parcela sa ovim nazivom za vaš nalog.");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Došlo je do greške pri čuvanju. Proverite da su svi podaci ispravno popunjeni.");
+            }
+
+            ViewBag.KatastarskeOpstine = new SelectList(
+                await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", dto.IdKatastarskaOpstina);
+            ViewBag.UserId = userId;
+
+            return View(dto);
         }
+
+
 
         [HttpGet("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id)
@@ -78,19 +103,36 @@ namespace MojAtar.UI.Controllers
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, ParcelaDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View("Dodaj", dto);
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("Korisnik nije prijavljen.");
-            }
+                return Unauthorized();
+
             dto.IdKorisnik = Guid.Parse(userId);
             dto.Id = id;
-            await _parcelaService.Update(dto.Id,dto);
-            return RedirectToAction("Parcele");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.KatastarskeOpstine = new SelectList(await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", dto.IdKatastarskaOpstina);
+                ViewBag.UserId = userId;
+                return View("Dodaj", dto);
+            }
+
+            try
+            {
+                await _parcelaService.Update(dto.Id, dto);
+                TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
+                return RedirectToAction("Parcele");
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("Naziv", "Već postoji parcela sa ovim nazivom.");
+                ViewBag.KatastarskeOpstine = new SelectList(await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", dto.IdKatastarskaOpstina);
+                ViewBag.UserId = userId;
+                return View("Dodaj", dto);
+            }
         }
+
+
 
         [HttpPost("obrisi/{id}")]
         public async Task<IActionResult> Obrisi(Guid id)

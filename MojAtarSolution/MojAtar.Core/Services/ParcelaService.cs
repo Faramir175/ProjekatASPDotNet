@@ -96,31 +96,35 @@ namespace MojAtar.Core.Services
 
             return parcela.ToParcelaDTO();
         }
-
         public async Task<ParcelaDTO> Update(Guid? id, ParcelaDTO dto)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
-            Parcela? parcela = new Parcela()
-            {
-                Id = id.Value,
-                BrojParcele = dto.BrojParcele,
-                Naziv = dto.Naziv,
-                Povrsina = dto.Povrsina,
-                Napomena = dto.Napomena,
-                IdKatastarskaOpstina = dto.IdKatastarskaOpstina,
-                IdKorisnik = dto.IdKorisnik,
-                Longitude = dto.Longitude,
-                Latitude = dto.Latitude
-            };
 
-            await _parcelaRepository.Update(parcela);
+            var staraParcela = await _parcelaRepository.GetById(id.Value);
+            if (staraParcela == null)
+                return null;
 
-            if (parcela == null) return null;
-            return parcela.ToParcelaDTO();
+            //  Provera da li već postoji parcela sa istim nazivom za ovog korisnika (osim same sebe)
+            var postoji = await _parcelaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+            if (postoji != null && postoji.Id != id)
+                throw new ArgumentException("Već postoji parcela sa ovim nazivom za vaš nalog.");
+
+            // Ažuriraj polja
+            staraParcela.BrojParcele = dto.BrojParcele;
+            staraParcela.Naziv = dto.Naziv;
+            staraParcela.Povrsina = (decimal)dto.Povrsina;
+            staraParcela.Napomena = dto.Napomena;
+            staraParcela.IdKatastarskaOpstina = dto.IdKatastarskaOpstina;
+            staraParcela.IdKorisnik = dto.IdKorisnik;
+            staraParcela.Longitude = dto.Longitude;
+            staraParcela.Latitude = dto.Latitude;
+
+            await _parcelaRepository.Update(staraParcela);
+
+            return staraParcela.ToParcelaDTO();
         }
+
         public async Task<List<ParcelaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
             var parcele = await _parcelaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);

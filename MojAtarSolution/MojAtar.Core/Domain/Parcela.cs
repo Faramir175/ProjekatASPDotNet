@@ -12,18 +12,12 @@ namespace MojAtar.Core.Domain
     {
         [Key]
         public Guid? Id { get; set; }
-        [StringLength(20, ErrorMessage = $"Duzina stringa mora biti manja od 20 karaktera")]
         public string BrojParcele { get; set; }
-        [StringLength(40, ErrorMessage = $"Duzina stringa mora biti manja od 40 karaktera")]
         public string Naziv { get; set; }
-        [Range(0.0001, double.MaxValue, ErrorMessage = "Cena po jedinici mora biti veca od 0.")]
         [Precision(18, 4)]
         public decimal Povrsina { get; set; }
-        [StringLength(175, ErrorMessage = $"Duzina stringa mora biti manja od 175 karaktera")]
-        public string Napomena { get; set; }
-        [Range(-90, 90)]
+        public string? Napomena { get; set; }
         public double? Latitude { get; set; }
-        [Range(-180, 180)]
         public double? Longitude { get; set; }
 
         // Foreign Key

@@ -13,7 +13,7 @@ namespace MojAtar.Core.DTO.Extensions
         {
             return new PrikljucnaMasinaDTO()
             {
-                Id = prikljucnaMasina.Id,
+                Id = (Guid)prikljucnaMasina.Id,
                 Naziv = prikljucnaMasina.Naziv,
                 TipMasine = prikljucnaMasina.TipMasine,
                 SirinaObrade = prikljucnaMasina.SirinaObrade,

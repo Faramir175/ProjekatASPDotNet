@@ -138,21 +138,24 @@ namespace MojAtar.Core.Services
         public async Task<ResursDTO> Update(Guid? id, ResursDTO dto)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(nameof(id));
-            }
 
             var stariResurs = await _resursRepository.GetById(id.Value);
             if (stariResurs == null)
                 return null;
 
+            // Provera duplikata po nazivu i korisniku (izuzev samog sebe)
+            var postoji = await _resursRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+            if (postoji != null && postoji.Id != id)
+                throw new ArgumentException("Već postoji resurs sa ovim nazivom za vaš nalog.");
+
             if (stariResurs.AktuelnaCena != dto.AktuelnaCena)
             {
-                CenaResursa novaCena = new CenaResursa
+                var novaCena = new CenaResursa
                 {
                     Id = Guid.NewGuid(),
                     IdResurs = id.Value,
-                    CenaPojedinici = dto.AktuelnaCena,
+                    CenaPojedinici = (double)dto.AktuelnaCena,
                     DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
                 };
 
@@ -161,13 +164,13 @@ namespace MojAtar.Core.Services
 
             stariResurs.Naziv = dto.Naziv;
             stariResurs.Vrsta = dto.Vrsta;
-            stariResurs.AktuelnaCena = dto.AktuelnaCena;
+            stariResurs.AktuelnaCena = (double)dto.AktuelnaCena;
             stariResurs.IdKorisnik = dto.IdKorisnik;
 
             await _resursRepository.Update(stariResurs);
-
             return stariResurs.ToResursDTO();
         }
+
         public async Task<List<ResursDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
             var resursi = await _resursRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
