@@ -63,27 +63,20 @@ namespace MojAtar.Core.Services
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
 
-            var updatedEntity = await _parcelaKulturaRepository.Update(new Parcela_Kultura
-            {
-                Id = dto.Id,
-                IdParcela = dto.IdParcela,
-                IdKultura = dto.IdKultura,
-                Povrsina = dto.Povrsina,
-                DatumSetve = dto.DatumSetve,
-                DatumZetve = dto.DatumZetve
-            });
-
+            var updatedEntity = await _parcelaKulturaRepository.Update(dto.ToParcelaKultura());
             return updatedEntity?.ToParcelaKulturaDTO();
         }
+
+
         public async Task<ParcelaKulturaDTO?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina)
         {
             var entity = await _parcelaKulturaRepository.UpdateNezavrsena(idParcela, idKultura, novaPovrsina);
             return entity?.ToParcelaKulturaDTO();
         }
 
-        public async Task<int> DeleteIfNotCompleted(Guid idParcela, Guid idKultura, DateTime datumSetve)
+        public async Task<int> DeleteIfNotCompleted(Guid idParcela, Guid idKultura, Guid idSetvaRadnja)
         {
-            return await _parcelaKulturaRepository.DeleteAddedForParcelaKultura(idParcela, idKultura, datumSetve);
+            return await _parcelaKulturaRepository.DeleteAddedForParcelaKultura(idParcela, idKultura, idSetvaRadnja);
         }
         public async Task<ParcelaKulturaDTO?> GetNezavrsenaSetva(Guid idParcela, Guid idKultura)
         {

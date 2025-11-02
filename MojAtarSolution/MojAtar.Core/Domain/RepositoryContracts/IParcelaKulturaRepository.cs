@@ -13,7 +13,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         Task<Parcela_Kultura> GetByParcelaAndKulturaId(Guid idParcela, Guid idKultura);
         Task<List<Parcela_Kultura>> GetAllByParcelaId(Guid idParcela);
         Task<bool> DeleteById(Guid id);
-        Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, DateTime datumSetve);
+        Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, Guid idSetvaRadnja);
         Task<Parcela_Kultura> GetNezavrsenaSetva(Guid idParcela, Guid idKultura);
         Task<Parcela_Kultura?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina);
 

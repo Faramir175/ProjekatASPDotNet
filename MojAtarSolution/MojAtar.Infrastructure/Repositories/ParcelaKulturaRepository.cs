@@ -63,8 +63,12 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.ParceleKulture
                 .Include(pk => pk.Parcela)
                 .Include(pk => pk.Kultura)
-                .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura && pk.DatumZetve == null);
+                .FirstOrDefaultAsync(pk =>
+                    pk.IdParcela == idParcela &&
+                    pk.IdKultura == idKultura &&
+                    pk.IdZetvaRadnja == null);
         }
+
 
         public async Task<Parcela_Kultura> Update(Parcela_Kultura entity)
         {
@@ -86,7 +90,10 @@ namespace MojAtar.Infrastructure.Repositories
         public async Task<Parcela_Kultura?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina)
         {
             var existing = await _dbContext.ParceleKulture
-                .FirstOrDefaultAsync(pk => pk.IdParcela == idParcela && pk.IdKultura == idKultura && pk.DatumZetve == null);
+                .FirstOrDefaultAsync(pk =>
+                    pk.IdParcela == idParcela &&
+                    pk.IdKultura == idKultura &&
+                    pk.IdZetvaRadnja == null);
 
             if (existing == null)
                 return null;
@@ -95,6 +102,7 @@ namespace MojAtar.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return existing;
         }
+
 
         public async Task<bool> DeleteById(Guid id)
         {
@@ -111,12 +119,12 @@ namespace MojAtar.Infrastructure.Repositories
             .Include(pk => pk.Kultura)
             .FirstOrDefaultAsync(pk => pk.Id == id);
         }
-        public async Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, DateTime datumSetve)
+        public async Task<int> DeleteAddedForParcelaKultura(Guid idParcela, Guid idKultura, Guid idSetvaRadnja)
         {
             var entities = await _dbContext.ParceleKulture
                 .Where(pk => pk.IdParcela == idParcela
                           && pk.IdKultura == idKultura
-                          && pk.DatumSetve == datumSetve)
+                          && pk.IdSetvaRadnja == idSetvaRadnja)
                 .ToListAsync();
 
             if (entities.Any())

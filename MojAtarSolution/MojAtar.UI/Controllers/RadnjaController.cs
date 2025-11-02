@@ -410,41 +410,27 @@ namespace MojAtar.UI.Controllers
 
         private async Task<bool> ObradiParcelaKulturaAsync(RadnjaDTO dto)
         {
-            if (dto.IdParcela != null && dto.IdKultura != null)
+            if (dto.IdParcela == null || dto.IdKultura == null)
+                return true;
+
+            if (dto.TipRadnje == RadnjaTip.Setva)
             {
-                var parcelaId = dto.IdParcela.Value;
-                var kulturaId = dto.IdKultura.Value;
+                return true;
+            }
+            else if (dto.TipRadnje == RadnjaTip.Zetva)
+            {
+                var aktivna = await _parcelaKulturaService.GetNezavrsenaSetva(
+                    dto.IdParcela.Value, dto.IdKultura.Value);
 
-                if (dto.TipRadnje == RadnjaTip.Setva)
+                if (aktivna == null)
                 {
-                    var unosSetva = new ParcelaKulturaDTO
-                    {
-                        Id = Guid.NewGuid(),
-                        IdParcela = parcelaId,
-                        IdKultura = kulturaId,
-                        DatumSetve = dto.DatumIzvrsenja,
-                        Povrsina = dto.Povrsina ?? 0,
-                        IdKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
-                    };
-
-                    await _parcelaKulturaService.Add(unosSetva);
-                }
-                else if (dto.TipRadnje == RadnjaTip.Zetva)
-                {
-                    var unosZetva = await _parcelaKulturaService.GetNezavrsenaSetva(parcelaId, kulturaId);
-                    if (unosZetva != null)
-                    {
-                        unosZetva.DatumZetve = dto.DatumIzvrsenja;
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Zetva nije moguća jer kultura nije posejana na ovoj parceli.");
-                        return false;
-                    }
+                    ModelState.AddModelError("", "Žetva nije moguća jer kultura nije posejana.");
+                    return false;
                 }
             }
             return true;
         }
+
         private async Task UcitajViewBagove()
         {
             Guid idKorisnik = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
