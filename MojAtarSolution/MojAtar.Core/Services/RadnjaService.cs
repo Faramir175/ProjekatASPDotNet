@@ -235,5 +235,19 @@ namespace MojAtar.Core.Services
             await _radnjaRepository.UpdateUkupanTrosak(idRadnja);
         }
 
+        public async Task<decimal> GetSlobodnaPovrsinaAsync(Guid idParcela)
+        {
+            var parcela = await _radnjaRepository.GetParcelaSaSetvama(idParcela);
+            if (parcela == null)
+                throw new Exception("Parcela nije pronađena.");
+
+            decimal zauzeto = parcela.ParceleKulture
+                .Where(pk => pk.DatumZetve == null)
+                .Sum(pk => pk.Povrsina);
+
+            decimal slobodno = parcela.Povrsina - zauzeto;
+            return slobodno < 0 ? 0 : slobodno;
+        }
+
     }
 }

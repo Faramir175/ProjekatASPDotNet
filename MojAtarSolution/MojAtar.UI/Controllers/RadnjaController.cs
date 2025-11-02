@@ -126,6 +126,12 @@ namespace MojAtar.UI.Controllers
             var prikljucneMasine = await _prikljucnaMasinaService.GetAllForUser(idKorisnik);
             var resursi = await _resursService.GetAllForUser(idKorisnik);
 
+            if (parcele.Any())
+            {
+                var prvaParcelaId = parcele.First().Id;
+                ViewBag.SlobodnaPovrsina = await _radnjaService.GetSlobodnaPovrsinaAsync((Guid)prvaParcelaId);
+            }
+
             var ceneResursa = resursi.ToDictionary(r => r.Id.ToString(), r => r.AktuelnaCena);
             ViewBag.CeneResursa = ceneResursa;
 
@@ -333,6 +339,14 @@ namespace MojAtar.UI.Controllers
             return RedirectToAction("Radnje");
         }
 
+        [HttpGet("slobodnaPovrsina/{idParcela}")]
+        public async Task<IActionResult> GetSlobodnaPovrsina(Guid idParcela)
+        {
+            var slobodno = await _radnjaService.GetSlobodnaPovrsinaAsync(idParcela);
+            return Json(new { slobodno });
+        }
+
+
         private async Task<bool> ObradiParcelaKulturaAsync(RadnjaDTO dto)
         {
             if (dto.IdParcela != null && dto.IdKultura != null)
@@ -382,4 +396,6 @@ namespace MojAtar.UI.Controllers
         }
 
     }
+
+
 }
