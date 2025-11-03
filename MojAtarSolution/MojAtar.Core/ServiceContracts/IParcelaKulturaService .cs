@@ -19,7 +19,9 @@ namespace MojAtar.Core.ServiceContracts
         Task<int> DeleteIfNotCompleted(Guid idParcela, Guid idKultura, Guid idSetvaRadnja);
         Task<ParcelaKulturaDTO?> GetNezavrsenaSetva(Guid idParcela, Guid idKultura);
         Task<ParcelaKulturaDTO?> UpdateNezavrsena(Guid idParcela, Guid idKultura, decimal novaPovrsina);
-        Task<List<Parcela_Kultura>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura);
+        Task<List<ParcelaKulturaDTO>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura);
+        Task<ParcelaKulturaDTO?> GetBySetvaRadnjaId(Guid idSetvaRadnja);
+        Task<List<ParcelaKulturaDTO>> GetSveZaZetvu(Guid idZetvaRadnja);
 
 
     }

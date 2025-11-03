@@ -109,7 +109,7 @@ namespace MojAtar.Core.Services
                 {
                     setva.DatumZetve = dto.DatumIzvrsenja;
                     setva.IdZetvaRadnja = entity.Id;
-                    await _parcelaKulturaService.Update(setva.ToParcelaKulturaDTO());
+                    await _parcelaKulturaService.Update(setva);
                 }
             }
 
@@ -122,6 +122,17 @@ namespace MojAtar.Core.Services
         public async Task<RadnjaDTO> Update(Guid id, RadnjaDTO dto)
         {
             var staraRadnja = await _radnjaRepository.GetById(id);
+            // GLOBALNA PROVERA: ako je setva i ima žetvu -> zabrani izmenu
+            if (staraRadnja.TipRadnje == RadnjaTip.Setva)
+            {
+                var pk = await _parcelaKulturaService.GetByParcelaAndKulturaId(
+                    staraRadnja.IdParcela!.Value, staraRadnja.IdKultura!.Value);
+
+                if (pk != null && pk.IdSetvaRadnja == staraRadnja.Id && pk.IdZetvaRadnja != null)
+                    throw new Exception("Setva ne može biti izmenjena jer je za nju već obavljena žetva.");
+            }
+
+
             if (staraRadnja == null)
                 throw new Exception("Radnja ne postoji.");
 
@@ -131,18 +142,18 @@ namespace MojAtar.Core.Services
             //  Ako je SETVA
             if (dto.TipRadnje == RadnjaTip.Setva)
             {
-                var pk = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
-                var target = pk.FirstOrDefault(x => x.IdSetvaRadnja == id);
+                var pkList = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
+                var target = pkList.FirstOrDefault(x => x.IdSetvaRadnja == id);
 
-                //  Ako setva ima žetvu — zabrani izmenu
+                // Ako setva ima žetvu — zabrani izmenu (fallback za svaki slučaj)
                 if (target != null && target.IdZetvaRadnja != null)
-                    throw new Exception("Setva ne može da se menja jer je već obavljena žetva.");
+                    throw new Exception("Setva ne može biti izmenjena jer je već obavljena žetva.");
 
                 var parcela = await _radnjaRepository.GetParcelaSaSetvama(dto.IdParcela.Value);
                 if (parcela == null)
                     throw new Exception("Parcela nije pronađena.");
 
-                // proveri slobodnu površinu (isključujući ovu setvu)
+                // Izračunaj slobodnu površinu (isključujući trenutnu setvu)
                 var zauzeto = parcela.ParceleKulture
                     .Where(pk => pk.IdZetvaRadnja == null && pk.IdSetvaRadnja != id)
                     .Sum(pk => pk.Povrsina);
@@ -151,14 +162,26 @@ namespace MojAtar.Core.Services
                 if (dto.Povrsina > slobodno)
                     throw new Exception($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
 
-                // ažuriraj postojeći ParcelaKultura zapis
+                // Ažuriraj kulturu i površinu u povezanoj vezi
                 if (target != null)
                 {
+                    bool promenjenaKultura = target.IdKultura != dto.IdKultura;
+
+                    target.IdKultura = dto.IdKultura;
                     target.Povrsina = dto.Povrsina ?? target.Povrsina;
                     target.DatumSetve = dto.DatumIzvrsenja;
+
                     await _parcelaKulturaService.Update(target);
+
+                    // ako je promenjena kultura, osveži i radnju
+                    if (promenjenaKultura)
+                    {
+                        staraRadnja.IdKultura = dto.IdKultura;
+                        await _radnjaRepository.Update(staraRadnja);
+                    }
                 }
             }
+
 
             //  Ako je ŽETVA
             if (dto.TipRadnje == RadnjaTip.Zetva)
@@ -177,45 +200,51 @@ namespace MojAtar.Core.Services
             await _radnjaRepository.Update(dto.ToRadnja());
             return dto;
         }
-
-
-
         public async Task<bool> DeleteById(Guid id)
         {
             var radnja = await _radnjaRepository.GetById(id);
             if (radnja == null) return false;
 
-            //  Ako je SETVA
+            // 🟢 Ako je SETVA
             if (radnja.TipRadnje == RadnjaTip.Setva)
             {
-                // Pronađi povezanu parcelu-kulturu
-                var pk = await _parcelaKulturaService.GetByParcelaAndKulturaId(
-                    radnja.IdParcela!.Value, radnja.IdKultura!.Value);
+                // Pronađi PK koja koristi ovu setvu
+                var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(id);
 
-                if (pk != null && pk.IdSetvaRadnja == radnja.Id)
+                if (pk != null)
                 {
-                    // Ako postoji i žetva — obriši i nju
+                    // Ako postoji žetva vezana za ovu setvu
                     if (pk.IdZetvaRadnja != null)
                     {
-                        var zetvaRadnja = await _radnjaRepository.GetById(pk.IdZetvaRadnja);
-                        if (zetvaRadnja != null)
+                        var zetvaId = pk.IdZetvaRadnja.Value;
+
+                        // 1️⃣ Ukloni reference žetve iz svih PK koje koriste istu žetvu
+                        var sveZaZetvu = await _parcelaKulturaService.GetSveZaZetvu(zetvaId);
+                        foreach (var p in sveZaZetvu)
                         {
-                            await _radnjaRepository.Delete(zetvaRadnja);
+                            p.IdZetvaRadnja = null;
+                            p.DatumZetve = null;
+                            await _parcelaKulturaService.Update(p);
                         }
+
+                        // 2️⃣ Obriši samu žetvu
+                        var zetvaRadnja = await _radnjaRepository.GetById(zetvaId);
+                        if (zetvaRadnja != null)
+                            await _radnjaRepository.Delete(zetvaRadnja);
                     }
 
-                    // Zatim obriši i vezu Parcela-Kultura
+                    // 3️⃣ Obriši PK za ovu setvu
                     await _parcelaKulturaService.DeleteIfNotCompleted(
-                        (Guid)radnja.IdParcela, (Guid)radnja.IdKultura, (Guid)radnja.Id);
+                        pk.IdParcela!.Value, pk.IdKultura!.Value, pk.IdSetvaRadnja!.Value);
                 }
             }
 
-            //  Ako je ŽETVA
+            // Ako je ŽETVA
             else if (radnja.TipRadnje == RadnjaTip.Zetva)
             {
-                // Resetuj sve setve iste kulture koje su imale ovu žetvu
-                var sveSetve = await _parcelaKulturaService.GetAllByParcelaId(radnja.IdParcela!.Value);
-                foreach (var pk in sveSetve.Where(x => x.IdKultura == radnja.IdKultura && x.IdZetvaRadnja == id))
+                // Očisti sve PK koje koriste ovu žetvu
+                var pkList = await _parcelaKulturaService.GetSveZaZetvu(id);
+                foreach (var pk in pkList)
                 {
                     pk.IdZetvaRadnja = null;
                     pk.DatumZetve = null;
@@ -223,7 +252,7 @@ namespace MojAtar.Core.Services
                 }
             }
 
-            // Na kraju uvek obriši radnju
+            // 🧹 Na kraju obriši samu radnju
             return await _radnjaRepository.Delete(radnja);
         }
 

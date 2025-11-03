@@ -142,6 +142,20 @@ namespace MojAtar.Infrastructure.Repositories
                              pk.IdZetvaRadnja == null)
                 .ToListAsync();
         }
+        public async Task<Parcela_Kultura?> GetBySetvaRadnjaId(Guid idSetvaRadnja)
+        {
+            return await _dbContext.ParceleKulture
+                .AsNoTracking()
+                .FirstOrDefaultAsync(pk => pk.IdSetvaRadnja == idSetvaRadnja);
+        }
+        public async Task<List<Parcela_Kultura>> GetSveZaZetvu(Guid idZetvaRadnja)
+        {
+            return await _dbContext.ParceleKulture
+                .Where(pk => pk.IdZetvaRadnja == idZetvaRadnja)
+                .Include(pk => pk.Parcela)
+                .Include(pk => pk.Kultura)
+                .ToListAsync();
+        }
 
     }
 }

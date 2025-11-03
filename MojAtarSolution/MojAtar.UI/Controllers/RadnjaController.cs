@@ -62,21 +62,21 @@ namespace MojAtar.UI.Controllers
             foreach (var radnja in radnje)
             {
                 if (radnja.TipRadnje == RadnjaTip.Setva &&
+                    radnja.Id != null &&
                     radnja.IdParcela.HasValue &&
                     radnja.IdKultura.HasValue)
                 {
-                    var parcelaKultura = await _parcelaKulturaService.GetByParcelaAndKulturaId(
-                        radnja.IdParcela.Value, radnja.IdKultura.Value);
+                    // pronađi tačno onu parcelu-kulturu koja koristi ovu setvu
+                    var parcelaKultura = await _parcelaKulturaService.GetBySetvaRadnjaId(radnja.Id.Value);
 
-                    if (parcelaKultura != null &&
-                        parcelaKultura.DatumSetve != null &&
-                        parcelaKultura.DatumSetve == radnja.DatumIzvrsenja)
+                    if (parcelaKultura != null)
                     {
                         radnja.Povrsina = parcelaKultura.Povrsina;
                     }
                 }
             }
-                return View(radnje);
+
+            return View(radnje);
         }
 
 
@@ -92,15 +92,14 @@ namespace MojAtar.UI.Controllers
             foreach (var radnja in radnje)
             {
                 if (radnja.TipRadnje == RadnjaTip.Setva &&
+                    radnja.Id != null &&
                     radnja.IdParcela.HasValue &&
                     radnja.IdKultura.HasValue)
                 {
-                    var parcelaKultura = await _parcelaKulturaService.GetByParcelaAndKulturaId(
-                        radnja.IdParcela.Value, radnja.IdKultura.Value);
+                    // pronađi tačno onu parcelu-kulturu koja koristi ovu setvu
+                    var parcelaKultura = await _parcelaKulturaService.GetBySetvaRadnjaId(radnja.Id.Value);
 
-                    if (parcelaKultura != null &&
-                        parcelaKultura.DatumSetve != null &&
-                        parcelaKultura.DatumSetve == radnja.DatumIzvrsenja)
+                    if (parcelaKultura != null)
                     {
                         radnja.Povrsina = parcelaKultura.Povrsina;
                     }
@@ -257,7 +256,7 @@ namespace MojAtar.UI.Controllers
 
             var ceneResursa = new Dictionary<string, double>();
 
-            // 🔽 Uzimamo cene koje su važile NA DATUM IZVRŠENJA radnje
+            // Uzimamo cene koje su važile NA DATUM IZVRŠENJA radnje
             foreach (var res in resursi)
             {
                 var cena = await _cenaResursaService.GetAktuelnaCena(idKorisnik, (Guid)res.Id, radnja.DatumIzvrsenja);
@@ -273,16 +272,20 @@ namespace MojAtar.UI.Controllers
             ViewBag.PrikljucneMasineSelectList = new SelectList(prikljucneMasine, "Id", "Naziv");
             ViewBag.ResursiSelectList = new SelectList(resursi, "Id", "Naziv");
 
-            if (radnja.TipRadnje == RadnjaTip.Setva && radnja.IdParcela.HasValue)
-            {
-                //  Ako radnja nema kulturu (obrisana iz baze), samo preskoči učitavanje
-                if (radnja.IdKultura.HasValue)
-                {
-                    var parcelaKultura = await _parcelaKulturaService
-                        .GetByParcelaAndKulturaId(radnja.IdParcela.Value, radnja.IdKultura.Value);
+            bool setvaZakljucana = false;
 
-                    if (parcelaKultura != null)
-                        radnja.Povrsina = parcelaKultura.Povrsina;
+            if (radnja.TipRadnje == RadnjaTip.Setva && radnja.Id != null)
+            {
+                // ⚡ Pronađi tačno onu ParcelaKultura koja koristi ovu setvu kao IdSetvaRadnja
+                var parcelaKultura = await _parcelaKulturaService.GetBySetvaRadnjaId(radnja.Id.Value);
+
+                if (parcelaKultura != null)
+                {
+                    radnja.Povrsina = parcelaKultura.Povrsina;
+
+                    // Ako već ima povezanu žetvu — zaključaj
+                    if (parcelaKultura.IdZetvaRadnja != null)
+                        setvaZakljucana = true;
                 }
             }
 
@@ -290,6 +293,8 @@ namespace MojAtar.UI.Controllers
             radnja.RadneMasine = povezaneMasine;
             radnja.PrikljucneMasine = povezanePrikljucne;
             radnja.Resursi = povezaniResursi;
+
+            ViewBag.SetvaZakljucana = setvaZakljucana;
 
             return View("Dodaj",radnja);
         }
@@ -302,6 +307,16 @@ namespace MojAtar.UI.Controllers
 
             if (dto.TipRadnje == RadnjaTip.Zetva && (!dto.Prinos.HasValue || dto.Prinos <= 0))
                 ModelState.AddModelError(nameof(dto.Prinos), "Prinos mora biti unet za žetvu.");
+
+            if (dto.TipRadnje == RadnjaTip.Setva)
+            {
+                var parcelaKultura = await _parcelaKulturaService.GetBySetvaRadnjaId(id);
+                if (parcelaKultura != null && parcelaKultura.IdZetvaRadnja != null)
+                {
+                    TempData["ErrorMessage"] = "Ova setva je zaključana jer je obavljena žetva. Izmena nije dozvoljena.";
+                    return RedirectToAction("Izmeni", new { id });
+                }
+            }
 
             if (dto.RadneMasine != null)
             {

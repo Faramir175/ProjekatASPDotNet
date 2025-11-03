@@ -83,9 +83,22 @@ namespace MojAtar.Core.Services
             var entity = await _parcelaKulturaRepository.GetNezavrsenaSetva(idParcela, idKultura);
             return entity?.ToParcelaKulturaDTO();
         }
-        public async Task<List<Parcela_Kultura>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura)
+        public async Task<List<ParcelaKulturaDTO>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura)
         {
-            return await _parcelaKulturaRepository.GetSveNezavrseneSetve(idParcela, idKultura);
+            var list = await _parcelaKulturaRepository.GetSveNezavrseneSetve(idParcela, idKultura);
+            return list.Select(x => x.ToParcelaKulturaDTO()).ToList();
+        }
+
+        public async Task<ParcelaKulturaDTO?> GetBySetvaRadnjaId(Guid idSetvaRadnja)
+        {
+            var entity = await _parcelaKulturaRepository.GetBySetvaRadnjaId(idSetvaRadnja);
+            return entity?.ToParcelaKulturaDTO(); 
+        }
+
+        public async Task<List<ParcelaKulturaDTO>> GetSveZaZetvu(Guid idZetvaRadnja)
+        {
+            var list = await _parcelaKulturaRepository.GetSveZaZetvu(idZetvaRadnja);
+            return list.Select(x => x.ToParcelaKulturaDTO()).ToList();
         }
 
     }
