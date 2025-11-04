@@ -44,6 +44,15 @@ namespace MojAtar.Infrastructure.Repositories
                 .Select(c => c.CenaPojedinici)
                 .FirstOrDefaultAsync();
         }
+        public async Task<DateTime?> GetDatumAktuelneCene(Guid idResurs, DateTime datum)
+        {
+            var cena = await _dbContext.CeneResursa
+                .Where(c => c.IdResurs == idResurs && c.DatumVaznosti <= datum)
+                .OrderByDescending(c => c.DatumVaznosti)
+                .FirstOrDefaultAsync();
+
+            return cena?.DatumVaznosti;
+        }
 
     }
 }

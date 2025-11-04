@@ -32,6 +32,10 @@ namespace MojAtar.Core.Services
         {
             return await _repo.GetAktuelnaCena(idKorisnik, idResurs, datum);
         }
+        public async Task<DateTime?> GetDatumAktuelneCene(Guid idResurs, DateTime datum)
+        {
+            return await _repo.GetDatumAktuelneCene(idResurs, datum);
+        }
 
     }
 }

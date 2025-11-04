@@ -12,5 +12,7 @@ namespace MojAtar.Core.ServiceContracts
         Task<List<CenaResursa>> GetPaged(Guid idKorisnik,int skip, int take);
         Task<int> GetTotalCount(Guid idKorisnik);
         Task<double> GetAktuelnaCena(Guid idKorisnik, Guid idResurs, DateTime datum);
+        Task<DateTime?> GetDatumAktuelneCene(Guid idResurs, DateTime datum);
+
     }
 }

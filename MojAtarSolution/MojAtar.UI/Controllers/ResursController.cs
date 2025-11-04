@@ -81,12 +81,19 @@ namespace MojAtar.UI.Controllers
         [HttpGet("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id)
         {
-            var resurs = await _resursService.GetById(id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            Guid idKorisnik = Guid.Parse(userId);
+
+            var resurs = await _resursService.GetWithAktuelnaCena(idKorisnik, id);
             if (resurs == null) return NotFound();
 
-            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.UserId = userId;
             return View("Dodaj", resurs);
         }
+
 
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, ResursDTO dto)

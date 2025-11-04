@@ -19,12 +19,16 @@ namespace MojAtar.Core.Services
     {
         private readonly IKulturaRepository _kulturaRepository;
         private readonly IRadnjaService _radnjaService;
+        private readonly ICenaKultureService _cenaKultureService;
 
-        public KulturaService(IKulturaRepository kulturaRepository,
-                              IRadnjaService radnjaService)
+        public KulturaService(
+            IKulturaRepository kulturaRepository,
+            IRadnjaService radnjaService,
+            ICenaKultureService cenaKultureService)
         {
             _kulturaRepository = kulturaRepository;
             _radnjaService = radnjaService;
+            _cenaKultureService = cenaKultureService;
         }
 
 
@@ -96,11 +100,35 @@ namespace MojAtar.Core.Services
 
         public async Task<List<KulturaDTO>> GetAllForUser(Guid idKorisnika)
         {
-            List<Kultura> parcele = await _kulturaRepository.GetAllByKorisnik(idKorisnika);
-            return parcele.Select(k => k.ToKulturaDTO()).ToList();
+            var kulture = await _kulturaRepository.GetAllByKorisnik(idKorisnika);
+            var danas = DateTime.Now;
+
+            var result = new List<KulturaDTO>();
+            foreach (var k in kulture)
+            {
+                double aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(idKorisnika, k.Id.Value, danas);
+                var dto = k.ToKulturaDTO();
+                dto.AktuelnaCena = aktuelnaCena;
+                result.Add(dto);
+            }
+            return result;
         }
 
+        public async Task<List<KulturaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
+        {
+            var kulture = await _kulturaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+            var danas = DateTime.Now;
 
+            var result = new List<KulturaDTO>();
+            foreach (var k in kulture)
+            {
+                double aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(idKorisnik, k.Id.Value, danas);
+                var dto = k.ToKulturaDTO();
+                dto.AktuelnaCena = aktuelnaCena;
+                result.Add(dto);
+            }
+            return result;
+        }
 
         public async Task<KulturaDTO> GetById(Guid? id)
         {
@@ -138,43 +166,60 @@ namespace MojAtar.Core.Services
             if (staraKultura == null)
                 return null;
 
-            //  Provera da li već postoji druga kultura sa istim nazivom
+            // 🔹 Provera da li već postoji druga kultura sa istim nazivom
             var postoji = await _kulturaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
             if (postoji != null && postoji.Id != id)
                 throw new ArgumentException("Već postoji kultura sa ovim nazivom za vaš nalog.");
 
-            //  Provera da li se cena promenila
+            // 🔹 Provera da li se cena promenila
             if (staraKultura.AktuelnaCena != dto.AktuelnaCena)
             {
-                CenaKulture novaCena = new CenaKulture
+                // Kreiramo novi zapis u istoriji cena
+                var novaCena = new CenaKulture
                 {
                     Id = Guid.NewGuid(),
                     IdKultura = id.Value,
                     CenaPojedinici = (double)dto.AktuelnaCena,
-                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
+                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue
+                                    ? dto.DatumVaznostiCene
+                                    : DateTime.Now
                 };
 
                 await _kulturaRepository.DodajCenu(novaCena);
+
+                // Ako je nova cena aktuelna (datum danas ili budućnost) → ažuriraj i glavnu tabelu
+                if (novaCena.DatumVaznosti >= DateTime.Now.Date)
+                {
+                    staraKultura.AktuelnaCena = (double)dto.AktuelnaCena;
+                }
+                // Ako je unet stariji datum → samo istorijski zapis, bez promene aktuelne cene
             }
 
-            // Update polja
+            // Ažuriranje osnovnih polja kulture
             staraKultura.Naziv = dto.Naziv;
-            staraKultura.AktuelnaCena = (double)dto.AktuelnaCena;
             staraKultura.IdKorisnik = dto.IdKorisnik;
 
             await _kulturaRepository.Update(staraKultura);
             return staraKultura.ToKulturaDTO();
         }
 
-        public async Task<List<KulturaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
-        {
-            var kulture = await _kulturaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
-            return kulture.Select(k => k.ToKulturaDTO()).ToList();
-        }
-        
         public async Task<int> GetCountByKorisnik(Guid idKorisnik)
         {
             return await _kulturaRepository.GetCountByKorisnik(idKorisnik);
+        }
+        public async Task<KulturaDTO> GetWithAktuelnaCena(Guid idKorisnik, Guid idKultura)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null) return null;
+
+            var aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(idKorisnik, idKultura, DateTime.Now);
+            var datumCene = await _cenaKultureService.GetDatumAktuelneCene(idKultura, DateTime.Now);
+
+            var dto = kultura.ToKulturaDTO();
+            dto.AktuelnaCena = aktuelnaCena;
+            dto.DatumVaznostiCene = datumCene ?? DateTime.Now;
+
+            return dto;
         }
 
     }

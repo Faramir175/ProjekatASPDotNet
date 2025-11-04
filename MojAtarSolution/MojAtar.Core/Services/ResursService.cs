@@ -19,15 +19,18 @@ namespace MojAtar.Core.Services
         private readonly IResursRepository _resursRepository;
         private readonly IRadnjaService _radnjaService;
         private readonly IRadnjaResursService _radnjaResursService;
+        private readonly ICenaResursaService _cenaResursaService;
 
         public ResursService(
             IResursRepository resursRepository,
             IRadnjaService radnjaService,
-            IRadnjaResursService radnjaResursService)
+            IRadnjaResursService radnjaResursService,
+            ICenaResursaService cenaResursaService)
         {
             _resursRepository = resursRepository;
             _radnjaService = radnjaService;
             _radnjaResursService = radnjaResursService;
+            _cenaResursaService = cenaResursaService;
         }
 
 
@@ -174,12 +177,42 @@ namespace MojAtar.Core.Services
         public async Task<List<ResursDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
             var resursi = await _resursRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
-            return resursi.Select(r => r.ToResursDTO()).ToList();
+            var danas = DateTime.Now;
+
+            var result = new List<ResursDTO>();
+
+            foreach (var r in resursi)
+            {
+                // Pronađi aktuelnu cenu iz istorije (važeću na današnji dan)
+                double aktuelnaCena = await _cenaResursaService.GetAktuelnaCena(idKorisnik, r.Id.Value, danas);
+
+                var dto = r.ToResursDTO();
+                dto.AktuelnaCena = aktuelnaCena;
+
+                result.Add(dto);
+            }
+
+            return result;
         }
+
 
         public async Task<int> GetCountByKorisnik(Guid idKorisnik)
         {
             return await _resursRepository.GetCountByKorisnik(idKorisnik);
+        }
+        public async Task<ResursDTO> GetWithAktuelnaCena(Guid idKorisnik, Guid idResurs)
+        {
+            var resurs = await _resursRepository.GetById(idResurs);
+            if (resurs == null) return null;
+
+            var aktuelnaCena = await _cenaResursaService.GetAktuelnaCena(idKorisnik, idResurs, DateTime.Now);
+            var datumCene = await _cenaResursaService.GetDatumAktuelneCene(idResurs, DateTime.Now);
+
+            var dto = resurs.ToResursDTO();
+            dto.AktuelnaCena = aktuelnaCena;
+            dto.DatumVaznostiCene = datumCene ?? DateTime.Now;
+
+            return dto;
         }
 
     }
