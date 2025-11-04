@@ -22,6 +22,8 @@ namespace MojAtar.Infrastructure.MojAtar
         public DbSet<Radnja_PrikljucnaMasina> RadnjePrikljucneMasine { get; set; }
         public DbSet<Radnja_RadnaMasina> RadnjeRadneMasine { get; set; }
         public DbSet<Radnja_Resurs> RadnjeResursi { get; set; }
+        public DbSet<Prodaja> Prodaje { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -144,6 +146,13 @@ namespace MojAtar.Infrastructure.MojAtar
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            //  Prodaja - Kultura: ako se obriše kultura, brišu se i prodaje
+            modelBuilder.Entity<Prodaja>()
+                .HasOne(p => p.Kultura)
+                .WithMany(k => k.Prodaje)
+                .HasForeignKey(p => p.IdKultura)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // =====================================
             // NASLEĐIVANJE RADNJA - ŽETVA
             // =====================================
@@ -162,6 +171,9 @@ namespace MojAtar.Infrastructure.MojAtar
             modelBuilder.Entity<Parcela_Kultura>()
                 .Property(pk => pk.Povrsina)
                 .HasColumnType("decimal(18,4)");
+
         }
+
+
     }
 }

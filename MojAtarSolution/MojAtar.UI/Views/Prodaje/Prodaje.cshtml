@@ -1,0 +1,121 @@
+﻿@model List<MojAtar.Core.DTO.ProdajaDTO>
+
+@{
+    ViewData["Title"] = "📈 Moje prodaje";
+}
+
+<div class="container mt-5">
+    <div class="container-glass">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">📈 Moje prodaje</h2>
+            <a asp-action="Dodaj" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Nova prodaja
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-center text-muted py-4">Još uvek nema evidentiranih prodaja.</p>
+        }
+        else
+        {
+            <table class="table table-striped align-middle text-center">
+                <thead class="table-success">
+                    <tr>
+                        <th onclick="sortTable(0)" style="cursor:pointer;">Kultura <i class="bi bi-arrow-down-up"></i></th>
+                        <th onclick="sortTable(1)" style="cursor:pointer;">Količina (kg) <i class="bi bi-arrow-down-up"></i></th>
+                        <th onclick="sortTable(2)" style="cursor:pointer;">Cena (RSD/kg) <i class="bi bi-arrow-down-up"></i></th>
+                        <th onclick="sortTable(3)" style="cursor:pointer;">Ukupan iznos (RSD) <i class="bi bi-arrow-down-up"></i></th>
+                        <th onclick="sortTable(4)" style="cursor:pointer;">Datum prodaje <i class="bi bi-arrow-down-up"></i></th>
+                        <th>Napomena</th>
+                        <th>Akcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.NazivKulture</td>
+                            <td>@($"{p.Kolicina:N2}")</td>
+                            <td>@($"{p.CenaPoJedinici:N2}")</td>
+                            <td>@($"{p.UkupanIznos:N2}")</td>
+                            <td>@p.DatumProdaje.ToString("dd.MM.yyyy")</td>
+                            <td>@p.Napomena</td>
+                            <td class="text-center align-middle">
+                                <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2 justify-content-center">
+                                    <form asp-action="Izmeni" asp-route-id="@p.Id" method="get" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil-square"></i> Izmeni
+                                        </button>
+                                    </form>
+                                    <form asp-action="Obrisi" asp-route-id="@p.Id" method="post" onsubmit="return confirm('Obrisati ovu prodaju?');" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash3"></i> Obriši
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between align-items-center mt-4 w-100">
+                <!-- Strelica levo -->
+                <a class="btn btn-success @(ViewBag.Skip <= ViewBag.Take ? "disabled" : "")"
+                   asp-action="Prodaje"
+                   asp-route-skip="@(ViewBag.Skip - 2 * ViewBag.Take)"
+                   asp-route-take="@ViewBag.Take">
+                    <i class="bi bi-arrow-left"></i> Prethodna
+                </a>
+
+                <span class="fw-bold text-center flex-grow-1">
+                    Stranica @(Math.Ceiling((decimal)(ViewBag.Skip / ViewBag.Take))) od @(Math.Ceiling((decimal)ViewBag.TotalCount / ViewBag.Take))
+                </span>
+
+                <!-- Strelica desno -->
+                <a class="btn btn-success @(ViewBag.Skip >= ViewBag.TotalCount ? "disabled" : "")"
+                   asp-action="Prodaje"
+                   asp-route-skip="@(ViewBag.Skip)"
+                   asp-route-take="@ViewBag.Take">
+                    Sledeća <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function sortTable(columnIndex) {
+            const table = document.querySelector("table");
+            const rows = Array.from(table.rows).slice(1);
+            const isNumeric = columnIndex === 1 || columnIndex === 2 || columnIndex === 3;
+            const isDate = columnIndex === 4;
+            const dir = table.dataset.sortDir === "asc" ? "desc" : "asc";
+            table.dataset.sortDir = dir;
+
+            rows.sort((a, b) => {
+                let A = a.cells[columnIndex].innerText.trim();
+                let B = b.cells[columnIndex].innerText.trim();
+
+                if (isNumeric) {
+                    A = parseFloat(A.replace(",", ""));
+                    B = parseFloat(B.replace(",", ""));
+                } else if (isDate) {
+                    A = new Date(A.split(".").reverse().join("-"));
+                    B = new Date(B.split(".").reverse().join("-"));
+                } else {
+                    A = A.toLowerCase();
+                    B = B.toLowerCase();
+                }
+
+                if (A < B) return dir === "asc" ? -1 : 1;
+                if (A > B) return dir === "asc" ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(row => table.tBodies[0].appendChild(row));
+        }
+    </script>
+}

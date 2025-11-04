@@ -70,11 +70,13 @@ builder.Services.AddScoped<IIzvestajRepository, IzvestajRepository>();
 builder.Services.AddScoped<IIzvestajService, IzvestajService>();
 
 builder.Services.AddScoped<ICenaResursaRepository, CenaResursaRepository>();
-builder.Services.AddScoped<ICenaKultureRepository, CenaKultureRepository>();
-
 builder.Services.AddScoped<ICenaResursaService, CenaResursaService>();
+
+builder.Services.AddScoped<ICenaKultureRepository, CenaKultureRepository>();
 builder.Services.AddScoped<ICenaKultureService, CenaKultureService>();
 
+builder.Services.AddScoped<IProdajaRepository, ProdajaRepository>();
+builder.Services.AddScoped<IProdajaService, ProdajaService>();
 
 builder.Services.AddScoped<IPocetnaService, PocetnaService>();
 

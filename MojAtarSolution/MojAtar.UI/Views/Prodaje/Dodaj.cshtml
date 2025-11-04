@@ -1,0 +1,125 @@
+﻿@model MojAtar.Core.DTO.ProdajaDTO
+
+@{
+    ViewData["Title"] = Model.Id == null ? "Dodaj prodaju" : "Izmeni prodaju";
+}
+
+<div class="container py-5">
+    <div class="container-glass">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+            <a asp-action="Prodaje" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Nazad
+            </a>
+        </div>
+
+        <form method="post" asp-action="@(Model.Id == null ? "Dodaj" : "Izmeni")" asp-controller="Prodaje" asp-route-id="@Model.Id">
+            @if (Model.Id != Guid.Empty)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
+
+            <div class="mb-3">
+                <label asp-for="IdKultura" class="form-label">Kultura</label>
+                <select asp-for="IdKultura" class="form-select" asp-items="ViewBag.Kulture">
+                    <option value="">-- Izaberite kulturu --</option>
+                </select>
+                <span asp-validation-for="IdKultura" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Kolicina" class="form-label">
+                    Količina (kg)
+                    <span id="raspolozivoLabel" class="text-muted" style="font-size: 0.9em;"></span>
+                </label>
+                <input asp-for="Kolicina" type="number" step="0.001" class="form-control" />
+                <span asp-validation-for="Kolicina" class="text-danger"></span>
+            </div>
+
+
+            <div class="mb-3">
+                <label asp-for="CenaPoJedinici" class="form-label">Cena (RSD/kg)</label>
+                <input asp-for="CenaPoJedinici"
+                       id="cenaInput"
+                       type="number"
+                       step="0.01"
+                       class="form-control"
+                       readonly />
+                <span asp-validation-for="CenaPoJedinici" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DatumProdaje" class="form-label">Datum prodaje</label>
+                <input asp-for="DatumProdaje" type="date" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Napomena" class="form-label">Napomena</label>
+                <textarea asp-for="Napomena" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.Id == null ? "Dodaj prodaju" : "Sačuvaj izmene")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const kulturaSelect = document.getElementById("IdKultura");
+            const datumInput = document.getElementById("DatumProdaje");
+            const cenaInput = document.getElementById("cenaInput");
+
+            async function ucitajCenu() {
+                const idKultura = kulturaSelect.value;
+                const datum = datumInput.value;
+
+                if (!idKultura || !datum) return;
+
+                try {
+                    const response = await fetch(`/prodaje/getcena?idKultura=${idKultura}&datum=${datum}`);
+                    if (!response.ok) throw new Error("Greška pri učitavanju cene.");
+
+                    const data = await response.json();
+                    cenaInput.value = data.cena.toFixed(2);
+                } catch (error) {
+                    console.error(error);
+                    cenaInput.value = "";
+                }
+            }
+
+        async function ucitajRaspolozivo() {
+            const idKultura = kulturaSelect.value;
+            if (!idKultura) return;
+
+            try {
+                const response = await fetch(`/prodaje/getraspolozivo?idKultura=${idKultura}`);
+                if (!response.ok) throw new Error("Greška pri učitavanju raspoložive količine.");
+                const data = await response.json();
+                const raspLabel = document.getElementById("raspolozivoLabel");
+                raspLabel.textContent = `(raspoloživo ${data.raspolozivo.toFixed(2)} kg)`;
+            } catch (error) {
+                console.error(error);
+                document.getElementById("raspolozivoLabel").textContent = "";
+            }
+        }
+
+
+        // Učitaj sve na promenu kulture ili datuma
+        kulturaSelect.addEventListener("change", () => {
+            ucitajCenu();
+            ucitajRaspolozivo();
+        });
+        datumInput.addEventListener("change", ucitajCenu);
+
+        // Inicijalno
+        ucitajCenu();
+        ucitajRaspolozivo();
+        });
+    </script>
+}
