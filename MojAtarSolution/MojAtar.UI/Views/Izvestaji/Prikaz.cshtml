@@ -1,23 +1,22 @@
 ﻿@model MojAtar.Core.DTO.IzvestajDTO
-
 @{
     ViewData["Title"] = "Izveštaj";
+    bool sveParcele = ViewBag.SveParcele ?? false;
 }
 
 <div class="container mt-5">
     <div class="container-glass p-4">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-center mb-0">📋 Izveštaj o radu i troškovima</h2>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">📋 Izveštaj o radu i troškovima</h2>
+            <h5 class="text-muted">
+                Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()
+            </h5>
         </div>
 
-        <h5 class="text-center mb-5 text-muted">
-            Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()
-        </h5>
-
-        @foreach (var parcela in Model.Parcele)
+        <!-- 🟩 RADNJE -->
+        @foreach (var parcela in Model.Parcele.Where(p => !p.NazivParcele.Contains("prodaje")))
         {
-            <div class="card mb-5 shadow-sm border-0">
+            <div class="card mb-5 shadow-sm border-0 border-success">
                 <div class="card-header bg-success text-white rounded-top">
                     <h4 class="mb-0">@parcela.NazivParcele</h4>
                 </div>
@@ -33,33 +32,35 @@
                                     <th>Radne mašine</th>
                                     <th>Resursi</th>
                                     <th>Trošak (RSD)</th>
-                                    <th>Prihod (RSD)</th>
+                                    <th>Prinos (kg)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var r in parcela.Radnje)
                                 {
-                                    <tr>
+                                    bool jeZbirni = r.NazivRadnje == "Ukupno po kulturi";
+
+                                    <tr class="@(jeZbirni ? "table-secondary fw-bold" : "")">
                                         <td>@r.Datum.ToShortDateString()</td>
                                         <td>@r.NazivRadnje</td>
                                         <td>@r.Kultura</td>
                                         <td>
-                                            @if (r.RadneMasine.Any())
+                                            @if (!jeZbirni && r.RadneMasine.Any())
                                             {
-                                                @foreach (var m in r.RadneMasine)
+                                                foreach (var m in r.RadneMasine)
                                                 {
                                                     <div>• @m.NazivRadneMasine (@m.BrojRadnihSati sati)</div>
                                                 }
                                             }
-                                            else
+                                            else if (!jeZbirni)
                                             {
                                                 <span class="text-muted">Nema</span>
                                             }
                                         </td>
                                         <td>
-                                            @if (r.Resursi.Any())
+                                            @if (!jeZbirni && r.Resursi.Any())
                                             {
-                                                @foreach (var res in r.Resursi)
+                                                foreach (var res in r.Resursi)
                                                 {
                                                     <div>
                                                         • @res.NazivResursa —
@@ -68,13 +69,13 @@
                                                     </div>
                                                 }
                                             }
-                                            else
+                                            else if (!jeZbirni)
                                             {
                                                 <span class="text-muted">Nema</span>
                                             }
                                         </td>
                                         <td>@r.Trosak.ToString("N2")</td>
-                                        <td>@r.Prihod.ToString("N2")</td>
+                                        <td>@r.Prinos.ToString("N2")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -82,7 +83,7 @@
                                 <tr class="fw-bold">
                                     <td colspan="5" class="text-end">Ukupno:</td>
                                     <td>@parcela.Trosak.ToString("N2")</td>
-                                    <td>@parcela.Prihod.ToString("N2")</td>
+                                    <td>@parcela.Prinos.ToString("N2")</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -91,16 +92,87 @@
             </div>
         }
 
+        <!-- 🟨 PRODAJE -->
+        @if (sveParcele)
+        {
+            @foreach (var parcela in Model.Parcele.Where(p => p.NazivParcele.Contains("prodaje")))
+            {
+                <div class="card mb-5 shadow-sm border-0 border-warning">
+                    <div class="card-header bg-warning text-dark rounded-top">
+                        <h4 class="mb-0">@parcela.NazivParcele</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle text-center">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>Kultura</th>
+                                        <th>Količina (kg)</th>
+                                        <th>Cena (RSD/kg)</th>
+                                        <th>Ukupan iznos (RSD)</th>
+                                        <th>Datum prodaje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var r in parcela.Radnje.Where(r => r.NazivRadnje == "Prodaja"))
+                                    {
+                                        <tr>
+                                            <td>@r.Kultura</td>
+                                            <td>@r.Prinos.ToString("N2")</td>
+                                            <td>@((r.Prihod / (r.Prinos == 0 ? 1 : r.Prinos)).ToString("N2"))</td>
+                                            <td>@r.Prihod.ToString("N2")</td>
+                                            <td>@r.Datum.ToString("dd.MM.yyyy")</td>
+                                        </tr>
+                                    }
+
+                                    <!-- Zbir po kulturi -->
+                                    @foreach (var zbir in parcela.Radnje.Where(r => r.NazivRadnje == "Ukupno po kulturi"))
+                                    {
+                                        <tr class="table-secondary fw-bold">
+                                            <td>@zbir.Kultura</td>
+                                            <td>@zbir.Prinos.ToString("N2")</td>
+                                            <td>-</td>
+                                            <td>@zbir.Prihod.ToString("N2")</td>
+                                            <td colspan="2" class="text-start text-muted">
+                                                <div><strong>Prinos:</strong> @zbir.UkupanPrinosKulture.ToString("N2") kg</div>
+                                                <div><strong>Prodato:</strong> @zbir.Prinos.ToString("N2") kg</div>
+                                                <div><strong>Ostalo:</strong> @zbir.Ostalo.ToString("N2") kg</div>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold table-light">
+                                        <td colspan="3" class="text-end">Ukupan prihod:</td>
+                                        <td class="text-success">@Model.UkupanPrihod.ToString("N2")</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- 🧾 UKUPNI PODACI -->
         <div class="card text-center shadow-sm border-0 mt-4">
             <div class="card-body">
                 <h4 class="mb-2 text-danger">Ukupan trošak: @Model.UkupanTrosak.ToString("N2") RSD</h4>
-                <h4 class="mb-2 text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
-                <h4 class="fw-bold">Profit: @Model.Profit.ToString("N2") RSD</h4>
+                @if (sveParcele)
+                {
+                    <h4 class="mb-2 text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
+                    <h4 class="fw-bold">Profit: @Model.Profit.ToString("N2") RSD</h4>
+                }
             </div>
         </div>
 
+        <!-- 📄 PDF EXPORT -->
         <div class="text-center mt-4">
             <form method="post" asp-action="Pdf" asp-controller="Izvestaji">
+                <input type="hidden" name="parcelaId" value="@(sveParcele ? "sve-parcele" : Model.Parcele.FirstOrDefault()?.Id.ToString())" />
                 <input type="hidden" name="odDatuma" value="@Model.DatumOd" />
                 <input type="hidden" name="doDatuma" value="@Model.DatumDo" />
                 <button type="submit" class="btn btn-outline-secondary px-4">
@@ -108,6 +180,5 @@
                 </button>
             </form>
         </div>
-
     </div>
 </div>

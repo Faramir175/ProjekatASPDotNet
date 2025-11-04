@@ -108,6 +108,64 @@ namespace MojAtar.Core.Services
         {
             return await _prodajaRepository.GetTotalCount(korisnikId);
         }
+        public async Task<IzvestajProdajeResult?> GetIzvestajProdaje(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma)
+        {
+            var prodaje = await _prodajaRepository.GetByKorisnikAndPeriod(korisnikId, odDatuma, doDatuma);
+            if (!prodaje.Any())
+                return null;
+
+            var radnjeProdaje = prodaje.Select(p => new RadnjaIzvestajDTO
+            {
+                Id = p.Id,
+                NazivRadnje = "Prodaja",
+                Datum = p.DatumProdaje,
+                Kultura = p.Kultura?.Naziv ?? "(nepoznata kultura)",
+                IdKultura = p.IdKultura,
+                Prinos = (decimal)p.Kolicina,
+                Prihod = (decimal)(p.Kolicina * p.CenaPoJedinici),
+                Trosak = 0,
+            }).OrderByDescending(r => r.Datum).ToList();
+
+            var prinosi = await _prodajaRepository.GetPrinosPoKulturi(korisnikId, odDatuma, doDatuma);
+
+            // Zbir po kulturi
+            var zbirPoKulturi = radnjeProdaje
+                .GroupBy(r => new { r.IdKultura, r.Kultura })
+                .Select(g =>
+                {
+                    prinosi.TryGetValue(g.Key.IdKultura ?? Guid.Empty, out decimal ukupanPrinos);
+
+                    return new RadnjaIzvestajDTO
+                    {
+                        Id = Guid.NewGuid(),
+                        NazivRadnje = "Ukupno po kulturi",
+                        Datum = DateTime.Now,
+                        Kultura = g.Key.Kultura,
+                        IdKultura = g.Key.IdKultura,
+                        Prinos = g.Sum(x => x.Prinos), // prodato
+                        UkupanPrinosKulture = ukupanPrinos,
+                        Prihod = g.Sum(x => x.Prihod),
+                        Trosak = 0
+                    };
+                })
+                .ToList();
+
+            decimal ukupniPrihod = zbirPoKulturi.Sum(x => x.Prihod);
+
+            var prodajeParcela = new ParcelaIzvestajDTO
+            {
+                Id = Guid.NewGuid(),
+                NazivParcele = "📦 Ukupne prodaje po kulturama",
+                Radnje = radnjeProdaje.Concat(zbirPoKulturi).ToList()
+            };
+
+            return new IzvestajProdajeResult
+            {
+                ParcelaProdaje = prodajeParcela,
+                UkupanPrihod = ukupniPrihod
+            };
+        }
+
 
     }
 }

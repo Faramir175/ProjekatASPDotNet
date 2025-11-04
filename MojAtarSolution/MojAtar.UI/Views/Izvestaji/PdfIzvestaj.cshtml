@@ -1,6 +1,7 @@
 ﻿@model MojAtar.Core.DTO.IzvestajDTO
 @{
-    Layout = null; // 🚫 Bez glavnog layouta (nema navigacije ni footera)
+    Layout = null;
+    bool sveParcele = Model.Parcele.Any(p => p.NazivParcele.Contains("prodaje"));
 }
 
 <!DOCTYPE html>
@@ -11,7 +12,8 @@
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            margin: 30px;
+            margin: 25px 35px;
+            background: #f8faf8;
         }
 
         h2, h4, h5 {
@@ -19,129 +21,237 @@
             margin-bottom: 10px;
         }
 
+        .container-glass {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .card-header {
+            font-weight: bold;
+            padding: 8px 10px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .bg-success {
+            background-color: #198754;
+        }
+
+        .bg-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .table-light {
+            background: #f2f2f2;
+        }
+
+        .table-success {
+            background: #d1e7dd;
+        }
+
+        .table-secondary {
+            background: #e9ecef;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            font-size: 11px;
         }
 
         th, td {
-            border: 1px solid #555;
-            padding: 5px;
-            font-size: 12px;
+            border: 1px solid #ddd;
+            padding: 5px 7px;
             text-align: center;
         }
 
         th {
-            background: #e5e5e5;
-        }
-
-        .section-title {
-            background: #b6d7a8;
-            padding: 5px;
+            background: #e9f2e9;
             font-weight: bold;
         }
 
-        .totals {
-            text-align: right;
+        tfoot td {
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: #666;
+            font-size: 10px;
+        }
+
+        .text-success {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .text-info {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        .fw-bold {
             font-weight: bold;
         }
 
         .summary {
             text-align: center;
-            margin-top: 40px;
-            font-size: 14px;
-        }
-
-            .summary h4 {
-                margin: 5px 0;
-            }
-
-        .text-success {
-            color: green;
-        }
-
-        .text-danger {
-            color: red;
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h2>📋 Izveštaj o radu i troškovima</h2>
-    <h5>Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()</h5>
+    <div class="container-glass">
+        <h2>📋 Izveštaj o radu i troškovima</h2>
+        <h5>Period: @Model.DatumOd.ToShortDateString() – @Model.DatumDo.ToShortDateString()</h5>
 
-    @foreach (var parcela in Model.Parcele)
-    {
-        <h4 class="section-title">@parcela.NazivParcele</h4>
+        <!-- 🟩 RADNJE -->
+        @foreach (var parcela in Model.Parcele.Where(p => !p.NazivParcele.Contains("prodaje")))
+        {
+            <div class="card">
+                <div class="card-header bg-success">@parcela.NazivParcele</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Radnja</th>
+                            <th>Kultura</th>
+                            <th>Radne mašine</th>
+                            <th>Resursi</th>
+                            <th>Trošak (RSD)</th>
+                            <th>Prinos (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in parcela.Radnje)
+                        {
+                            bool jeZbirni = r.NazivRadnje == "Ukupno po kulturi";
+                            <tr class="@(jeZbirni ? "table-secondary fw-bold" : "")">
+                                <td>@r.Datum.ToShortDateString()</td>
+                                <td>@r.NazivRadnje</td>
+                                <td>@r.Kultura</td>
+                                <td>
+                                    @if (!jeZbirni && r.RadneMasine.Any())
+                                    {
+                                        foreach (var m in r.RadneMasine)
+                                        {
+                                            <div>• @m.NazivRadneMasine (@m.BrojRadnihSati sati)</div>
+                                        }
+                                    }
+                                    else if (!jeZbirni)
+                                    {
+                                        <span class="text-muted">Nema</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!jeZbirni && r.Resursi.Any())
+                                    {
+                                        foreach (var res in r.Resursi)
+                                        {
+                                            <div>• @res.NazivResursa — @res.Kolicina.ToString("N2") × @res.JedinicnaCena.ToString("N2")</div>
+                                        }
+                                    }
+                                    else if (!jeZbirni)
+                                    {
+                                        <span class="text-muted">Nema</span>
+                                    }
+                                </td>
+                                <td>@r.Trosak.ToString("N2")</td>
+                                <td>@r.Prinos.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" style="text-align:right;">Ukupno:</td>
+                            <td>@parcela.Trosak.ToString("N2")</td>
+                            <td>@parcela.Prinos.ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Datum</th>
-                    <th>Radnja</th>
-                    <th>Kultura</th>
-                    <th>Radne mašine</th>
-                    <th>Resursi</th>
-                    <th>Trošak (RSD)</th>
-                    <th>Prihod (RSD)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in parcela.Radnje)
-                {
-                    <tr>
-                        <td>@r.Datum.ToShortDateString()</td>
-                        <td>@r.NazivRadnje</td>
-                        <td>@r.Kultura</td>
-                        <td>
-                            @if (r.RadneMasine.Any())
+        <!-- 🟨 PRODAJE -->
+        @if (sveParcele)
+        {
+            @foreach (var parcela in Model.Parcele.Where(p => p.NazivParcele.Contains("prodaje")))
+            {
+                <div class="card">
+                    <div class="card-header bg-warning">@parcela.NazivParcele</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kultura</th>
+                                <th>Količina (kg)</th>
+                                <th>Cena (RSD/kg)</th>
+                                <th>Ukupan iznos (RSD)</th>
+                                <th>Datum prodaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in parcela.Radnje.Where(r => r.NazivRadnje == "Prodaja"))
                             {
-                                foreach (var m in r.RadneMasine)
-                                {
-                                    <div>• @m.NazivRadneMasine (@m.BrojRadnihSati sati)</div>
-                                }
+                                <tr>
+                                    <td>@r.Kultura</td>
+                                    <td>@r.Prinos.ToString("N2")</td>
+                                    <td>@((r.Prihod / (r.Prinos == 0 ? 1 : r.Prinos)).ToString("N2"))</td>
+                                    <td>@r.Prihod.ToString("N2")</td>
+                                    <td>@r.Datum.ToString("dd.MM.yyyy")</td>
+                                </tr>
                             }
-                            else
-                            {
 
-                                <span>Nema</span>
-                                ;
-                            }
-                        </td>
-                        <td>
-                            @if (r.Resursi.Any())
+                            @foreach (var zbir in parcela.Radnje.Where(r => r.NazivRadnje == "Ukupno po kulturi"))
                             {
-                                foreach (var res in r.Resursi)
-                                {
-                                    <div>• @res.NazivResursa — @res.Kolicina × @res.JedinicnaCena.ToString("N2") RSD</div>
-                                }
+                                <tr class="table-secondary fw-bold">
+                                    <td>@zbir.Kultura</td>
+                                    <td>@zbir.Prinos.ToString("N2")</td>
+                                    <td>-</td>
+                                    <td>@zbir.Prihod.ToString("N2")</td>
+                                    <td class="text-start text-muted">
+                                        <div><strong>Prinos:</strong> @zbir.UkupanPrinosKulture.ToString("N2") kg</div>
+                                        <div><strong>Prodato:</strong> @zbir.Prinos.ToString("N2") kg</div>
+                                        <div><strong>Ostalo:</strong> @zbir.Ostalo.ToString("N2") kg</div>
+                                    </td>
+                                </tr>
                             }
-                            else
-                            {
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align:right;">Ukupan prihod:</td>
+                                <td class="text-success">@Model.UkupanPrihod.ToString("N2")</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+        }
 
-                                <span>Nema</span>
-                                ;
-                            }
-                        </td>
-                        <td>@r.Trosak.ToString("N2")</td>
-                        <td>@r.Prihod.ToString("N2")</td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5" class="totals">Ukupno:</td>
-                    <td>@parcela.Trosak.ToString("N2")</td>
-                    <td>@parcela.Prihod.ToString("N2")</td>
-                </tr>
-            </tfoot>
-        </table>
-    }
-
-    <div class="summary">
-        <h4 class="text-danger">Ukupan trošak: @Model.UkupanTrosak.ToString("N2") RSD</h4>
-        <h4 class="text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
-        <h4>Profit: @Model.Profit.ToString("N2") RSD</h4>
+        <!-- 🧾 UKUPNI PODACI -->
+        <div class="summary">
+            <h4 class="text-danger">Ukupan trošak: @Model.UkupanTrosak.ToString("N2") RSD</h4>
+            @if (sveParcele)
+            {
+                <h4 class="text-success">Ukupan prihod: @Model.UkupanPrihod.ToString("N2") RSD</h4>
+                <h4>Profit: <b>@Model.Profit.ToString("N2") RSD</b></h4>
+            }
+        </div>
     </div>
 </body>
 </html>

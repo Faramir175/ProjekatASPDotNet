@@ -15,6 +15,8 @@ namespace MojAtar.Core.ServiceContracts
         Task Update(ProdajaDTO dto);
         Task<List<ProdajaDTO>> GetPaged(Guid korisnikId, int skip, int take);
         Task<int> GetTotalCount(Guid korisnikId);
+        Task<IzvestajProdajeResult?> GetIzvestajProdaje(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma);
+
 
         Task<ProdajaDTO?> GetById(Guid id);
         Task<decimal> GetUkupanPrinosZaKulturu(Guid idKultura);

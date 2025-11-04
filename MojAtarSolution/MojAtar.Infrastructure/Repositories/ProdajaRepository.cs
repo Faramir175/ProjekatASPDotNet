@@ -103,6 +103,42 @@ namespace MojAtar.Infrastructure.Repositories
                 .Where(p => p.IdKultura == idKultura)
                 .SumAsync(p => p.Kolicina);
         }
+        public async Task<List<Prodaja>> GetByKorisnikAndPeriod(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma)
+        {
+            DateTime? kraj = doDatuma?.AddDays(1).AddSeconds(-1);
+
+            return await _dbContext.Prodaje
+                .Include(p => p.Kultura)
+                .Where(p => p.Kultura.IdKorisnik == korisnikId &&
+                            (!odDatuma.HasValue || p.DatumProdaje >= odDatuma) &&
+                            (!doDatuma.HasValue || p.DatumProdaje <= kraj))
+                .OrderByDescending(p => p.DatumProdaje)
+                .ToListAsync();
+        }
+        public async Task<Dictionary<Guid, decimal>> GetPrinosPoKulturi(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma)
+        {
+            var query = _dbContext.Zetve
+                .Include(z => z.Kultura)
+                .Where(z => z.Kultura.IdKorisnik == korisnikId);
+
+            if (odDatuma.HasValue)
+                query = query.Where(z => z.DatumIzvrsenja >= odDatuma);
+            if (doDatuma.HasValue)
+                query = query.Where(z => z.DatumIzvrsenja <= doDatuma);
+
+            var rezultat = await query
+                .Where(z => z.IdKultura != null)
+                .GroupBy(z => z.IdKultura.Value)
+                .Select(g => new
+                {
+                    IdKultura = g.Key,
+                    Prinos = g.Sum(z => (decimal)z.Prinos)
+                })
+                .ToListAsync();
+
+            return rezultat.ToDictionary(x => x.IdKultura, x => x.Prinos);
+
+        }
 
     }
 }

@@ -6,9 +6,11 @@
         public DateTime DatumDo { get; set; } = DateTime.Now;
         public List<ParcelaIzvestajDTO> Parcele { get; set; } = new();
 
-        public double UkupanTrosak => Parcele.Sum(p => p.Trosak);
-        public double UkupanPrihod => Parcele.Sum(p => p.Prihod);
-        public double Profit => UkupanPrihod - UkupanTrosak;
+        public decimal UkupanPrinos => Parcele.Sum(p => p.Prinos);
+        public decimal UkupanTrosak => Parcele.Sum(p => p.Trosak);
+        public decimal UkupanPrihodIzProdaja { get; set; } = 0;
+        public decimal UkupanPrihod => UkupanPrihodIzProdaja;
+        public decimal Profit => UkupanPrihodIzProdaja - UkupanTrosak;
     }
 
     public class ParcelaIzvestajDTO
@@ -17,8 +19,8 @@
         public string NazivParcele { get; set; } = string.Empty;
         public List<RadnjaIzvestajDTO> Radnje { get; set; } = new();
 
-        public double Trosak => Radnje.Sum(r => r.Trosak);
-        public double Prihod => Radnje.Sum(r => r.Prihod);
+        public decimal Trosak => Radnje.Sum(r => r.Trosak);
+        public decimal Prinos => Radnje.Sum(r => r.Prinos);
     }
 
     public class RadnjaIzvestajDTO
@@ -28,11 +30,20 @@
         public DateTime Datum { get; set; } = DateTime.Now;
         public string Kultura { get; set; } = string.Empty;
         public Guid? IdKultura { get; set; }
-        public double Trosak { get; set; }
-        public double Prihod { get; set; }
-        public double Prinos { get; set; }
+        public decimal Trosak { get; set; }
+        public decimal Prihod { get; set; }
+        public decimal Prinos { get; set; }
+        public decimal UkupanPrinosKulture { get; set; }
+        public decimal Ostalo => UkupanPrinosKulture - Prinos;
+
 
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
         public List<RadnjaResursDTO> Resursi { get; set; } = new();
+    }
+
+    public class IzvestajProdajeResult
+    {
+        public ParcelaIzvestajDTO ParcelaProdaje { get; set; } = new();
+        public decimal UkupanPrihod { get; set; }
     }
 }

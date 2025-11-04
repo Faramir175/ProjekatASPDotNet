@@ -61,8 +61,8 @@ namespace MojAtar.Infrastructure.Repositories
                         Datum = r.DatumIzvrsenja,
                         Kultura = r.Kultura?.Naziv ?? string.Empty,
                         IdKultura = r.IdKultura ?? Guid.Empty,
-                        Trosak = r.UkupanTrosak,
-                        Prinos = (r is Zetva zetva) ? zetva.Prinos : 0
+                        Trosak = (decimal)r.UkupanTrosak,
+                        Prinos = (r is Zetva zetva) ? (decimal)zetva.Prinos : 0
                     };
 
                     radnjaDto.RadneMasine = r.RadnjeRadneMasine

@@ -31,24 +31,37 @@ namespace MojAtar.UI.Controllers
         }
 
         [HttpPost("generisi")]
-        public async Task<IActionResult> Generisi(Guid? parcelaId, DateTime? odDatuma, DateTime? doDatuma, bool sveParcele)
+        public async Task<IActionResult> Generisi(string parcelaId, DateTime? odDatuma, DateTime? doDatuma)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var izvestaj = await _izvestajiService.GenerisiIzvestaj(Guid.Parse(userId), parcelaId, odDatuma, doDatuma, sveParcele);
+            bool sveParcele = parcelaId == "sve-parcele"; // 👈 Ako je izabrana opcija "-- Sve parcele --"
+            Guid? parcelaGuid = sveParcele ? null : Guid.Parse(parcelaId);
+
+            var izvestaj = await _izvestajiService.GenerisiIzvestaj(
+                Guid.Parse(userId), parcelaGuid, odDatuma, doDatuma, sveParcele);
+
+            ViewBag.SveParcele = sveParcele;
+
             return View("Prikaz", izvestaj);
         }
 
         [HttpPost("pdf")]
-        public async Task<IActionResult> Pdf(Guid? parcelaId, DateTime? odDatuma, DateTime? doDatuma, bool sveParcele)
+        public async Task<IActionResult> Pdf(string parcelaId, DateTime? odDatuma, DateTime? doDatuma)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var izvestaj = await _izvestajiService.GenerisiIzvestaj(Guid.Parse(userId), parcelaId, odDatuma, doDatuma, sveParcele);
+            bool sveParcele = parcelaId == "sve-parcele";
+            Guid? parcelaGuid = sveParcele ? null : Guid.Parse(parcelaId);
 
-            return new ViewAsPdf("PdfIzvestaj", izvestaj) // 👈 novi view bez layouta
+            var izvestaj = await _izvestajiService.GenerisiIzvestaj(
+                Guid.Parse(userId), parcelaGuid, odDatuma, doDatuma, sveParcele);
+
+            ViewBag.SveParcele = sveParcele;
+
+            return new ViewAsPdf("PdfIzvestaj", izvestaj)
             {
                 FileName = "izvestaj.pdf",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
@@ -56,5 +69,6 @@ namespace MojAtar.UI.Controllers
                 CustomSwitches = "--disable-smart-shrinking"
             };
         }
+
     }
 }
