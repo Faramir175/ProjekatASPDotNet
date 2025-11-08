@@ -25,6 +25,8 @@ namespace MojAtar.Core.DTO
         [Display(Name = "Datum važenja cene")]
         [Required(ErrorMessage = "Datum važenja cene je obavezan.")]
         public DateTime DatumVaznostiCene { get; set; } = DateTime.Now;
+        [Range(0.01, 999999999.99, ErrorMessage = "Količina raspoloživa za prodaju mora biti veća od 0.")]
+        public decimal RaspolozivoZaProdaju { get; set; }
 
         public Guid IdKorisnik { get; set; }
 
@@ -33,7 +35,8 @@ namespace MojAtar.Core.DTO
             Id = Id,
             Naziv = Naziv,
             AktuelnaCena = AktuelnaCena ?? 0,
-            IdKorisnik = IdKorisnik
+            IdKorisnik = IdKorisnik,
+            RaspolozivoZaProdaju = RaspolozivoZaProdaju
         };
     }
 }

@@ -24,6 +24,15 @@
                 <input type="text" placeholder="Unesite email" id="username" name="Email">
                 <label for="password">Lozinka</label>
             <input type="password" placeholder="Unesite lozinku" id="password" name="Lozinka">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger text-center mb-3" role="alert">
+                        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            @modelError.ErrorMessage <br />
+                        }
+                    </div>
+                }
             <button type="submit">Prijavite se</button>
     @*             <div class="social">
                     <div class="go"><i class="fab fa-google"></i> Google</div>

@@ -24,7 +24,6 @@ namespace MojAtar.Infrastructure.MojAtar
         public DbSet<Radnja_Resurs> RadnjeResursi { get; set; }
         public DbSet<Prodaja> Prodaje { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // =====================================

@@ -139,6 +139,11 @@ namespace MojAtar.Infrastructure.Repositories
             return rezultat.ToDictionary(x => x.IdKultura, x => x.Prinos);
 
         }
-
+        public async Task<int> CountByKorisnikId(Guid korisnikId)
+        {
+            return await _dbContext.Prodaje
+                .Include(p => p.Kultura)
+                .CountAsync(p => p.Kultura.IdKorisnik == korisnikId);
+        }
     }
 }

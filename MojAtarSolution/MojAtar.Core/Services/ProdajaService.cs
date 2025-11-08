@@ -14,11 +14,16 @@ namespace MojAtar.Core.Services
     {
         private readonly IProdajaRepository _prodajaRepository;
         private readonly ICenaKultureService _cenaKultureService;
+        private readonly IKulturaService _kulturaService;
 
-        public ProdajaService(IProdajaRepository prodajaRepository, ICenaKultureService cenaKultureService)
+        public ProdajaService(
+            IProdajaRepository prodajaRepository,
+            ICenaKultureService cenaKultureService,
+            IKulturaService kulturaService)
         {
             _prodajaRepository = prodajaRepository;
             _cenaKultureService = cenaKultureService;
+            _kulturaService = kulturaService;
         }
 
         public async Task<List<ProdajaDTO>> GetAllByKorisnik(Guid korisnikId)
@@ -33,14 +38,13 @@ namespace MojAtar.Core.Services
                 throw new InvalidOperationException("Morate uneti količinu.");
 
             // proveri raspoloživu količinu
-            decimal ukupnoProizvedeno = await _prodajaRepository.GetUkupanPrinosZaKulturu(dto.IdKultura);
-            decimal ukupnoProdato = await _prodajaRepository.GetUkupnoProdatoZaKulturu(dto.IdKultura);
-            decimal raspolozivo = ukupnoProizvedeno - ukupnoProdato;
+            var stanje = await _kulturaService.GetById(dto.IdKultura);
+            decimal raspolozivo = stanje?.RaspolozivoZaProdaju ?? 0;
 
             if (dto.Kolicina.Value > raspolozivo)
                 throw new InvalidOperationException($"Nema dovoljno raspoložive količine ({raspolozivo} kg).");
 
-            var kultura = await _prodajaRepository.GetKulturaById(dto.IdKultura);
+            var kultura = await _kulturaService.GetById(dto.IdKultura);
             if (kultura == null)
                 throw new KeyNotFoundException("Kultura nije pronađena.");
 
@@ -51,6 +55,7 @@ namespace MojAtar.Core.Services
 
             var entity = dto.ToProdaja();
             await _prodajaRepository.Add(entity);
+            await _kulturaService.AzurirajPosleProdaje(dto.IdKultura, dto.Kolicina.Value);
         }
 
         public async Task Update(ProdajaDTO dto)
@@ -69,10 +74,26 @@ namespace MojAtar.Core.Services
             if (dto.Kolicina.Value > raspolozivo)
                 throw new InvalidOperationException($"Nema dovoljno raspoložive količine ({raspolozivo} kg).");
 
+            // SNIMI STARU KOLIČINU pre nego što ažuriraš
+            var staraKolicina = stara.Kolicina;
+
+            // ažuriraj ostale podatke
             stara.Kolicina = dto.Kolicina.Value;
             stara.CenaPoJedinici = dto.CenaPoJedinici ?? stara.CenaPoJedinici;
             stara.DatumProdaje = dto.DatumProdaje;
             stara.Napomena = dto.Napomena;
+
+            // prvo ažuriraj stanje kulture, pa tek onda sačuvaj promene
+            if (dto.Kolicina > staraKolicina)
+            {
+                var razlika = dto.Kolicina.Value - staraKolicina;
+                await _kulturaService.AzurirajPosleProdaje(dto.IdKultura, razlika);
+            }
+            else if (dto.Kolicina < staraKolicina)
+            {
+                var razlika = staraKolicina - dto.Kolicina.Value;
+                await _kulturaService.VratiPosleBrisanjaProdaje(dto.IdKultura, razlika);
+            }
 
             await _prodajaRepository.Update(stara);
         }
@@ -80,7 +101,12 @@ namespace MojAtar.Core.Services
 
         public async Task Delete(Guid id)
         {
-            await _prodajaRepository.Delete(id);
+            var prodaja = await _prodajaRepository.GetById(id);
+            if (prodaja != null)
+            {
+                await _kulturaService.VratiPosleBrisanjaProdaje(prodaja.IdKultura, prodaja.Kolicina); // dodaj nazad količinu
+                await _prodajaRepository.Delete(id);
+            }
         }
 
         public async Task<ProdajaDTO?> GetById(Guid id)

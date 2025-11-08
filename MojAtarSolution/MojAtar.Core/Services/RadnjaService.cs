@@ -19,11 +19,15 @@ namespace MojAtar.Core.Services
     {
         private readonly IRadnjaRepository _radnjaRepository;
         private readonly IParcelaKulturaService _parcelaKulturaService;
+        private readonly IKulturaService _kulturaService;
 
-        public RadnjaService(IRadnjaRepository radnjaRepository,IParcelaKulturaService parcelaKulturaService)
+        public RadnjaService(IRadnjaRepository radnjaRepository,
+                             IParcelaKulturaService parcelaKulturaService,
+                             IKulturaService kulturaService)
         {
             _radnjaRepository = radnjaRepository;
             _parcelaKulturaService = parcelaKulturaService;
+            _kulturaService = kulturaService;
         }
 
         public async Task<RadnjaDTO> Add(RadnjaDTO dto)
@@ -58,7 +62,7 @@ namespace MojAtar.Core.Services
                     throw new Exception("Nema aktivne setve za ovu kulturu na parceli.");
             }
 
-            //  1. Kreiraj radnju
+            //  Kreiraj radnju
             Radnja novaRadnja = dto.TipRadnje == RadnjaTip.Zetva
                 ? new Zetva
                 {
@@ -80,10 +84,10 @@ namespace MojAtar.Core.Services
                     UkupanTrosak = dto.UkupanTrosak
                 };
 
-            //  2. Snimi radnju
+            //  Snimi radnju
             var entity = await _radnjaRepository.Add(novaRadnja);
 
-            //  3. Ako je SETVA → kreiraj ParcelaKultura sa IdSetvaRadnja
+            //  Ako je SETVA → kreiraj ParcelaKultura sa IdSetvaRadnja
             if (dto.TipRadnje == RadnjaTip.Setva)
             {
                 var pkDto = new ParcelaKulturaDTO
@@ -96,24 +100,24 @@ namespace MojAtar.Core.Services
                 };
                 await _parcelaKulturaService.Add(pkDto);
             }
-            // 4. Ako je ŽETVA → dopuni sve nezavršene setve za tu parcelu i kulturu
+            // Ako je ŽETVA → dopuni sve nezavršene setve za tu parcelu i kulturu
             else if (dto.TipRadnje == RadnjaTip.Zetva)
             {
-                var aktivneSetve = await _parcelaKulturaService.GetSveNezavrseneSetve(
-                    dto.IdParcela.Value, dto.IdKultura.Value);
-
-                if (aktivneSetve == null || !aktivneSetve.Any())
-                    throw new Exception("Nema aktivnih setvi za ovu kulturu na parceli.");
-
+                var aktivneSetve = await _parcelaKulturaService.GetSveNezavrseneSetve(dto.IdParcela.Value, dto.IdKultura.Value);
                 foreach (var setva in aktivneSetve)
                 {
                     setva.DatumZetve = dto.DatumIzvrsenja;
                     setva.IdZetvaRadnja = entity.Id;
                     await _parcelaKulturaService.Update(setva);
                 }
+
+                // Nakon što se žetva sačuva, ažuriraj stanje kulture
+                if (dto.Prinos.HasValue && dto.Prinos.Value > 0)
+                {
+                    await _kulturaService.AzurirajPosleZetve(dto.IdKultura!.Value, (decimal)dto.Prinos.Value);
+                }
+
             }
-
-
             return entity.ToRadnjaDTO();
         }
 
@@ -182,18 +186,41 @@ namespace MojAtar.Core.Services
                 }
             }
 
-
             //  Ako je ŽETVA
             if (dto.TipRadnje == RadnjaTip.Zetva)
             {
-                var pk = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
-                var target = pk.FirstOrDefault(x => x.IdZetvaRadnja == id);
+                var staraZetva = staraRadnja as Zetva;
+                if (staraZetva == null)
+                    throw new Exception("Radnja nije validna žetva.");
 
-                if (target != null)
+                // Ako korisnik pokušava da smanji prinos, proveri stanje kulture
+                if (dto.Prinos.HasValue && (decimal)dto.Prinos.Value < (decimal)staraZetva.Prinos)
                 {
-                    target.DatumZetve = dto.DatumIzvrsenja;
-                    await _parcelaKulturaService.Update(target);
+                    var razlika = (decimal)staraZetva.Prinos - (decimal)dto.Prinos.Value;
+                    bool moze = await _kulturaService.MozeSmanjenje(dto.IdKultura!.Value, razlika);
+                    if (!moze)
+                        throw new Exception("Nije moguće smanjiti prinos — stanje kulture bi otišlo u negativno.");
                 }
+
+                var stariPrinos = (decimal)staraZetva.Prinos;
+
+                // ažuriraj žetvu
+                staraZetva.Prinos = (double)(dto.Prinos ?? staraZetva.Prinos);
+                staraZetva.Napomena = dto.Napomena;
+                await _radnjaRepository.Update(staraZetva);
+
+
+                if (dto.Prinos.HasValue)
+                {
+                    await _kulturaService.AzurirajPosleIzmeneZetve(
+                        dto.IdKultura!.Value,
+                        stariPrinos,
+                        (decimal)dto.Prinos.Value
+                    );
+                }
+
+
+                return dto;
             }
 
             //  Na kraju ažuriraj samu radnju
@@ -205,7 +232,7 @@ namespace MojAtar.Core.Services
             var radnja = await _radnjaRepository.GetById(id);
             if (radnja == null) return false;
 
-            // 🟢 Ako je SETVA
+            // Ako je SETVA
             if (radnja.TipRadnje == RadnjaTip.Setva)
             {
                 // Pronađi PK koja koristi ovu setvu
@@ -218,7 +245,7 @@ namespace MojAtar.Core.Services
                     {
                         var zetvaId = pk.IdZetvaRadnja.Value;
 
-                        // 1️⃣ Ukloni reference žetve iz svih PK koje koriste istu žetvu
+                        // Ukloni reference žetve iz svih PK koje koriste istu žetvu
                         var sveZaZetvu = await _parcelaKulturaService.GetSveZaZetvu(zetvaId);
                         foreach (var p in sveZaZetvu)
                         {
@@ -227,13 +254,13 @@ namespace MojAtar.Core.Services
                             await _parcelaKulturaService.Update(p);
                         }
 
-                        // 2️⃣ Obriši samu žetvu
+                        // Obriši samu žetvu
                         var zetvaRadnja = await _radnjaRepository.GetById(zetvaId);
                         if (zetvaRadnja != null)
                             await _radnjaRepository.Delete(zetvaRadnja);
                     }
 
-                    // 3️⃣ Obriši PK za ovu setvu
+                    // Obriši PK za ovu setvu
                     await _parcelaKulturaService.DeleteIfNotCompleted(
                         pk.IdParcela!.Value, pk.IdKultura!.Value, pk.IdSetvaRadnja!.Value);
                 }
@@ -242,7 +269,21 @@ namespace MojAtar.Core.Services
             // Ako je ŽETVA
             else if (radnja.TipRadnje == RadnjaTip.Zetva)
             {
-                // Očisti sve PK koje koriste ovu žetvu
+                var zetva = radnja as Zetva;
+                if (zetva == null)
+                    throw new Exception("Žetva nije pronađena.");
+
+                // Proveri da li se može smanjiti raspoloživo stanje
+                bool moze = await _kulturaService.MozeBrisanjeZetve(zetva.IdKultura!.Value, (decimal)zetva.Prinos);
+                if (!moze)
+                    throw new Exception("Nije moguće obrisati žetvu jer bi raspoloživo stanje kulture postalo negativno (deo prinosa je već prodat).");
+
+                // Vrati nazad količinu u stanje kulture
+                var kultura = await _kulturaService.GetById(zetva.IdKultura!.Value);
+                kultura.RaspolozivoZaProdaju -= (decimal)zetva.Prinos;
+                await _kulturaService.Update(kultura.Id, kultura);
+
+                // 🔹 Očisti sve PK koje koriste ovu žetvu
                 var pkList = await _parcelaKulturaService.GetSveZaZetvu(id);
                 foreach (var pk in pkList)
                 {

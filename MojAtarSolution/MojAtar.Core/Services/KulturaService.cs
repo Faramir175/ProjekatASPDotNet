@@ -18,16 +18,16 @@ namespace MojAtar.Core.Services
     public class KulturaService : IKulturaService
     {
         private readonly IKulturaRepository _kulturaRepository;
-        private readonly IRadnjaService _radnjaService;
+        private readonly IRadnjaRepository _radnjaRepository;
         private readonly ICenaKultureService _cenaKultureService;
 
         public KulturaService(
             IKulturaRepository kulturaRepository,
-            IRadnjaService radnjaService,
+            IRadnjaRepository radnjaRepository,
             ICenaKultureService cenaKultureService)
         {
             _kulturaRepository = kulturaRepository;
-            _radnjaService = radnjaService;
+            _radnjaRepository = radnjaRepository;
             _cenaKultureService = cenaKultureService;
         }
 
@@ -80,17 +80,15 @@ namespace MojAtar.Core.Services
                 return false;
 
             // 🔹 Nađi sve radnje za ovu kulturu
-            var radnjeZaKulturu = await _radnjaService.GetAllByKultura(id.Value);
-
+            var radnjeZaKulturu = await _radnjaRepository.GetAllByKultura(id.Value);
             foreach (var radnja in radnjeZaKulturu)
             {
-                // 🔹 Ako je tip Setva ili Žetva — obriši celu radnju
                 if (radnja.TipRadnje == RadnjaTip.Setva || radnja.TipRadnje == RadnjaTip.Zetva)
                 {
-                    await _radnjaService.DeleteById(radnja.Id.Value);
+                    await _radnjaRepository.Delete(radnja);
                 }
-                // Ostale radnje (oranje, prskanje...) ostaju netaknute
             }
+
 
             // 🔹 Obriši samu kulturu
             await _kulturaRepository.DeleteKulturaById(id.Value);
@@ -221,6 +219,70 @@ namespace MojAtar.Core.Services
 
             return dto;
         }
+        public async Task AzurirajPosleZetve(Guid idKultura, decimal dodatiPrinos)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
 
+            kultura.RaspolozivoZaProdaju += dodatiPrinos;
+            await _kulturaRepository.Update(kultura);
+        }
+
+        public async Task AzurirajPosleProdaje(Guid idKultura, decimal kolicina)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
+
+            if (kultura.RaspolozivoZaProdaju < kolicina)
+                throw new Exception($"Nema dovoljno raspoložive količine ({kultura.RaspolozivoZaProdaju} kg).");
+
+            kultura.RaspolozivoZaProdaju -= kolicina;
+            await _kulturaRepository.Update(kultura);
+        }
+
+        public async Task VratiPosleBrisanjaProdaje(Guid idKultura, decimal kolicina)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                return;
+
+            kultura.RaspolozivoZaProdaju += kolicina;
+            await _kulturaRepository.Update(kultura);
+        }
+
+        public async Task AzurirajPosleIzmeneZetve(Guid idKultura, decimal stariPrinos, decimal noviPrinos)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
+
+            var razlika = noviPrinos - stariPrinos;
+
+            if (razlika < 0 && kultura.RaspolozivoZaProdaju + razlika < 0)
+                throw new Exception("Smanjenjem prinosa raspoloživo bi palo u negativno.");
+
+            kultura.RaspolozivoZaProdaju += razlika;
+            await _kulturaRepository.Update(kultura);
+        }
+
+        public async Task<bool> MozeSmanjenje(Guid idKultura, decimal razlika)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                return false;
+
+            return kultura.RaspolozivoZaProdaju - razlika >= 0;
+        }
+
+        public async Task<bool> MozeBrisanjeZetve(Guid idKultura, decimal prinos)
+        {
+            var kultura = await _kulturaRepository.GetById(idKultura);
+            if (kultura == null)
+                return false;
+
+            return kultura.RaspolozivoZaProdaju - prinos >= 0;
+        }
     }
 }

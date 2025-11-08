@@ -15,11 +15,14 @@ namespace MojAtar.UI.Controllers
             private readonly IKulturaService _kulturaService;
             private readonly ICenaKultureService _cenaKultureService;
 
-        public ProdajeController(IProdajaService prodajaService, IKulturaService kulturaService, ICenaKultureService ceneKulturaService)
+            public ProdajeController(
+                IProdajaService prodajaService,
+                IKulturaService kulturaService,
+                ICenaKultureService cenaKultureService)
             {
                 _prodajaService = prodajaService;
                 _kulturaService = kulturaService;
-                _cenaKultureService = ceneKulturaService;
+                _cenaKultureService = cenaKultureService;
             }
 
         [HttpGet("")]
@@ -80,10 +83,8 @@ namespace MojAtar.UI.Controllers
         [HttpGet("getraspolozivo")]
         public async Task<IActionResult> GetRaspolozivo(Guid idKultura)
         {
-            decimal ukupnoProizvedeno = await _prodajaService.GetUkupanPrinosZaKulturu(idKultura);
-            decimal ukupnoProdato = await _prodajaService.GetUkupnoProdatoZaKulturu(idKultura);
-            decimal raspolozivo = ukupnoProizvedeno - ukupnoProdato;
-
+            var kultura = await _kulturaService.GetById(idKultura);
+            decimal raspolozivo = kultura?.RaspolozivoZaProdaju ?? 0;
             return Json(new { raspolozivo });
         }
 

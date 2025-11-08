@@ -8,7 +8,6 @@ namespace MojAtar.Core.DTO
         public string Email { get; set; }
         public string Uloga { get; set; }
         public DateTime DatumRegistracije { get; set; }
-
         public int BrojParcela { get; set; }
         public int BrojRadnji { get; set; }
         public int BrojResursa { get; set; }

@@ -411,7 +411,16 @@ namespace MojAtar.UI.Controllers
         [HttpPost("obrisi/{id}")]
         public async Task<IActionResult> Obrisi(Guid id)
         {
-            await _radnjaService.DeleteById(id);
+            try
+            {
+                await _radnjaService.DeleteById(id);
+                TempData["SuccessMessage"] = "Radnja je uspešno obrisana!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
             return RedirectToAction("Radnje");
         }
 

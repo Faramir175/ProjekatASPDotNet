@@ -44,8 +44,6 @@ namespace MojAtar.Infrastructure.Repositories
                 .Take(take)
                 .ToListAsync();
         }
-
-
         public async Task<Kultura> GetById(Guid? id)
         {
             return await _dbContext.Kulture.FindAsync(id);
@@ -56,14 +54,12 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Kulture
                 .FirstOrDefaultAsync(k => k.Naziv.ToLower() == naziv.ToLower() && k.IdKorisnik == idKorisnik);
         }
-
         public async Task<Kultura> Add(Kultura entity)
         {
              _dbContext.Kulture.Add(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
         }
-
         public async Task<Kultura> Update(Kultura entity)
         {
             Kultura? kulturaZaUpdate = await _dbContext.Kulture.FirstOrDefaultAsync(temp => temp.Id == entity.Id);
@@ -80,7 +76,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             return kulturaZaUpdate;
         }
-
         public async Task<bool> Delete(Kultura entity)
         {
             _dbContext.Kulture.RemoveRange(_dbContext.Kulture.Where(temp => temp == entity));
@@ -88,7 +83,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             return rowsDeleted > 0;
         }
-
         public async Task<bool> DeleteKulturaById(Guid? id)
         {
             _dbContext.Kulture.RemoveRange(_dbContext.Kulture.Where(temp => temp.Id == id));
@@ -96,7 +90,6 @@ namespace MojAtar.Infrastructure.Repositories
 
             return rowsDeleted > 0;
         }
-
         public async Task DodajCenu(CenaKulture cena)
         {
             _dbContext.CeneKultura.AddAsync(cena);
@@ -104,6 +97,48 @@ namespace MojAtar.Infrastructure.Repositories
         }
         public Task<int> CountByKorisnikId(Guid korisnikId) =>
             _dbContext.Kulture.CountAsync(k => k.IdKorisnik == korisnikId);
+
+        public async Task AzurirajPosleZetve(Guid idKultura, decimal dodatiPrinos)
+        {
+            var kultura = await _dbContext.Kulture.FindAsync(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
+
+            kultura.RaspolozivoZaProdaju += dodatiPrinos;
+
+            _dbContext.Kulture.Update(kultura);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task AzurirajPosleProdaje(Guid idKultura, decimal kolicina)
+        {
+            var kultura = await _dbContext.Kulture.FindAsync(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
+
+            if (kultura.RaspolozivoZaProdaju < kolicina)
+                throw new Exception($"Nema dovoljno raspoložive količine ({kultura.RaspolozivoZaProdaju} kg).");
+
+            kultura.RaspolozivoZaProdaju -= kolicina;
+
+            _dbContext.Kulture.Update(kultura);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AzurirajPosleBrisanjaZetve(Guid idKultura, decimal oduzetiPrinos)
+        {
+            var kultura = await _dbContext.Kulture.FindAsync(idKultura);
+            if (kultura == null)
+                throw new Exception("Kultura nije pronađena.");
+
+            if (kultura.RaspolozivoZaProdaju - oduzetiPrinos < 0)
+                throw new Exception("Nije moguće obrisati žetvu jer je količina već iskorišćena u prodaji.");
+
+            kultura.RaspolozivoZaProdaju -= oduzetiPrinos;
+
+            _dbContext.Kulture.Update(kultura);
+            await _dbContext.SaveChangesAsync();
+        }
+
 
     }
 }

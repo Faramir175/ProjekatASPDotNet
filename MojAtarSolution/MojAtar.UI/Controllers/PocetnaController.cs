@@ -43,21 +43,20 @@ namespace MojAtar.UI.Controllers
                 BrojPrikljucnihMasina = await _pocetnaService.GetBrojPrikljucnihMasinaAsync(korisnikId),
                 BrojKultura = await _pocetnaService.GetBrojKulturaAsync(korisnikId),
                 PoslednjeRadnje = (await _pocetnaService.GetPoslednjeRadnjeAsync(korisnikId))
-    .Select(r => new RadnjaDTO
-    {
-        Id = r.Id,
-        IdParcela = r.IdParcela,
-        IdKultura = r.IdKultura,
-        DatumIzvrsenja = r.DatumIzvrsenja,
-        Napomena = r.Napomena,
-        UkupanTrosak = r.UkupanTrosak,
-        TipRadnje = r.TipRadnje,
-        Prinos = (r is Zetva zetva) ? zetva.Prinos : null,
-        Parcela = r.Parcela,
-        Kultura = r.Kultura
-    })
-    .ToList()
-
+                .Select(r => new RadnjaDTO
+                {
+                    Id = r.Id,
+                    IdParcela = r.IdParcela,
+                    IdKultura = r.IdKultura,
+                    DatumIzvrsenja = r.DatumIzvrsenja,
+                    Napomena = r.Napomena,
+                    UkupanTrosak = r.UkupanTrosak,
+                    TipRadnje = r.TipRadnje,
+                    Prinos = (r is Zetva zetva) ? zetva.Prinos : null,
+                    Parcela = r.Parcela,
+                    Kultura = r.Kultura
+                })
+                .ToList()
         };
 
             return View(model);

@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace MojAtar.Core.ServiceContracts
 {
-    public interface IKulturaService
+    public interface IResursService
     {
-        public Task<KulturaDTO> Add(KulturaDTO dto);
-        public Task<List<KulturaDTO>> GetAllForUser(Guid idKorisnika);
-        public Task<KulturaDTO> GetById(Guid? id);
-        public Task<KulturaDTO> GetByNaziv(string? naziv, Guid idKorisnik);
-        public Task<KulturaDTO> Update(Guid? id, KulturaDTO dto);
+        public Task<ResursDTO> Add(ResursDTO dto);
+        public Task<List<ResursDTO>> GetAllForUser(Guid idKorisnika);
+        public Task<ResursDTO> GetById(Guid? id);
+        public Task<ResursDTO> GetByNaziv(string? naziv, Guid idKorisnik);
+        public Task<ResursDTO> Update(Guid? id, ResursDTO dto);
         public Task<bool> DeleteById(Guid? id);
-        Task<List<KulturaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
+        Task<List<ResursDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take);
         Task<int> GetCountByKorisnik(Guid idKorisnik);
-        Task<KulturaDTO> GetWithAktuelnaCena(Guid idKorisnik, Guid idKultura);
+        Task<ResursDTO> GetWithAktuelnaCena(Guid idKorisnik, Guid idResurs);
 
     }
 }

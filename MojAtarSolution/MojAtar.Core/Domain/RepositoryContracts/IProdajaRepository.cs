@@ -18,8 +18,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         Task<int> GetTotalCount(Guid korisnikId);
         Task<List<Prodaja>> GetByKorisnikAndPeriod(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma);
         Task<Dictionary<Guid, decimal>> GetPrinosPoKulturi(Guid korisnikId, DateTime? odDatuma, DateTime? doDatuma);
-
-
+        Task<int> CountByKorisnikId(Guid korisnikId);
         // Pomoćne metode
         Task<decimal> GetUkupanPrinosZaKulturu(Guid idKultura);
         Task<decimal> GetUkupnoProdatoZaKulturu(Guid idKultura);

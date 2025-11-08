@@ -109,13 +109,15 @@ namespace MojAtar.UI.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Neispravna lozinka.");
+                        ModelState.AddModelError(string.Empty, "Пријављивање није успело. Проверите унесене податке и покушајте поново.");
                     }
+
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Korisnik sa unetim emailom ne postoji.");
+                    ModelState.AddModelError(string.Empty, "Пријављивање није успело. Проверите унесене податке и покушајте поново.");
                 }
+
             }
             return View(korisnikRequest);
         }
