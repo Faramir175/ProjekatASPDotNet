@@ -115,7 +115,7 @@ namespace MojAtar.Core.Services
             staraParcela.Naziv = dto.Naziv;
             staraParcela.Povrsina = (decimal)dto.Povrsina;
             staraParcela.Napomena = dto.Napomena;
-            staraParcela.IdKatastarskaOpstina = dto.IdKatastarskaOpstina;
+            staraParcela.IdKatastarskaOpstina = (Guid)dto.IdKatastarskaOpstina;
             staraParcela.IdKorisnik = dto.IdKorisnik;
             staraParcela.Longitude = dto.Longitude;
             staraParcela.Latitude = dto.Latitude;

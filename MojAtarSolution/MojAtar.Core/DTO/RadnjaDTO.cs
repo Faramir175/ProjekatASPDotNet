@@ -53,7 +53,7 @@ namespace MojAtar.Core.DTO
                 return new Zetva()
                 {
                     Id = this.Id ?? Guid.NewGuid(),
-                    IdParcela = this.IdParcela,
+                    IdParcela = (Guid)this.IdParcela,
                     IdKultura = this.IdKultura,
                     DatumIzvrsenja = this.DatumIzvrsenja,
                     Napomena = this.Napomena,
@@ -69,7 +69,7 @@ namespace MojAtar.Core.DTO
                 return new Radnja()
                 {
                     Id = this.Id ?? Guid.NewGuid(),
-                    IdParcela = this.IdParcela,
+                    IdParcela = (Guid)this.IdParcela,
                     IdKultura = this.IdKultura,
                     DatumIzvrsenja = this.DatumIzvrsenja,
                     Napomena = this.Napomena,

@@ -21,10 +21,10 @@ namespace MojAtar.Core.Domain
         public double? Longitude { get; set; }
 
         // Foreign Key
-        public Guid? IdKatastarskaOpstina { get; set; }
+        public Guid IdKatastarskaOpstina { get; set; }
         public KatastarskaOpstina KatastarskaOpstina { get; set; }
 
-        public Guid? IdKorisnik { get; set; }
+        public Guid IdKorisnik { get; set; }
         public Korisnik Korisnik { get; set; }
 
         // Veze sa drugim tabelama

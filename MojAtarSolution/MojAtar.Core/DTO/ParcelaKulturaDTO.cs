@@ -25,9 +25,9 @@ namespace MojAtar.Core.DTO
 
         public Parcela_Kultura ToParcelaKultura() => new Parcela_Kultura()
         {
-            Id = Id,
-            IdKultura = IdKultura,
-            IdParcela = IdParcela,
+            Id = (Guid)Id,
+            IdKultura = (Guid)IdKultura,
+            IdParcela = (Guid)IdParcela,
             Povrsina = Povrsina,
             DatumSetve = DatumSetve,
             DatumZetve = DatumZetve,

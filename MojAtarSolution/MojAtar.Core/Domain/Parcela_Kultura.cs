@@ -9,11 +9,11 @@ namespace MojAtar.Core.Domain
 {
     public class Parcela_Kultura
     {
-        public Guid? Id { get; set; }
-        public Guid? IdParcela { get; set; }
+        public Guid Id { get; set; }
+        public Guid IdParcela { get; set; }
         public Parcela Parcela { get; set; }
 
-        public Guid? IdKultura { get; set; }
+        public Guid IdKultura { get; set; }
         public Kultura Kultura { get; set; }
 
         [Range(0.01,double.MaxValue,ErrorMessage = "Cena po jedinici mora biti veca od 0.")]

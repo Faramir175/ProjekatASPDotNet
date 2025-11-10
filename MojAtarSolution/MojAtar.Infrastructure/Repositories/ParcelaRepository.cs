@@ -104,7 +104,7 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Parcele
                 .Include(p => p.KatastarskaOpstina)
                 .Include(p => p.ParceleKulture)
-                    .ThenInclude(pk => pk.Kultura)
+                .ThenInclude(pk => pk.Kultura)
                 .Where(p => p.IdKorisnik == idKorisnik)
                 .OrderBy(p => p.Naziv)
                 .Skip(skip)
@@ -116,7 +116,7 @@ namespace MojAtar.Infrastructure.Repositories
             var parcele = await _dbContext.Parcele
                 .Include(p => p.KatastarskaOpstina)
                 .Include(p => p.ParceleKulture)
-                    .ThenInclude(pk => pk.Kultura)
+                .ThenInclude(pk => pk.Kultura)
                 .Where(p => p.IdKorisnik == idKorisnik)
                 .OrderBy(p => p.Naziv)
                 .Skip(skip)

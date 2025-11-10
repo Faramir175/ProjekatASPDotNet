@@ -102,9 +102,8 @@ namespace MojAtar.UI.Controllers
                         {
                             Console.WriteLine($"Cookie: {cookie.Key} = {cookie.Value}");
                         }
-
+                        TempData["SuccessMessage"] = "Успешно сте се пријавили!";
                         return RedirectToAction("Pocetna", "Pocetna");
-
 
                     }
                     else

@@ -13,7 +13,7 @@ namespace MojAtar.Core.Domain
         [Key]
         public Guid? Id { get; set; }
         // Veza sa Parcelom
-        public Guid? IdParcela { get; set; }
+        public Guid IdParcela { get; set; }
         public Parcela Parcela { get; set; }
         public DateTime DatumIzvrsenja { get; set; }
         public string? Napomena { get; set; }

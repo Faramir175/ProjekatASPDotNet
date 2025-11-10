@@ -68,7 +68,7 @@ namespace MojAtar.Core.Services
                 {
                     DatumIzvrsenja = dto.DatumIzvrsenja,
                     TipRadnje = dto.TipRadnje,
-                    IdParcela = dto.IdParcela,
+                    IdParcela = (Guid)dto.IdParcela,
                     IdKultura = dto.IdKultura,
                     Napomena = dto.Napomena,
                     UkupanTrosak = dto.UkupanTrosak,
@@ -78,7 +78,7 @@ namespace MojAtar.Core.Services
                 {
                     DatumIzvrsenja = dto.DatumIzvrsenja,
                     TipRadnje = dto.TipRadnje,
-                    IdParcela = dto.IdParcela,
+                    IdParcela = (Guid)dto.IdParcela,
                     IdKultura = dto.IdKultura,
                     Napomena = dto.Napomena,
                     UkupanTrosak = dto.UkupanTrosak
@@ -130,7 +130,7 @@ namespace MojAtar.Core.Services
             if (staraRadnja.TipRadnje == RadnjaTip.Setva)
             {
                 var pk = await _parcelaKulturaService.GetByParcelaAndKulturaId(
-                    staraRadnja.IdParcela!.Value, staraRadnja.IdKultura!.Value);
+                    staraRadnja.IdParcela, staraRadnja.IdKultura!.Value);
 
                 if (pk != null && pk.IdSetvaRadnja == staraRadnja.Id && pk.IdZetvaRadnja != null)
                     throw new Exception("Setva ne može biti izmenjena jer je za nju već obavljena žetva.");

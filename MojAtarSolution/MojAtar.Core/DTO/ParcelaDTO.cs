@@ -52,7 +52,7 @@ namespace MojAtar.Core.DTO
             Naziv = Naziv,
             Povrsina = (decimal)Povrsina,
             Napomena = Napomena,
-            IdKatastarskaOpstina = IdKatastarskaOpstina,
+            IdKatastarskaOpstina = (Guid)IdKatastarskaOpstina,
             IdKorisnik = IdKorisnik,
             Latitude = Latitude,
             Longitude = Longitude
