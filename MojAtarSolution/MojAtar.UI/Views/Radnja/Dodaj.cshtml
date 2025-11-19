@@ -447,8 +447,6 @@
                     </div>
                 </div>
 
-
-
                 <div id="listaPrikljucnihMasina" class="mb-4">
                     <label class="form-label d-block mb-2">Priključne mašine</label>
                     <div class="d-flex flex-wrap gap-2">
@@ -825,7 +823,7 @@
                     const response = await fetch(`/radnje/slobodnaPovrsina/${id}`);
                     if (response.ok) {
                         const data = await response.json();
-                        label.textContent = `Dostupna površina: ${data.slobodno.toFixed(2)} ha`;
+                        label.textContent = `Dostupna površina: ${data.slobodno.toFixed(4)} ha`;
                     } else {
                         label.textContent = "Greška prilikom učitavanja.";
                     }

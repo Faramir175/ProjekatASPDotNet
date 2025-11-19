@@ -44,9 +44,10 @@
                             <p class="card-text mb-1">
                                 <strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD
                             </p>
-                            <p class="card-text mb-1">
-                                <strong>Napomena:</strong> @radnja.Napomena
-                            </p>
+                            @if (radnja.Napomena != null)
+                            {
+                                <p class="card-text mb-1"><strong>Napomena:</strong> @radnja.Napomena</p>
+                            }
                         </div>
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
                             <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">

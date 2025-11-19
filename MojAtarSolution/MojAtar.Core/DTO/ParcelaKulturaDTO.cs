@@ -23,16 +23,24 @@ namespace MojAtar.Core.DTO
         //Za filtriranje
         public Guid IdKorisnik { get; set; }
 
-        public Parcela_Kultura ToParcelaKultura() => new Parcela_Kultura()
+        public Parcela_Kultura ToParcelaKultura()
         {
-            Id = (Guid)Id,
-            IdKultura = (Guid)IdKultura,
-            IdParcela = (Guid)IdParcela,
-            Povrsina = Povrsina,
-            DatumSetve = DatumSetve,
-            DatumZetve = DatumZetve,
-            IdSetvaRadnja = IdSetvaRadnja,
-            IdZetvaRadnja = IdZetvaRadnja
-        };
+            var entity = new Parcela_Kultura()
+            {
+                IdKultura = IdKultura!.Value,
+                IdParcela = IdParcela!.Value,
+                Povrsina = Povrsina,
+                DatumSetve = DatumSetve,
+                DatumZetve = DatumZetve,
+                IdSetvaRadnja = IdSetvaRadnja,
+                IdZetvaRadnja = IdZetvaRadnja
+            };
+
+            if (Id.HasValue)
+                entity.Id = Id.Value;
+
+            return entity;
+        }
+
     }
 }

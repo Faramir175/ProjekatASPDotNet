@@ -15,139 +15,137 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.RootNamespace = MojAtar.UI
 build_property.RootNamespace = MojAtar.UI
-build_property.ProjectDir = C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\
+build_property.ProjectDir = C:\Users\milan\OneDrive\Документи\GitHub\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Faramir\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI
+build_property.MSBuildProjectDirectory = C:\Users\milan\OneDrive\Документи\GitHub\ProjekatASPDotNet\MojAtarSolution\MojAtar.UI
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Faramir/AppData/Roaming/SonarLint for Visual Studio/.global/csharp/SonarLint.xml]
-build_metadata.AdditionalFiles.TargetPath = 
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Login.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Register.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Auth/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/IstorijaCena/Kulture.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/IstorijaCena/Kulture.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXN0b3JpamFDZW5hXEt1bHR1cmUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/IstorijaCena/Resursi.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/IstorijaCena/Resursi.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXN0b3JpamFDZW5hXFJlc3Vyc2kuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/Izvestaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/Izvestaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXp2ZXN0YWppXEl6dmVzdGFqLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/PdfIzvestaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/PdfIzvestaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXp2ZXN0YWppXFBkZkl6dmVzdGFqLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/Prikaz.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Izvestaji/Prikaz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXp2ZXN0YWppXFByaWthei5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Korisnik/Podesavanja.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Korisnik/Podesavanja.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29yaXNuaWtcUG9kZXNhdmFuamEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Kultura/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Kultura/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS3VsdHVyYVxEb2Rhai5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Kultura/Kulture.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Kultura/Kulture.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS3VsdHVyYVxLdWx0dXJlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Parcela/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Parcela/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyY2VsYVxEb2Rhai5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Parcela/Parcele.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Parcela/Parcele.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyY2VsYVxQYXJjZWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Pocetna/Pocetna.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Pocetna/Pocetna.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9jZXRuYVxQb2NldG5hLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/PrikljucnaMasina/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/PrikljucnaMasina/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpa2xqdWNuYU1hc2luYVxEb2Rhai5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/PrikljucnaMasina/PrikljucneMasine.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/PrikljucnaMasina/PrikljucneMasine.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpa2xqdWNuYU1hc2luYVxQcmlrbGp1Y25lTWFzaW5lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Prodaje/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Prodaje/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZGFqZVxEb2Rhai5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Prodaje/Prodaje.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Prodaje/Prodaje.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZGFqZVxQcm9kYWplLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmFNYXNpbmFcRG9kYWouY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/RadneMasine.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/RadnaMasina/RadneMasine.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmFNYXNpbmFcUmFkbmVNYXNpbmUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmphXERvZGFqLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/Radnje.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/Radnje.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmphXFJhZG5qZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/RadnjePoParceli.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Radnja/RadnjePoParceli.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFkbmphXFJhZG5qZVBvUGFyY2VsaS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Dodaj.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Dodaj.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdXJzXERvZGFqLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Resursi.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Resurs/Resursi.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdXJzXFJlc3Vyc2kuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/Error.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_AuthLayout.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_AuthLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_MainLayout.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_MainLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NYWluTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/_ViewImports.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Faramir/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/_ViewStart.cshtml]
+[C:/Users/milan/OneDrive/Документи/GitHub/ProjekatASPDotNet/MojAtarSolution/MojAtar.UI/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
