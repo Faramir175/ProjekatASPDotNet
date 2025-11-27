@@ -57,7 +57,6 @@ namespace MojAtar.UI.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Moramo ponovo napuniti ViewBag ako vraćamo View
                 ViewBag.KatastarskeOpstine = new SelectList(
                     await _katastarskaOpstinaService.GetAll(), "Id", "Naziv", dto.IdKatastarskaOpstina);
                 ViewBag.UserId = userId;

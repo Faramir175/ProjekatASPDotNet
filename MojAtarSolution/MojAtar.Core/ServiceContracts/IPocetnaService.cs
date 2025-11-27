@@ -11,12 +11,6 @@ namespace MojAtar.Core.ServiceContracts
 {
     public interface IPocetnaService
     {
-        Task<int> GetBrojParcelaAsync(Guid korisnikId);
-        Task<int> GetBrojRadnjiAsync(Guid korisnikId);
-        Task<int> GetBrojResursaAsync(Guid korisnikId);
-        Task<int> GetBrojRadnihMasinaAsync(Guid korisnikId);
-        Task<int> GetBrojPrikljucnihMasinaAsync(Guid korisnikId);
-        Task<int> GetBrojKulturaAsync(Guid korisnikId);
-        Task<List<Radnja>> GetPoslednjeRadnjeAsync(Guid korisnikId, int broj = 3);
+        Task<PocetnaDTO> GetDashboardDataAsync(Guid korisnikId);
     }
 }
