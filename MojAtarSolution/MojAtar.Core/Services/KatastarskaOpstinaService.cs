@@ -34,13 +34,10 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException(nameof(katastarskaAdd.Naziv));
             }
 
-
             KatastarskaOpstina katastarskaOpstina = katastarskaAdd.ToKatastarskaOpstina();
-
             katastarskaOpstina.Id = Guid.NewGuid();
 
             await _katastarskaOpstinaRepository.Add(katastarskaOpstina);
-
             katastarskaAdd.Id = katastarskaOpstina.Id;
 
             return katastarskaAdd;
@@ -64,13 +61,12 @@ namespace MojAtar.Core.Services
 
         public async Task<List<KatastarskaOpstinaDTO>> GetAll()
         {
-            List<KatastarskaOpstina> katastarskaOpstina = await _katastarskaOpstinaRepository.GetAll();
-            List<KatastarskaOpstinaDTO> dto = new List<KatastarskaOpstinaDTO>();
-            foreach(KatastarskaOpstina ko in katastarskaOpstina)
-            {
-                dto.Add(ko.ToKatastarskaOpstinaDTO());
-            }
-            return dto;
+            var katastarskeOpstine = await _katastarskaOpstinaRepository.GetAll();
+
+            // Koristimo LINQ za čistiji kod umesto foreach petlje
+            return katastarskeOpstine
+                .Select(ko => ko.ToKatastarskaOpstinaDTO())
+                .ToList();
         }
 
         public async Task<KatastarskaOpstinaDTO> GetById(Guid? id)
@@ -93,18 +89,22 @@ namespace MojAtar.Core.Services
             {
                 throw new ArgumentNullException(nameof(dto.Id));
             }
-            KatastarskaOpstina? katastarskaOpstina = new KatastarskaOpstina()
+            KatastarskaOpstina? existingOpstina = await _katastarskaOpstinaRepository.GetById(dto.Id.Value);
+
+            if (existingOpstina == null)
+                return null;
+
+            existingOpstina.Naziv = dto.Naziv;
+            existingOpstina.GradskaOpstina = dto.GradskaOpstina;
+
+            if (dto.Parcele != null)
             {
-                Id = dto.Id,
-                Naziv = dto.Naziv,
-                GradskaOpstina = dto.GradskaOpstina,
-                Parcele = dto.Parcele,
-            };
+                existingOpstina.Parcele = dto.Parcele;
+            }
 
-            await _katastarskaOpstinaRepository.Update(katastarskaOpstina);
+            await _katastarskaOpstinaRepository.Update(existingOpstina);
 
-            if (katastarskaOpstina == null) return null;
-            return katastarskaOpstina.ToKatastarskaOpstinaDTO();
+            return existingOpstina.ToKatastarskaOpstinaDTO();
         }
 
     }

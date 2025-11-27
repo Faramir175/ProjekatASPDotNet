@@ -44,6 +44,9 @@ namespace MojAtar.UI.Controllers
         [HttpPost("put/{id}")]
         public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] KatastarskaOpstinaDTO dto)
         {
+            if (id != dto.Id)
+                return BadRequest("ID u URL-u se ne poklapa sa ID-em u telu zahteva.");
+
             dto.Id = id;
             var updated = await _katastarskaOpstinaService.Update(dto);
             if (updated==null)
