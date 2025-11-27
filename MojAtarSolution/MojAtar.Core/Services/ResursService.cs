@@ -140,19 +140,23 @@ namespace MojAtar.Core.Services
 
         public async Task<ResursDTO> Update(Guid? id, ResursDTO dto)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
+            if (id == null) throw new ArgumentNullException(nameof(id));
 
+            // 1. DOHVATI POSTOJEĆI
             var stariResurs = await _resursRepository.GetById(id.Value);
-            if (stariResurs == null)
-                return null;
+            if (stariResurs == null) return null;
 
-            // Provera duplikata po nazivu i korisniku (izuzev samog sebe)
-            var postoji = await _resursRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
-            if (postoji != null && postoji.Id != id)
-                throw new ArgumentException("Već postoji resurs sa ovim nazivom za vaš nalog.");
+            // 2. PROVERA DUPLIKATA (samo ako je naziv menjan)
+            if (!string.Equals(stariResurs.Naziv, dto.Naziv, StringComparison.OrdinalIgnoreCase))
+            {
+                var postoji = await _resursRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+                if (postoji != null && postoji.Id != id)
+                    throw new ArgumentException("Već postoji resurs sa ovim nazivom za vaš nalog.");
+            }
 
-            if (stariResurs.AktuelnaCena != dto.AktuelnaCena)
+            // 3. LOGIKA ZA CENU (Istorija cena)
+            // Koristimo Math.Abs za poređenje double vrednosti
+            if (Math.Abs(stariResurs.AktuelnaCena - (double)dto.AktuelnaCena) > 0.001)
             {
                 var novaCena = new CenaResursa
                 {
@@ -163,12 +167,18 @@ namespace MojAtar.Core.Services
                 };
 
                 await _resursRepository.DodajCenu(novaCena);
+
+                // Ažuriramo glavnu tabelu samo ako je datum aktuelan
+                if (novaCena.DatumVaznosti.Date <= DateTime.Now.Date)
+                {
+                    stariResurs.AktuelnaCena = (double)dto.AktuelnaCena;
+                }
             }
 
+            // 4. AŽURIRANJE OSTALIH POLJA
             stariResurs.Naziv = dto.Naziv;
             stariResurs.Vrsta = dto.Vrsta;
-            stariResurs.AktuelnaCena = (double)dto.AktuelnaCena;
-            stariResurs.IdKorisnik = dto.IdKorisnik;
+            // IdKorisnik obično ne menjamo
 
             await _resursRepository.Update(stariResurs);
             return stariResurs.ToResursDTO();
