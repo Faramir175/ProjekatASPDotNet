@@ -50,11 +50,8 @@ namespace MojAtar.Core.Services
                 throw new ArgumentException("Već postoji entitet sa ovim nazivom za vaš nalog.");
             }
 
-
             Kultura kultura = kulturaAdd.ToKultura();
-
             kultura.Id = Guid.NewGuid();
-
             await _kulturaRepository.Add(kultura);
 
             CenaKulture cena = new CenaKulture
@@ -79,7 +76,6 @@ namespace MojAtar.Core.Services
             if (kultura == null)
                 return false;
 
-            // 🔹 Nađi sve radnje za ovu kulturu
             var radnjeZaKulturu = await _radnjaRepository.GetAllByKultura(id.Value);
             foreach (var radnja in radnjeZaKulturu)
             {
@@ -89,8 +85,6 @@ namespace MojAtar.Core.Services
                 }
             }
 
-
-            // 🔹 Obriši samu kulturu
             await _kulturaRepository.DeleteKulturaById(id.Value);
             return true;
         }
@@ -116,13 +110,12 @@ namespace MojAtar.Core.Services
         {
             var kulture = await _kulturaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
             var danas = DateTime.Now;
-
             var result = new List<KulturaDTO>();
+
             foreach (var k in kulture)
             {
-                double aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(idKorisnik, k.Id.Value, danas);
                 var dto = k.ToKulturaDTO();
-                dto.AktuelnaCena = aktuelnaCena;
+                dto.AktuelnaCena = await _cenaKultureService.GetAktuelnaCena(idKorisnik, k.Id.Value, danas); ;
                 result.Add(dto);
             }
             return result;
@@ -160,45 +153,42 @@ namespace MojAtar.Core.Services
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
 
-            var staraKultura = await _kulturaRepository.GetById(id.Value);
-            if (staraKultura == null)
+            var kultura = await _kulturaRepository.GetById(id.Value);
+            if (kultura == null)
                 return null;
 
-            // 🔹 Provera da li već postoji druga kultura sa istim nazivom
-            var postoji = await _kulturaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
-            if (postoji != null && postoji.Id != id)
-                throw new ArgumentException("Već postoji kultura sa ovim nazivom za vaš nalog.");
-
-            // 🔹 Provera da li se cena promenila
-            if (staraKultura.AktuelnaCena != dto.AktuelnaCena)
+            if (!string.Equals(kultura.Naziv, dto.Naziv, StringComparison.OrdinalIgnoreCase))
             {
-                // Kreiramo novi zapis u istoriji cena
+                var postoji = await _kulturaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+                // Ako postoji i nije isti entitet koji trenutno menjamo -> Greška
+                if (postoji != null && postoji.Id != id)
+                    throw new ArgumentException("Već postoji kultura sa ovim nazivom za vaš nalog.");
+            }
+
+            if (Math.Abs(kultura.AktuelnaCena - (double)dto.AktuelnaCena) > 0.01) // Poređenje double vrednosti
+            {
                 var novaCena = new CenaKulture
                 {
                     Id = Guid.NewGuid(),
                     IdKultura = id.Value,
                     CenaPojedinici = (double)dto.AktuelnaCena,
-                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue
-                                    ? dto.DatumVaznostiCene
-                                    : DateTime.Now
+                    DatumVaznosti = dto.DatumVaznostiCene != DateTime.MinValue ? dto.DatumVaznostiCene : DateTime.Now
                 };
 
                 await _kulturaRepository.DodajCenu(novaCena);
 
-                // Ako je nova cena aktuelna (datum danas ili budućnost) → ažuriraj i glavnu tabelu
-                if (novaCena.DatumVaznosti >= DateTime.Now.Date)
+                // Ažuriramo "cache" polje u glavnoj tabeli samo ako je datum aktuelan
+                if (novaCena.DatumVaznosti.Date <= DateTime.Now.Date)
                 {
-                    staraKultura.AktuelnaCena = (double)dto.AktuelnaCena;
+                    kultura.AktuelnaCena = (double)dto.AktuelnaCena;
                 }
-                // Ako je unet stariji datum → samo istorijski zapis, bez promene aktuelne cene
             }
 
-            // Ažuriranje osnovnih polja kulture
-            staraKultura.Naziv = dto.Naziv;
-            staraKultura.IdKorisnik = dto.IdKorisnik;
+            kultura.Naziv = dto.Naziv;
+            kultura.IdKorisnik = dto.IdKorisnik;
 
-            await _kulturaRepository.Update(staraKultura);
-            return staraKultura.ToKulturaDTO();
+            await _kulturaRepository.Update(kultura);
+            return kultura.ToKulturaDTO();
         }
 
         public async Task<int> GetCountByKorisnik(Guid idKorisnik)
