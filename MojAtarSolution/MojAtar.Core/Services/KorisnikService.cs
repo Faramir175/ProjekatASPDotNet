@@ -237,7 +237,6 @@ namespace MojAtar.Core.Services
                 return null;
             }
         }
-
         public List<Claim> GenerateClaims(KorisnikResponseDTO korisnik)
         {
             if (korisnik == null)
@@ -258,5 +257,15 @@ namespace MojAtar.Core.Services
             return claims;
         }
 
+        public Guid? GetKorisnikIdFromClaims(ClaimsPrincipal user)
+        {
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid userId))
+            {
+                return userId;
+            }
+            return null;
+        }
     }
 }

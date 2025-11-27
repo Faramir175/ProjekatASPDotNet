@@ -21,5 +21,6 @@ namespace MojAtar.Core.ServiceContracts
         Task<KorisnikResponseDTO> RegisterNewUser(KorisnikRequestDTO korisnikRequest);
         Task<KorisnikResponseDTO?> Authenticate(string email, string lozinka);
         List<Claim> GenerateClaims(KorisnikResponseDTO korisnik);
+        Guid? GetKorisnikIdFromClaims(ClaimsPrincipal user);
     }
 }

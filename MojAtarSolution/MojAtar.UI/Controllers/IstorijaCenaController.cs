@@ -9,27 +9,28 @@ namespace MojAtar.UI.Controllers
     {
         private readonly ICenaResursaService _cenaResursaService;
         private readonly ICenaKultureService _cenaKultureService;
+        private readonly IKorisnikService _korisnikService;
 
         public IstorijaCenaController(
             ICenaResursaService cenaResursaService,
-            ICenaKultureService cenaKultureService)
+            ICenaKultureService cenaKultureService,
+            IKorisnikService korisnikService)
         {
             _cenaResursaService = cenaResursaService;
             _cenaKultureService = cenaKultureService;
+            _korisnikService = korisnikService;
         }
 
         [HttpGet("resursi")]
         public async Task<IActionResult> Resursi(int skip = 0, int take = 20)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            Guid? idKorisnik = _korisnikService.GetKorisnikIdFromClaims(User);
+            if (idKorisnik == null) return Unauthorized();
 
-            Guid idKorisnik = Guid.Parse(userId.Value);
-
-            var cene = await _cenaResursaService.GetPaged(idKorisnik, skip, take);
+            var cene = await _cenaResursaService.GetPaged(idKorisnik.Value, skip, take);
             ViewBag.Skip = skip + take;
             ViewBag.Take = take;
-            ViewBag.TotalCount = await _cenaResursaService.GetTotalCount(idKorisnik);
+            ViewBag.TotalCount = await _cenaResursaService.GetTotalCount(idKorisnik.Value);
             return View(cene);
         }
 
@@ -38,16 +39,14 @@ namespace MojAtar.UI.Controllers
         {
             try
             {
-                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (userId == null) return Unauthorized();
+                Guid? idKorisnik = _korisnikService.GetKorisnikIdFromClaims(User);
+                if (idKorisnik == null) return Unauthorized();
 
-                Guid idKorisnik = Guid.Parse(userId.Value);
-
-                var cene = await _cenaKultureService.GetPaged(idKorisnik, skip, take);
+                var cene = await _cenaKultureService.GetPaged(idKorisnik.Value, skip, take);
 
                 ViewBag.Skip = skip + take;
                 ViewBag.Take = take;
-                ViewBag.TotalCount = await _cenaKultureService.GetTotalCount(idKorisnik);
+                ViewBag.TotalCount = await _cenaKultureService.GetTotalCount(idKorisnik.Value);
 
                 return View(cene);
             }
