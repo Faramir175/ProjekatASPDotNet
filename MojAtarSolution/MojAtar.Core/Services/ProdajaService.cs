@@ -60,44 +60,47 @@ namespace MojAtar.Core.Services
 
         public async Task Update(ProdajaDTO dto)
         {
-            if (dto.Kolicina == null)
-                throw new InvalidOperationException("Morate uneti količinu.");
+            if (dto.Id == null) throw new ArgumentNullException(nameof(dto.Id));
+            if (dto.Kolicina == null || dto.Kolicina <= 0) throw new InvalidOperationException("Količina mora biti veća od nule.");
 
-            var stara = await _prodajaRepository.GetById(dto.Id!.Value);
-            if (stara == null)
-                throw new KeyNotFoundException("Prodaja nije pronađena.");
+            // 1. Dohvatamo staru prodaju
+            var stara = await _prodajaRepository.GetById(dto.Id.Value);
+            if (stara == null) throw new KeyNotFoundException("Prodaja nije pronađena.");
 
-            decimal ukupnoProizvedeno = await _prodajaRepository.GetUkupanPrinosZaKulturu(dto.IdKultura);
-            decimal ukupnoProdatoBezOve = await _prodajaRepository.GetUkupnoProdatoZaKulturu(dto.IdKultura) - stara.Kolicina;
-            decimal raspolozivo = ukupnoProizvedeno - ukupnoProdatoBezOve;
+            // 2. Računanje raspoloživog stanja
+            // Moramo vratiti staru količinu "na lager" virtuelno da bismo videli koliko ukupno imamo za novu prodaju.
+            var kultura = await _kulturaService.GetById(dto.IdKultura);
+            decimal trenutnoNaLageru = kultura?.RaspolozivoZaProdaju ?? 0;
+            decimal maksimalnoMoguceZaOvuProdaju = trenutnoNaLageru + stara.Kolicina;
 
-            if (dto.Kolicina.Value > raspolozivo)
-                throw new InvalidOperationException($"Nema dovoljno raspoložive količine ({raspolozivo} kg).");
+            if (dto.Kolicina.Value > maksimalnoMoguceZaOvuProdaju)
+                throw new InvalidOperationException($"Nema dovoljno raspoložive količine. Max: {maksimalnoMoguceZaOvuProdaju} kg.");
 
-            // SNIMI STARU KOLIČINU pre nego što ažuriraš
-            var staraKolicina = stara.Kolicina;
+            // 3. Ažuriranje lagera (Razlika)
+            decimal razlika = dto.Kolicina.Value - stara.Kolicina;
 
-            // ažuriraj ostale podatke
+            if (razlika > 0)
+            {
+                // Prodali smo VIŠE -> Smanji lager dodatno
+                await _kulturaService.AzurirajPosleProdaje(dto.IdKultura, razlika);
+            }
+            else if (razlika < 0)
+            {
+                // Prodali smo MANJE -> Vrati razliku na lager
+                // Koristimo Abs da dobijemo pozitivan broj
+                await _kulturaService.VratiPosleBrisanjaProdaje(dto.IdKultura, Math.Abs(razlika));
+            }
+
+            // 4. Ažuriranje podataka prodaje
             stara.Kolicina = dto.Kolicina.Value;
+            // Ako je cena null u DTO, zadrži staru. Ako se menja datum, možda treba i cenu ažurirati?
+            // Ovde zadržavamo tvoju logiku:
             stara.CenaPoJedinici = dto.CenaPoJedinici ?? stara.CenaPoJedinici;
             stara.DatumProdaje = dto.DatumProdaje;
             stara.Napomena = dto.Napomena;
 
-            // prvo ažuriraj stanje kulture, pa tek onda sačuvaj promene
-            if (dto.Kolicina > staraKolicina)
-            {
-                var razlika = dto.Kolicina.Value - staraKolicina;
-                await _kulturaService.AzurirajPosleProdaje(dto.IdKultura, razlika);
-            }
-            else if (dto.Kolicina < staraKolicina)
-            {
-                var razlika = staraKolicina - dto.Kolicina.Value;
-                await _kulturaService.VratiPosleBrisanjaProdaje(dto.IdKultura, razlika);
-            }
-
             await _prodajaRepository.Update(stara);
         }
-
 
         public async Task Delete(Guid id)
         {

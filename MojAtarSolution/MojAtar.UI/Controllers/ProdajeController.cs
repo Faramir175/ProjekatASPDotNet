@@ -3,37 +3,40 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MojAtar.Core.DTO;
 using MojAtar.Core.ServiceContracts;
-using MojAtar.Core.Services;
 using System.Security.Claims;
 
 namespace MojAtar.UI.Controllers
 {
-        [Route("prodaje")]
-        public class ProdajeController : Controller
-        {
-            private readonly IProdajaService _prodajaService;
-            private readonly IKulturaService _kulturaService;
-            private readonly ICenaKultureService _cenaKultureService;
+    [Route("prodaje")]
+    public class ProdajeController : Controller
+    {
+        private readonly IProdajaService _prodajaService;
+        private readonly IKulturaService _kulturaService;
+        private readonly ICenaKultureService _cenaKultureService;
 
-            public ProdajeController(
-                IProdajaService prodajaService,
-                IKulturaService kulturaService,
-                ICenaKultureService cenaKultureService)
-            {
-                _prodajaService = prodajaService;
-                _kulturaService = kulturaService;
-                _cenaKultureService = cenaKultureService;
-            }
+        public ProdajeController(
+            IProdajaService prodajaService,
+            IKulturaService kulturaService,
+            ICenaKultureService cenaKultureService)
+        {
+            _prodajaService = prodajaService;
+            _kulturaService = kulturaService;
+            _cenaKultureService = cenaKultureService;
+        }
 
         [HttpGet("")]
         public async Task<IActionResult> Prodaje(int skip = 0, int take = 20)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var prodaje = await _prodajaService.GetPaged(Guid.Parse(userId), skip, take);
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+
+            Guid userId = Guid.Parse(userIdStr);
+
+            var prodaje = await _prodajaService.GetPaged(userId, skip, take);
 
             ViewBag.Skip = skip + take;
             ViewBag.Take = take;
-            ViewBag.TotalCount = await _prodajaService.GetTotalCount(Guid.Parse(userId));
+            ViewBag.TotalCount = await _prodajaService.GetTotalCount(userId);
 
             return View(prodaje);
         }
@@ -41,25 +44,24 @@ namespace MojAtar.UI.Controllers
         [HttpGet("dodaj")]
         public async Task<IActionResult> Dodaj()
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            ViewBag.UserId = userId;
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
 
-            // Sve kulture za korisnika
-            var kulture = await _kulturaService.GetAllForUser(Guid.Parse(userId));
+            ViewBag.UserId = userIdStr;
+
+            var kulture = await _kulturaService.GetAllForUser(userId);
             ViewBag.Kulture = new SelectList(kulture, "Id", "Naziv");
 
-            // Ako postoji makar jedna kultura, odmah učitaj njenu aktuelnu cenu za današnji datum
             double? aktuelnaCena = null;
             if (kulture.Any())
             {
                 var prvaKultura = kulture.First();
-                aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(Guid.Parse(userId), prvaKultura.Id!.Value, DateTime.Now);
+                aktuelnaCena = await _cenaKultureService.GetAktuelnaCena(userId, prvaKultura.Id!.Value, DateTime.Now);
             }
 
-            // Pošalji vrednost u View
             ViewBag.AktuelnaCena = aktuelnaCena;
 
-            // Napravi novi DTO i postavi današnji datum kao podrazumevani
             var model = new ProdajaDTO
             {
                 DatumProdaje = DateTime.Now,
@@ -69,108 +71,145 @@ namespace MojAtar.UI.Controllers
             return View(model);
         }
 
-        [HttpGet("getcena")]
-        public async Task<IActionResult> GetCena(Guid idKultura, DateTime datum)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            // Dobij tačnu cenu koja je važila tog dana
-            double cena = await _cenaKultureService.GetAktuelnaCena(Guid.Parse(userId), idKultura, datum);
-
-            return Json(new { cena });
-        }
-
-        [HttpGet("getraspolozivo")]
-        public async Task<IActionResult> GetRaspolozivo(Guid idKultura)
-        {
-            var kultura = await _kulturaService.GetById(idKultura);
-            decimal raspolozivo = kultura?.RaspolozivoZaProdaju ?? 0;
-            return Json(new { raspolozivo });
-        }
-
-
         [HttpPost("dodaj")]
-            public async Task<IActionResult> Dodaj(ProdajaDTO dto)
+        public async Task<IActionResult> Dodaj(ProdajaDTO dto)
+        {
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
+            if (!ModelState.IsValid)
             {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                if (!ModelState.IsValid)
-                {
-                    var kulture = await _kulturaService.GetAllForUser(Guid.Parse(userId));
-                    ViewBag.Kulture = new SelectList(kulture, "Id", "Naziv");
-                    return View(dto);
-                }
-
-                try
-                {
-                    await _prodajaService.Add(dto);
-                    TempData["SuccessMessage"] = "Prodaja je uspešno dodata!";
-                    return RedirectToAction("Prodaje");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    ModelState.AddModelError("Kolicina", ex.Message);
-                }
-
-                var kulturePonovo = await _kulturaService.GetAllForUser(Guid.Parse(userId));
-                ViewBag.Kulture = new SelectList(kulturePonovo, "Id", "Naziv");
+                var kulture = await _kulturaService.GetAllForUser(userId);
+                ViewBag.Kulture = new SelectList(kulture, "Id", "Naziv");
                 return View(dto);
             }
 
-            [HttpGet("izmeni/{id}")]
-            public async Task<IActionResult> Izmeni(Guid id)
+            try
             {
-                var prodaja = await _prodajaService.GetById(id);
-                if (prodaja == null) return NotFound();
+                // Provera: Da li kultura pripada ovom korisniku?
+                var kultura = await _kulturaService.GetById(dto.IdKultura);
+                if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
 
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                var kulture = await _kulturaService.GetAllForUser(Guid.Parse(userId));
-                ViewBag.Kulture = new SelectList(kulture, "Id", "Naziv");
-
-                return View("Dodaj", prodaja); // koristi isti View kao Dodaj
+                await _prodajaService.Add(dto);
+                TempData["SuccessMessage"] = "Prodaja je uspešno dodata!";
+                return RedirectToAction("Prodaje");
             }
+            catch (Exception ex) // Hvatamo sve greške (InvalidOperation, KeyNotFound...)
+            {
+                ModelState.AddModelError("", ex.Message); // Prikazujemo poruku korisniku (npr. "Nema dovoljno količine")
+            }
+
+            var kulturePonovo = await _kulturaService.GetAllForUser(userId);
+            ViewBag.Kulture = new SelectList(kulturePonovo, "Id", "Naziv");
+            return View(dto);
+        }
+
+        [HttpGet("izmeni/{id}")]
+        public async Task<IActionResult> Izmeni(Guid id)
+        {
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
+            var prodaja = await _prodajaService.GetById(id);
+            if (prodaja == null) return NotFound();
+
+            // PROVERA VLASNIŠTVA preko kulture
+            var kultura = await _kulturaService.GetById(prodaja.IdKultura);
+            if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
+
+            var kultureList = await _kulturaService.GetAllForUser(userId);
+            ViewBag.Kulture = new SelectList(kultureList, "Id", "Naziv", prodaja.IdKultura);
+
+            return View("Dodaj", prodaja);
+        }
 
         [HttpPost("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id, ProdajaDTO dto)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
             dto.Id = id;
 
             if (!ModelState.IsValid)
             {
-                var kulture = await _kulturaService.GetAllForUser(Guid.Parse(userId));
+                var kulture = await _kulturaService.GetAllForUser(userId);
                 ViewBag.Kulture = new SelectList(kulture, "Id", "Naziv");
                 return View("Dodaj", dto);
             }
 
             try
             {
+                // Ponovo provera vlasništva pre izmene
+                var kultura = await _kulturaService.GetById(dto.IdKultura);
+                if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
+
                 await _prodajaService.Update(dto);
                 TempData["SuccessMessage"] = "Prodaja je uspešno izmenjena!";
                 return RedirectToAction("Prodaje");
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            catch (InvalidOperationException ex)
-            {
-                ModelState.AddModelError("Kolicina", ex.Message);
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Greška pri čuvanju promena.");
-            }
 
-            var kulturePonovo = await _kulturaService.GetAllForUser(Guid.Parse(userId));
+            var kulturePonovo = await _kulturaService.GetAllForUser(userId);
             ViewBag.Kulture = new SelectList(kulturePonovo, "Id", "Naziv");
             return View("Dodaj", dto);
         }
 
         [HttpPost("obrisi/{id}")]
-            public async Task<IActionResult> Obrisi(Guid id)
-            {
-                await _prodajaService.Delete(id);
-                return RedirectToAction("Prodaje");
-            }
+        public async Task<IActionResult> Obrisi(Guid id)
+        {
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
+            var prodaja = await _prodajaService.GetById(id);
+            if (prodaja == null) return NotFound();
+
+            // Provera vlasništva
+            var kultura = await _kulturaService.GetById(prodaja.IdKultura);
+            if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
+
+            await _prodajaService.Delete(id);
+
+            TempData["SuccessMessage"] = "Prodaja je obrisana.";
+            return RedirectToAction("Prodaje");
+        }
+
+        // API metode za AJAX pozive iz View-a
+
+        [HttpGet("getcena")]
+        public async Task<IActionResult> GetCena(Guid idKultura, DateTime datum)
+        {
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
+            // Sigurnosna provera: da li korisnik sme da vidi cenu ove kulture?
+            var kultura = await _kulturaService.GetById(idKultura);
+            if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
+
+            double cena = await _cenaKultureService.GetAktuelnaCena(userId, idKultura, datum);
+            return Json(new { cena });
+        }
+
+        [HttpGet("getraspolozivo")]
+        public async Task<IActionResult> GetRaspolozivo(Guid idKultura)
+        {
+            string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+            Guid userId = Guid.Parse(userIdStr);
+
+            var kultura = await _kulturaService.GetById(idKultura);
+            if (kultura == null || kultura.IdKorisnik != userId) return Unauthorized();
+
+            decimal raspolozivo = kultura.RaspolozivoZaProdaju;
+            return Json(new { raspolozivo });
         }
     }
+}
