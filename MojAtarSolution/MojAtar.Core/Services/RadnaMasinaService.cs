@@ -102,28 +102,33 @@ namespace MojAtar.Core.Services
 
         public async Task<RadnaMasinaDTO> Update(Guid? id, RadnaMasinaDTO dto)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
+            if (id == null) throw new ArgumentNullException(nameof(id));
 
-            // Provera da li već postoji druga mašina sa istim nazivom
-            var postoji = await _radnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
-            if (postoji != null && postoji.Id != id)
-                throw new ArgumentException("Već postoji radna mašina sa ovim nazivom za vaš nalog.");
+            // 1. DOHVATI POSTOJEĆU
+            var stara = await _radnaMasinaRepository.GetById(id.Value);
+            if (stara == null) return null;
 
-            var radnaMasina = new RadnaMasina()
+            // 2. PROVERA DUPLIKATA (Samo ako se naziv menja)
+            if (!string.Equals(stara.Naziv, dto.Naziv, StringComparison.OrdinalIgnoreCase))
             {
-                Id = id.Value,
-                Naziv = dto.Naziv,
-                TipUlja = dto.TipUlja,
-                RadniSatiServis = (int)dto.RadniSatiServis,
-                PoslednjiServis = dto.PoslednjiServis,
-                OpisServisa = dto.OpisServisa,
-                UkupanBrojRadnihSati = (int)dto.UkupanBrojRadnihSati,
-                IdKorisnik = dto.IdKorisnik
-            };
+                var postoji = await _radnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+                if (postoji != null && postoji.Id != id)
+                    throw new ArgumentException("Već postoji radna mašina sa ovim nazivom za vaš nalog.");
+            }
 
-            await _radnaMasinaRepository.Update(radnaMasina);
-            return radnaMasina.ToRadnaMasinaDTO();
+            // 3. IZMENA POLJA NA POSTOJEĆEM OBJEKTU
+            stara.Naziv = dto.Naziv;
+            stara.TipUlja = dto.TipUlja;
+            stara.RadniSatiServis = (int)dto.RadniSatiServis;
+            stara.PoslednjiServis = dto.PoslednjiServis;
+            stara.OpisServisa = dto.OpisServisa;
+            stara.UkupanBrojRadnihSati = (int)dto.UkupanBrojRadnihSati;
+            // stara.IdKorisnik = dto.IdKorisnik; // Nije obavezno menjati vlasnika
+
+            // 4. POZIV UPDATE
+            await _radnaMasinaRepository.Update(stara);
+
+            return stara.ToRadnaMasinaDTO();
         }
 
 

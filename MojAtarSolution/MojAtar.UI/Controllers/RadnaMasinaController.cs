@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MojAtar.Core.Domain;
-using MojAtar.Core.Domain.Enums;
 using MojAtar.Core.DTO;
 using MojAtar.Core.ServiceContracts;
-using MojAtar.Core.Services;
 using System.Security.Claims;
 
 namespace MojAtar.UI.Controllers
@@ -36,20 +33,21 @@ namespace MojAtar.UI.Controllers
             return View(masine);
         }
 
-
         [HttpGet("dodaj")]
-        public async Task<IActionResult> Dodaj()
+        public IActionResult Dodaj()
         {
-            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(new RadnaMasinaDTO()); // Prazan model za dodavanje
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            ViewBag.UserId = userId;
+            return View(new RadnaMasinaDTO());
         }
 
         [HttpPost("dodaj")]
         public async Task<IActionResult> Dodaj(RadnaMasinaDTO dto)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             dto.IdKorisnik = Guid.Parse(userId);
 
@@ -65,27 +63,33 @@ namespace MojAtar.UI.Controllers
                 TempData["SuccessMessage"] = "Radna mašina je uspešno dodata!";
                 return RedirectToAction("RadneMasine");
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                ModelState.AddModelError("Naziv", "Već postoji radna mašina sa ovim nazivom za vaš nalog.");
+                ModelState.AddModelError("Naziv", ex.Message);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
-                ModelState.AddModelError("", "Došlo je do greške pri čuvanju. Proverite da su svi podaci ispravni.");
+                ModelState.AddModelError("", "Došlo je do greške pri čuvanju.");
             }
 
             ViewBag.UserId = userId;
             return View(dto);
         }
 
-
         [HttpGet("izmeni/{id}")]
         public async Task<IActionResult> Izmeni(Guid id)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            Guid idKorisnik = Guid.Parse(userId);
+
             var radnaMasina = await _radnaMasinaService.GetById(id);
             if (radnaMasina == null) return NotFound();
 
-            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // SIGURNOSNA PROVERA VLASNIŠTVA
+            if (radnaMasina.IdKorisnik != idKorisnik) return Unauthorized();
+
+            ViewBag.UserId = userId;
             return View("Dodaj", radnaMasina);
         }
 
@@ -93,10 +97,10 @@ namespace MojAtar.UI.Controllers
         public async Task<IActionResult> Izmeni(Guid id, RadnaMasinaDTO dto)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            Guid idKorisnik = Guid.Parse(userId);
 
-            dto.IdKorisnik = Guid.Parse(userId);
+            dto.IdKorisnik = idKorisnik;
             dto.Id = id;
 
             if (!ModelState.IsValid)
@@ -107,30 +111,45 @@ namespace MojAtar.UI.Controllers
 
             try
             {
-                await _radnaMasinaService.Update(dto.Id, dto);
+                var updated = await _radnaMasinaService.Update(dto.Id, dto);
+
+                if (updated == null) return NotFound();
+
                 TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
                 return RedirectToAction("RadneMasine");
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                ModelState.AddModelError("Naziv", "Već postoji radna mašina sa ovim nazivom za vaš nalog.");
+                ModelState.AddModelError("Naziv", ex.Message);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
-                ModelState.AddModelError("", "Greška pri ažuriranju. Proverite unos.");
+                ModelState.AddModelError("", "Greška pri ažuriranju.");
             }
 
             ViewBag.UserId = userId;
             return View("Dodaj", dto);
         }
 
-
         [HttpPost("obrisi/{id}")]
         public async Task<IActionResult> Obrisi(Guid id)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            Guid idKorisnik = Guid.Parse(userId);
+
+            // 1. Dohvatanje radi provere
+            var masina = await _radnaMasinaService.GetById(id);
+            if (masina == null) return NotFound();
+
+            // 2. Provera vlasništva
+            if (masina.IdKorisnik != idKorisnik) return Unauthorized();
+
+            // 3. Brisanje
             await _radnaMasinaService.DeleteById(id);
+
+            TempData["SuccessMessage"] = "Radna mašina je obrisana.";
             return RedirectToAction("RadneMasine");
         }
-
     }
 }
