@@ -107,9 +107,12 @@ namespace MojAtar.Core.Services
                 return null;
 
             // Provera duplikata — ako postoji druga mašina sa istim nazivom
-            var postoji = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
-            if (postoji != null && postoji.Id != id)
-                throw new ArgumentException("Već postoji priključna mašina sa ovim nazivom za vaš nalog.");
+            if (!string.Equals(stara.Naziv, dto.Naziv, StringComparison.OrdinalIgnoreCase))
+            {
+                var postoji = await _prikljucnaMasinaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+                if (postoji != null && postoji.Id != id)
+                    throw new ArgumentException("Već postoji priključna mašina sa ovim nazivom za vaš nalog.");
+            }
 
             stara.Naziv = dto.Naziv;
             stara.TipMasine = dto.TipMasine;
