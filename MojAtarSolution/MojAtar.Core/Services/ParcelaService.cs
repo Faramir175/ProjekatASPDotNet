@@ -98,31 +98,34 @@ namespace MojAtar.Core.Services
         }
         public async Task<ParcelaDTO> Update(Guid? id, ParcelaDTO dto)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
+            if (id == null) throw new ArgumentNullException(nameof(id));
 
-            var staraParcela = await _parcelaRepository.GetById(id.Value);
-            if (staraParcela == null)
-                return null;
+            // 1. DOHVATAMO POSTOJEĆI ENTITET
+            var parcela = await _parcelaRepository.GetById(id.Value);
+            if (parcela == null) return null;
 
-            //  Provera da li već postoji parcela sa istim nazivom za ovog korisnika (osim same sebe)
-            var postoji = await _parcelaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
-            if (postoji != null && postoji.Id != id)
-                throw new ArgumentException("Već postoji parcela sa ovim nazivom za vaš nalog.");
+            // 2. PROVERA DUPLIKATA (Samo ako je naziv promenjen)
+            if (!string.Equals(parcela.Naziv, dto.Naziv, StringComparison.OrdinalIgnoreCase))
+            {
+                var postoji = await _parcelaRepository.GetByNazivIKorisnik(dto.Naziv, dto.IdKorisnik);
+                if (postoji != null && postoji.Id != id)
+                    throw new ArgumentException("Već postoji parcela sa ovim nazivom za vaš nalog.");
+            }
 
-            // Ažuriraj polja
-            staraParcela.BrojParcele = dto.BrojParcele;
-            staraParcela.Naziv = dto.Naziv;
-            staraParcela.Povrsina = (decimal)dto.Povrsina;
-            staraParcela.Napomena = dto.Napomena;
-            staraParcela.IdKatastarskaOpstina = (Guid)dto.IdKatastarskaOpstina;
-            staraParcela.IdKorisnik = dto.IdKorisnik;
-            staraParcela.Longitude = dto.Longitude;
-            staraParcela.Latitude = dto.Latitude;
+            // 3. AŽURIRANJE POLJA NA POSTOJEĆEM OBJEKTU
+            parcela.BrojParcele = dto.BrojParcele;
+            parcela.Naziv = dto.Naziv;
+            parcela.Povrsina = (decimal)dto.Povrsina;
+            parcela.Napomena = dto.Napomena;
+            parcela.IdKatastarskaOpstina = (Guid)dto.IdKatastarskaOpstina;
+            parcela.IdKorisnik = dto.IdKorisnik;
+            parcela.Longitude = dto.Longitude;
+            parcela.Latitude = dto.Latitude;
 
-            await _parcelaRepository.Update(staraParcela);
+            // 4. POZIV REPOZITORIJUMA (Update sa praćenim entitetom)
+            await _parcelaRepository.Update(parcela);
 
-            return staraParcela.ToParcelaDTO();
+            return parcela.ToParcelaDTO();
         }
 
         public async Task<List<ParcelaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
