@@ -1,4 +1,5 @@
 ﻿using MojAtar.Core.Domain.Enums;
+using MojAtar.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,5 +26,6 @@ namespace MojAtar.Core.Domain
         public virtual ICollection<Radnja_RadnaMasina> RadnjeRadneMasine { get; set; } = new List<Radnja_RadnaMasina>();
         public virtual ICollection<Radnja_PrikljucnaMasina> RadnjePrikljucneMasine { get; set; } = new List<Radnja_PrikljucnaMasina>();
         public virtual ICollection<Radnja_Resurs> RadnjeResursi { get; set; } = new List<Radnja_Resurs>();
+
     }
 }

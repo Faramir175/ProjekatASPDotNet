@@ -73,10 +73,17 @@
                                     <p><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
                                     <p><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
                                     <p><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD</p>
-                                    <p><strong>Napomena:</strong> @radnja.Napomena</p>
+                                    @if(radnja.Napomena!=null)
+                                    {
+                                        <p><strong>Napomena:</strong> @radnja.Napomena</p>
+                                    }
                                     @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
                                     {
-                                        <p><strong>Prinos:</strong> @radnja.Prinos</p>
+                                        <p><strong>Prinos:</strong> @radnja.Prinos kg</p>
+                                    }
+                                    @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                                    {
+                                        <p><strong>Posejana površina:</strong> @radnja.Povrsina ha</p>
                                     }
                                 </div>
                                 <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">

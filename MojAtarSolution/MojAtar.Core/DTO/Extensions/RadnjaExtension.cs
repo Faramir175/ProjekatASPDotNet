@@ -10,7 +10,7 @@ namespace MojAtar.Core.DTO.Extensions
 {
     public static class RadnjaExtension
     {
-        public static RadnjaDTO ToRadnjaDTO(this Radnja radnja, List<RadnjaRadnaMasinaDTO>? radneMasine = null)
+        public static RadnjaDTO ToRadnjaDTO(this Radnja radnja, List<RadnjaRadnaMasinaDTO>? radneMasine = null, decimal? povrsina = null)
         {
             var dto = new RadnjaDTO()
             {
@@ -29,6 +29,10 @@ namespace MojAtar.Core.DTO.Extensions
             if (radnja is Zetva zetva)
             {
                 dto.Prinos = zetva.Prinos;
+            }
+            if (radnja.TipRadnje == RadnjaTip.Setva)
+            {
+                dto.Povrsina = povrsina;
             }
 
             return dto;
