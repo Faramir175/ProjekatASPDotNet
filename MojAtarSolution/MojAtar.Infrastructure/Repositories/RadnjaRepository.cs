@@ -3,11 +3,6 @@ using MojAtar.Core.Domain;
 using MojAtar.Core.Domain.Enums;
 using MojAtar.Core.Domain.RepositoryContracts;
 using MojAtar.Infrastructure.MojAtar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MojAtar.Infrastructure.Repositories
 {
@@ -30,19 +25,13 @@ namespace MojAtar.Infrastructure.Repositories
 
         public async Task<Radnja> GetById(Guid? id)
         {
-            var radnja = await _dbContext.Radnje
+            // EF Core automatski prepoznaje da li je Radnja ili Zetva na osnovu Discriminator kolone
+            // Nema potrebe za ručnim kastovanjem 'as Zetva'
+            return await _dbContext.Radnje
                 .Include(r => r.Parcela)
                 .Include(r => r.Kultura)
                 .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (radnja?.TipRadnje == RadnjaTip.Zetva)
-            {
-                return radnja as Zetva;
-            }
-
-            return radnja;
         }
-
 
         public async Task<Radnja> GetByTipRadnje(RadnjaTip tipRadnje)
         {
@@ -61,26 +50,14 @@ namespace MojAtar.Infrastructure.Repositories
 
         public async Task<Radnja> Update(Radnja entity)
         {
-            var radnjaIzBaze = await _dbContext.Radnje
-                .FirstOrDefaultAsync(r => r.Id == entity.Id);
-
-            if (radnjaIzBaze == null)
-                return entity;
-
-            if (entity.TipRadnje == RadnjaTip.Zetva && radnjaIzBaze is Zetva zetvaIzBaze && entity is Zetva novaZetva)
-            {
-                zetvaIzBaze.Prinos = novaZetva.Prinos;
-            }
-
-            radnjaIzBaze.IdParcela = entity.IdParcela;
-            radnjaIzBaze.DatumIzvrsenja = entity.DatumIzvrsenja;
-            radnjaIzBaze.Napomena = entity.Napomena;
-            radnjaIzBaze.UkupanTrosak = entity.UkupanTrosak;
-            radnjaIzBaze.TipRadnje = entity.TipRadnje;
-            radnjaIzBaze.IdKultura = entity.IdKultura;
+            // 🛑 BITNA PROMENA:
+            // Pošto servis koristi "Dohvati -> Izmeni -> Sačuvaj" pristup,
+            // 'entity' koji stigne ovde je već "Tracked" (praćen) od strane DbContext-a.
+            // Nema potrebe da ga ponovo tražimo u bazi ili ručno mapiramo polja.
+            // EF Core već zna šta je promenjeno u servisu.
 
             await _dbContext.SaveChangesAsync();
-            return radnjaIzBaze;
+            return entity;
         }
 
         public async Task<bool> Delete(Radnja entity)
@@ -90,6 +67,8 @@ namespace MojAtar.Infrastructure.Repositories
             return rowsDeleted > 0;
         }
 
+        // Ovu metodu smo zadržali ako je negde specifično koristiš, 
+        // ali servis sada uglavnom radi GetById pa Delete(entity).
         public async Task<bool> DeleteRadnjaById(Guid? id)
         {
             var radnja = await _dbContext.Radnje.FindAsync(id);
@@ -105,6 +84,7 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Radnje
                 .Where(r => r.IdParcela == idParcela)
                 .Include(r => r.Kultura)
+                .OrderByDescending(r => r.DatumIzvrsenja)
                 .ToListAsync();
         }
 
@@ -113,13 +93,14 @@ namespace MojAtar.Infrastructure.Repositories
             return await _dbContext.Radnje
                 .Where(r => r.IdKultura == idKultura)
                 .Include(r => r.Parcela)
+                .OrderByDescending(r => r.DatumIzvrsenja)
                 .ToListAsync();
         }
 
         public async Task<decimal> GetUkupanPrinosZaParcelu(Guid idParcela)
         {
             var ukupno = await _dbContext.Radnje
-                .OfType<Zetva>()
+                .OfType<Zetva>() // Filtrira samo Zetve
                 .Where(z => z.IdParcela == idParcela)
                 .SumAsync(z => z.Prinos);
 
@@ -128,20 +109,24 @@ namespace MojAtar.Infrastructure.Repositories
 
         public async Task<int> GetCountByParcela(Guid idParcela)
         {
-            return await _dbContext.Radnje.Where(x => x.IdParcela == idParcela).CountAsync();
+            return await _dbContext.Radnje
+                .Where(x => x.IdParcela == idParcela)
+                .CountAsync();
         }
 
         public async Task<int> GetCountByKorisnik(Guid idKorisnik)
         {
-            return await _dbContext.Radnje.Where(x => x.Parcela.IdKorisnik == idKorisnik).CountAsync();
+            return await _dbContext.Radnje
+                .Where(x => x.Parcela.IdKorisnik == idKorisnik)
+                .CountAsync();
         }
 
         public async Task<List<Radnja>> GetAllByParcelaPaged(Guid idParcela, int skip, int take)
         {
             return await _dbContext.Radnje
                 .Where(x => x.IdParcela == idParcela)
-                .Include(r => r.Parcela) 
-                .Include(r => r.Kultura) 
+                .Include(r => r.Parcela)
+                .Include(r => r.Kultura)
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)
@@ -152,13 +137,14 @@ namespace MojAtar.Infrastructure.Repositories
         {
             return await _dbContext.Radnje
                 .Where(x => x.Parcela.IdKorisnik == idKorisnik)
-                .Include(r => r.Parcela) 
+                .Include(r => r.Parcela)
                 .Include(r => r.Kultura)
                 .OrderByDescending(x => x.DatumIzvrsenja)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
         }
+
         public async Task<List<Radnja>> GetLastRadnjeByKorisnik(Guid korisnikId, int broj)
         {
             return await _dbContext.Radnje
@@ -169,38 +155,49 @@ namespace MojAtar.Infrastructure.Repositories
                 .Take(broj)
                 .ToListAsync();
         }
+
         public Task<int> CountByKorisnikId(Guid korisnikId)
         {
             return _dbContext.Radnje.CountAsync(p => p.Parcela.IdKorisnik == korisnikId);
         }
-        // Dohvata parcelu sa svim vezama na kulture (za proveru zauzetosti)
+
         public async Task<Parcela> GetParcelaSaSetvama(Guid idParcela)
         {
+            // AsNoTracking je ovde OK jer samo čitamo radi provere
             return await _dbContext.Parcele
                 .Include(p => p.ParceleKulture.Where(pk => pk.DatumZetve == null))
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == idParcela);
         }
+
         public async Task UpdateUkupanTrosak(Guid idRadnja)
         {
+            // Dohvatamo radnju i njene resurse da preračunamo trošak
+            // NAPOMENA: Ovde se koristi 'AktuelnaCena' resursa. 
+            // Ako želiš istorijsku cenu, logika bi morala biti drugačija (u servisu), 
+            // ali za sada ostavljamo ovako da ne menjamo ponašanje aplikacije.
+
             var radnja = await _dbContext.Radnje
                 .Include(r => r.RadnjeResursi)
                     .ThenInclude(rr => rr.Resurs)
                 .FirstOrDefaultAsync(r => r.Id == idRadnja);
 
-            if (radnja == null)
-                return;
+            if (radnja == null) return;
 
             double noviTrosak = 0;
-            foreach (var rr in radnja.RadnjeResursi)
+            if (radnja.RadnjeResursi != null)
             {
-                if (rr.Resurs != null)
-                    noviTrosak += (double)(rr.Kolicina * rr.Resurs.AktuelnaCena);
+                foreach (var rr in radnja.RadnjeResursi)
+                {
+                    if (rr.Resurs != null)
+                        noviTrosak += (double)(rr.Kolicina * rr.Resurs.AktuelnaCena);
+                }
             }
 
             radnja.UkupanTrosak = noviTrosak;
+
+            // Samo SaveChanges, jer je radnja već učitana (Tracked)
             await _dbContext.SaveChangesAsync();
         }
-
     }
 }
