@@ -22,29 +22,24 @@ namespace MojAtar.Core.Services
         {
             _parcelaRepository = parcelaRepository;
         }
-
         public async Task<ParcelaDTO> Add(ParcelaDTO parcelaAdd)
         {
             if (parcelaAdd == null)
             {
                 throw new ArgumentNullException(nameof(parcelaAdd));
             }
-
             if (parcelaAdd.Naziv == null)
             {
                 throw new ArgumentException(nameof(parcelaAdd.Naziv));
             }
-
             var existing = await _parcelaRepository.GetByNazivIKorisnik(parcelaAdd.Naziv, parcelaAdd.IdKorisnik);
             if (existing != null)
                 throw new ArgumentException("Već postoji parcela sa ovim nazivom za vaš nalog.");
 
             Parcela parcela = parcelaAdd.ToParcela();
-
             parcela.Id = Guid.NewGuid();
 
             await _parcelaRepository.Add(parcela);
-
             return parcela.ToParcelaDTO();
         }
 

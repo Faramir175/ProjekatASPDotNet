@@ -14,8 +14,8 @@ namespace MojAtar.Core.DTO
         public Guid? Id { get; set; }
 
         [Required(ErrorMessage = "Morate izabrati parcelu.")]
-        public Guid? IdParcela { get; set; }
-
+        //public Guid? IdParcela { get; set; }
+        public List<RadnjaParcelaDTO> Parcele { get; set; } = new();
         public Guid? IdKultura { get; set; }
 
         [Required(ErrorMessage = "Morate uneti datum izvršenja.")]
@@ -34,8 +34,7 @@ namespace MojAtar.Core.DTO
         public double? Prinos { get; set; }
 
         [Range(0.0001, 10000, ErrorMessage = "Površina mora biti veća od 0.")]
-        public decimal? Povrsina { get; set; }
-        public Parcela? Parcela { get; set; }
+        public decimal? UkupnaPovrsina { get; set; }
         public Kultura? Kultura { get; set; }
 
         public List<RadnjaRadnaMasinaDTO> RadneMasine { get; set; } = new();
@@ -48,37 +47,36 @@ namespace MojAtar.Core.DTO
 
         public Radnja ToRadnja()
         {
+            // Napomena: Ovde više ne mapiramo Parcele jer se one moraju dodati
+            // kroz servise kao child entiteti u tabelu RadnjeParcele.
+
+            Radnja radnja;
+
             if (this.TipRadnje == RadnjaTip.Zetva)
             {
-                return new Zetva()
+                radnja = new Zetva()
                 {
                     Id = this.Id ?? Guid.NewGuid(),
-                    IdParcela = (Guid)this.IdParcela,
-                    IdKultura = this.IdKultura,
-                    DatumIzvrsenja = this.DatumIzvrsenja,
-                    Napomena = this.Napomena,
-                    UkupanTrosak = this.UkupanTrosak,
-                    TipRadnje = this.TipRadnje,
-                    Prinos = this.Prinos ?? 0,
-                    Parcela = this.Parcela,
-                    Kultura = this.Kultura
+                    Prinos = this.Prinos ?? 0
                 };
             }
             else
             {
-                return new Radnja()
+                radnja = new Radnja()
                 {
-                    Id = this.Id ?? Guid.NewGuid(),
-                    IdParcela = (Guid)this.IdParcela,
-                    IdKultura = this.IdKultura,
-                    DatumIzvrsenja = this.DatumIzvrsenja,
-                    Napomena = this.Napomena,
-                    UkupanTrosak = this.UkupanTrosak,
-                    TipRadnje = this.TipRadnje,
-                    Parcela = this.Parcela,
-                    Kultura = this.Kultura
+                    Id = this.Id ?? Guid.NewGuid()
                 };
             }
+
+            // Zajednička polja
+            radnja.IdKultura = this.IdKultura;
+            radnja.DatumIzvrsenja = this.DatumIzvrsenja;
+            radnja.Napomena = this.Napomena;
+            radnja.UkupanTrosak = this.UkupanTrosak;
+            radnja.TipRadnje = this.TipRadnje;
+            radnja.Kultura = this.Kultura;
+
+            return radnja;
         }
     }
 }

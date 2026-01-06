@@ -14,8 +14,8 @@ namespace MojAtar.Core.Domain
         [Key]
         public Guid? Id { get; set; }
         // Veza sa Parcelom
-        public Guid IdParcela { get; set; }
-        public Parcela Parcela { get; set; }
+        //public Guid IdParcela { get; set; }
+        //public Parcela Parcela { get; set; }
         public DateTime DatumIzvrsenja { get; set; }
         public string? Napomena { get; set; }
         public double UkupanTrosak { get; set; }
@@ -23,6 +23,7 @@ namespace MojAtar.Core.Domain
         public Guid? IdKultura { get; set; } 
         public Kultura? Kultura { get; set; }
 
+        public virtual ICollection<RadnjaParcela> RadnjeParcele { get; set; } = new List<RadnjaParcela>();
         public virtual ICollection<Radnja_RadnaMasina> RadnjeRadneMasine { get; set; } = new List<Radnja_RadnaMasina>();
         public virtual ICollection<Radnja_PrikljucnaMasina> RadnjePrikljucneMasine { get; set; } = new List<Radnja_PrikljucnaMasina>();
         public virtual ICollection<Radnja_Resurs> RadnjeResursi { get; set; } = new List<Radnja_Resurs>();

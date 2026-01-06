@@ -23,6 +23,7 @@ namespace MojAtar.Infrastructure.MojAtar
         public DbSet<Radnja_RadnaMasina> RadnjeRadneMasine { get; set; }
         public DbSet<Radnja_Resurs> RadnjeResursi { get; set; }
         public DbSet<Prodaja> Prodaje { get; set; }
+        public DbSet<RadnjaParcela> RadnjeParcele { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,7 @@ namespace MojAtar.Infrastructure.MojAtar
             modelBuilder.Entity<Zetva>().Property(z => z.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<CenaKulture>().Property(ck => ck.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<CenaResursa>().Property(cr => cr.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<RadnjaParcela>().Property(rp => rp.Id).ValueGeneratedOnAdd();
 
             // =====================================
             // M:N RELACIJE
@@ -130,13 +132,6 @@ namespace MojAtar.Infrastructure.MojAtar
                 .HasForeignKey(cr => cr.IdResurs)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //  Radnja - Parcela: ako se obriše parcela, brišu se i radnje
-            modelBuilder.Entity<Radnja>()
-                .HasOne(r => r.Parcela)
-                .WithMany(p => p.Radnje)
-                .HasForeignKey(r => r.IdParcela)
-                .OnDelete(DeleteBehavior.Cascade);
-
             //  Radnja - Kultura: ako se obriše kultura, postaje null
             modelBuilder.Entity<Radnja>()
                 .HasOne(r => r.Kultura)
@@ -171,6 +166,32 @@ namespace MojAtar.Infrastructure.MojAtar
                 .Property(pk => pk.Povrsina)
                 .HasColumnType("decimal(18,4)");
 
+            // =====================================
+            // KONFIGURACIJA NOVE TABELE RADNJE_PARCELE
+            // =====================================
+
+            // Decimal preciznost za površinu
+            modelBuilder.Entity<RadnjaParcela>()
+                .Property(rp => rp.Povrsina)
+                .HasColumnType("decimal(18,4)");
+
+            // Relacija Radnja -> RadnjaParcela (Cascade Delete)
+            // Ako obrišem Radnju, brišu se zapisi o parcelama u toj radnji
+            modelBuilder.Entity<RadnjaParcela>()
+                .HasOne(rp => rp.Radnja)
+                .WithMany(r => r.RadnjeParcele)
+                .HasForeignKey(rp => rp.IdRadnja)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relacija Parcela -> RadnjaParcela (Restrict ili Cascade)
+            // Ako pokušam da obrišem Parcelu koja ima radnje, šta da se desi?
+            // Obično Restrict (ne daj brisanje), ali ti si do sada koristio Cascade.
+            // Ostavićemo Cascade da bude konzistentno sa tvojim prethodnim kodom.
+            modelBuilder.Entity<RadnjaParcela>()
+                .HasOne(rp => rp.Parcela)
+                .WithMany() // Parcela ne mora nužno da ima listu RadnjaParcela ako ti ne treba
+                .HasForeignKey(rp => rp.IdParcela)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 

@@ -362,18 +362,31 @@ namespace MojAtar.Core.Services
         // ... (Ostale metode: GetAllByKorisnikPaged, GetSlobodnaPovrsinaAsync itd. ostaju iste) ...
         public async Task<List<RadnjaDTO>> GetAllByKorisnikPaged(Guid idKorisnik, int skip, int take)
         {
-            var radnje = await _radnjaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
-            // Dodajemo logiku za prikaz površine setve u listi (prebačeno iz kontrolera)
-            foreach (var r in radnje)
+            // 1. Dohvatanje entiteta iz baze
+            var radnjeEntities = await _radnjaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
+
+            // 2. Odmah mapiramo u DTO listu kako bismo mogli da manipulisemo poljem Povrsina
+            var radnjeDtos = radnjeEntities.Select(x => x.ToRadnjaDTO()).ToList();
+
+            // 3. Dopunjavanje podataka (Enrichment)
+            foreach (var dto in radnjeDtos)
             {
-                if (r.TipRadnje == RadnjaTip.Setva && r.Id != Guid.Empty)
+                // Proveravamo da li je Setva, jer samo ona vuče površinu iz tabele ParcelaKultura
+                if (dto.TipRadnje == RadnjaTip.Setva && dto.Id.HasValue)
                 {
-                    // Ovde bi idealno bilo da Repository radi Include, ali ako ne može:
-                    // var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(r.Id); 
-                    // To bi bilo N+1 query problem, ali za početak neka ostane, ili optimizuj repozitorijum.
+                    // Pozivamo servis da nađe vezni zapis
+                    var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(dto.Id.Value);
+
+                    if (pk != null)
+                    {
+                        // *** OVO JE NEDOSTAJALO ***
+                        // Dodeljujemo pronađenu površinu DTO objektu
+                        dto.Povrsina = pk.Povrsina;
+                    }
                 }
             }
-            return radnje.Select(x => x.ToRadnjaDTO()).ToList();
+
+            return radnjeDtos;
         }
 
         // ... Kopiraj ostale jednostavne metode iz starog servisa ...
@@ -414,8 +427,28 @@ namespace MojAtar.Core.Services
 
         public async Task<List<RadnjaDTO>> GetAllByParcelaPaged(Guid idParcela, int skip, int take)
         {
+            // 1. Prvo izvucemo osnovne podatke iz repozitorijuma
             var radnje = await _radnjaRepository.GetAllByParcelaPaged(idParcela, skip, take);
-            return radnje.Select(x => x.ToRadnjaDTO()).ToList();
+
+            // 2. Odmah mapiramo u DTO da bismo mogli da menjamo property Povrsina
+            var radnjeDtos = radnje.Select(x => x.ToRadnjaDTO()).ToList();
+
+            // 3. Prolazimo kroz listu i za svaku SETVU dovlacimo povrsinu
+            foreach (var dto in radnjeDtos)
+            {
+                if (dto.TipRadnje == RadnjaTip.Setva && dto.Id.HasValue)
+                {
+                    // Pozivamo servis za veznu tabelu da nadje zapis po ID-ju radnje
+                    var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(dto.Id.Value);
+
+                    if (pk != null)
+                    {
+                        dto.Povrsina = pk.Povrsina;
+                    }
+                }
+            }
+
+            return radnjeDtos;
         }
 
         public async Task<int> GetCountByParcela(Guid idParcela)

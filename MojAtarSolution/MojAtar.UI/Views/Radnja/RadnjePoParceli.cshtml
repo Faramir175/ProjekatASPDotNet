@@ -32,6 +32,10 @@
                             {
                                 <p class="card-text"><strong>Prinos:</strong> @radnja.Prinos kg</p>
                             }
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                            {
+                                <p class="card-text mb-1"><strong>Posejana površina:</strong> @radnja.Povrsina ha</p>
+                            }
                         </div>
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
                             <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">

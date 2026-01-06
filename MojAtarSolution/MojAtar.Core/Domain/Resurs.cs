@@ -11,14 +11,10 @@ namespace MojAtar.Core.Domain
     {
         [Key]
         public Guid? Id { get; set; }
-
         public string Naziv { get; set; }
         public string Vrsta { get; set; }
         public double AktuelnaCena { get; set; }
-
         public ICollection<CenaResursa> CeneResursa { get; set; }
-
-        // Filtriranje
         public Guid IdKorisnik { get; set; }
     }
 }

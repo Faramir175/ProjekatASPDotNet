@@ -18,37 +18,30 @@ namespace MojAtar.Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
- 
+        public async Task<Resurs> Add(Resurs entity)
+        {
+            _dbContext.Resursi.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
         public async Task<List<Resurs>> GetAll()
         {
             return await _dbContext.Resursi.ToListAsync();
         }
-
         public async Task<List<Resurs>> GetAllByKorisnik(Guid idKorisnik)
         {
             return await _dbContext.Resursi
                 .Where(p => p.IdKorisnik == idKorisnik)
                 .ToListAsync();
         }
-
-
         public async Task<Resurs> GetById(Guid? id)
         {
             return await _dbContext.Resursi.FindAsync(id);
         }
-
         public async Task<Resurs> GetByNazivIKorisnik(string naziv, Guid idKorisnik)
         {
             return await _dbContext.Resursi
                 .FirstOrDefaultAsync(r => r.Naziv == naziv && r.IdKorisnik == idKorisnik);
-        }
-
-
-        public async Task<Resurs> Add(Resurs entity)
-        {
-             _dbContext.Resursi.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
         }
 
         public async Task<Resurs> Update(Resurs entity)

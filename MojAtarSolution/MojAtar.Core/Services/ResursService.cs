@@ -33,7 +33,6 @@ namespace MojAtar.Core.Services
             _cenaResursaService = cenaResursaService;
         }
 
-
         public async Task<ResursDTO> Add(ResursDTO resursAdd)
         {
             if (resursAdd == null)
