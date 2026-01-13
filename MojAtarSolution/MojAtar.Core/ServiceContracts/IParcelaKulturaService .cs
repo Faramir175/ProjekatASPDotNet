@@ -22,5 +22,6 @@ namespace MojAtar.Core.ServiceContracts
         Task<List<ParcelaKulturaDTO>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura);
         Task<ParcelaKulturaDTO?> GetBySetvaRadnjaId(Guid idSetvaRadnja);
         Task<List<ParcelaKulturaDTO>> GetSveZaZetvu(Guid idZetvaRadnja);
+        Task<List<ParcelaKulturaDTO>> GetAllBySetvaRadnjaId(Guid idSetvaRadnja);
     }
 }

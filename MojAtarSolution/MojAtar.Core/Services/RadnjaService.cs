@@ -18,6 +18,7 @@ namespace MojAtar.Core.Services
         private readonly IRadnjaPrikljucnaMasinaService _radnjaPrikljucnaMasinaService;
         private readonly IRadnjaResursService _radnjaResursService;
         private readonly ICenaResursaService _cenaResursaService;
+        private readonly IRadnjaParcelaService _radnjaParcelaService;
 
         public RadnjaService(
             IRadnjaRepository radnjaRepository,
@@ -26,7 +27,8 @@ namespace MojAtar.Core.Services
             IRadnjaRadnaMasinaService radnjaRadnaMasinaService,
             IRadnjaPrikljucnaMasinaService radnjaPrikljucnaMasinaService,
             IRadnjaResursService radnjaResursService,
-            ICenaResursaService cenaResursaService)
+            ICenaResursaService cenaResursaService,
+            IRadnjaParcelaService radnjaParcelaService)
         {
             _radnjaRepository = radnjaRepository;
             _parcelaKulturaService = parcelaKulturaService;
@@ -35,6 +37,7 @@ namespace MojAtar.Core.Services
             _radnjaPrikljucnaMasinaService = radnjaPrikljucnaMasinaService;
             _radnjaResursService = radnjaResursService;
             _cenaResursaService = cenaResursaService;
+            _radnjaParcelaService = radnjaParcelaService;
         }
 
         // --- GLAVNE METODE ZA CRUD ---
@@ -44,15 +47,14 @@ namespace MojAtar.Core.Services
             // 1. Validacije
             await ValidacijaRadnje(dto);
 
-            // 2. Kreiranje entiteta
+            // 2. Kreiranje entiteta Radnja
             Radnja novaRadnja = dto.TipRadnje == RadnjaTip.Zetva
-                ? new Zetva { Prinos = (double)(dto.Prinos ?? 0) } // Ostala polja se mapiraju ispod
+                ? new Zetva { Prinos = (double)(dto.Prinos ?? 0) }
                 : new Radnja();
 
             // Zajedničko mapiranje
             novaRadnja.DatumIzvrsenja = dto.DatumIzvrsenja;
             novaRadnja.TipRadnje = dto.TipRadnje;
-            novaRadnja.IdParcela = dto.IdParcela!.Value;
             novaRadnja.IdKultura = dto.IdKultura;
             novaRadnja.Napomena = dto.Napomena;
             novaRadnja.UkupanTrosak = dto.UkupanTrosak;
@@ -61,11 +63,21 @@ namespace MojAtar.Core.Services
             var entity = await _radnjaRepository.Add(novaRadnja);
             dto.Id = entity.Id;
 
-            // 4. Obrada logike za Setvu/Žetvu (ParcelaKultura tabela)
-            await ObradiLogikuSetveZetve_Add(dto, entity);
+            // 4. Snimanje veza sa Parcelama (RadnjaParcela tabela)
+            if (dto.Parcele != null && dto.Parcele.Any())
+            {
+                foreach (var parcelaDto in dto.Parcele)
+                {
+                    // Ovo povezuje Radnju i Parcelu i čuva površinu te konkretne radnje
+                    await _radnjaParcelaService.Add((Guid)entity.Id, parcelaDto);
+                }
+            }
 
-            // 5. Snimanje veza (Mašine i Resursi)
-            // Ovo je prebačeno iz kontrolera u servis!
+            // 5. Obrada logike za Setvu/Žetvu (ParcelaKultura tabela)
+            // OVDE SE DEŠAVA MAGIJA ZA VIŠE PARCELA
+            await ObradiLogikuSetveZetve_Add(dto, (Guid)entity.Id);
+
+            // 6. Snimanje veza (Mašine i Resursi)
             if (dto.RadneMasine != null)
             {
                 foreach (var rm in dto.RadneMasine)
@@ -102,14 +114,21 @@ namespace MojAtar.Core.Services
             var staraRadnja = await _radnjaRepository.GetById(id);
             if (staraRadnja == null) throw new KeyNotFoundException("Radnja ne postoji.");
 
-            // Validacija tipa (ne sme se menjati)
             if (staraRadnja.TipRadnje != dto.TipRadnje)
                 throw new InvalidOperationException("Tip radnje se ne može menjati.");
 
-            // 1. Validacije specifične za Setvu/Žetvu
+            // 1. Validacije
             await ValidacijaIzmeneSetveZetve(staraRadnja, dto);
+            if (dto.TipRadnje == RadnjaTip.Setva) await ValidacijaRadnje(dto);
 
-            // 2. Brisanje obrisanih veza
+            // 2. Ažuriranje veza sa Parcelama
+            // Ovo ažurira površine u veznoj tabeli RadnjaParcela
+            if (dto.Parcele != null)
+            {
+                await _radnjaParcelaService.UpdateParceleZaRadnju(id, dto.Parcele);
+            }
+
+            // 3. Brisanje starih resursa/mašina (tvoj postojeći kod)
             if (obrisaneRadneMasine != null)
                 foreach (var idRM in obrisaneRadneMasine) await _radnjaRadnaMasinaService.Delete(id, idRM);
 
@@ -119,22 +138,14 @@ namespace MojAtar.Core.Services
             if (obrisaniResursi != null)
                 foreach (var idR in obrisaniResursi) await _radnjaResursService.Delete(id, idR);
 
-            // 3. Ažuriranje/Dodavanje veza
-            // Napomena: Tvoja logika iz kontrolera je brisala pa dodavala ponovo. 
-            // Ovde ćemo uraditi isto radi jednostavnosti, mada je bolje raditi update postojećih.
-            // Ali da ne komplikujemo previše tvoj kod, koristićemo tvoj pristup (Delete All + Add All za listu iz DTO)
-
-            // Oprez: Ovo briše SVE veze koje su u DTO-u poslate, pa ih dodaje ponovo. 
-            // Da li si siguran da DTO sadrži SVE mašine, ili samo nove? 
-            // Tvoj kontroler je radio: delete pa add. Pratićemo to.
-
+            // 4. Dodavanje/Update resursa/mašina (tvoj postojeći kod)
             if (dto.RadneMasine != null)
             {
                 foreach (var m in dto.RadneMasine)
                 {
-                    await _radnjaRadnaMasinaService.Delete(id, m.IdRadnaMasina); // Brišemo staru vezu ako postoji
+                    await _radnjaRadnaMasinaService.Delete(id, m.IdRadnaMasina);
                     m.IdRadnja = id;
-                    await _radnjaRadnaMasinaService.Add(m); // Dodajemo novu/ažuriranu
+                    await _radnjaRadnaMasinaService.Add(m);
                 }
             }
             if (dto.PrikljucneMasine != null)
@@ -157,23 +168,20 @@ namespace MojAtar.Core.Services
                 }
             }
 
-            // 4. Logika ažuriranja Setve/Žetve (ParcelaKultura)
+            // 5. Ažuriranje ParcelaKultura tabele (ako je setva, a promenjena površina)
             await ObradiLogikuSetveZetve_Update(staraRadnja, dto);
 
+            // 6. Update same radnje
             staraRadnja.UkupanTrosak = dto.UkupanTrosak;
+            staraRadnja.Napomena = dto.Napomena;
 
-            // 5. Ažuriranje same radnje
-            if (dto.TipRadnje == RadnjaTip.Zetva)
+            if (dto.TipRadnje == RadnjaTip.Zetva && staraRadnja is Zetva zetva)
             {
-                var zetva = (Zetva)staraRadnja;
                 zetva.Prinos = (double)(dto.Prinos ?? zetva.Prinos);
-                zetva.Napomena = dto.Napomena;
                 await _radnjaRepository.Update(zetva);
             }
             else
             {
-                staraRadnja.Napomena = dto.Napomena;
-                // Ostala polja po potrebi...
                 await _radnjaRepository.Update(staraRadnja);
             }
 
@@ -200,58 +208,81 @@ namespace MojAtar.Core.Services
 
         private async Task ValidacijaRadnje(RadnjaDTO dto)
         {
-            if (dto.IdParcela == null || dto.IdKultura == null)
-                throw new ArgumentException("Parcela i kultura su obavezni.");
+            if (dto.Parcele == null || !dto.Parcele.Any())
+                throw new ArgumentException("Morate izabrati bar jednu parcelu.");
 
-            if (dto.TipRadnje == RadnjaTip.Setva)
+            if (dto.IdKultura == null)
+                throw new ArgumentException("Kultura je obavezna.");
+
+            // Iteriramo kroz svaku parcelu da proverimo uslove
+            foreach (var p in dto.Parcele)
             {
-                if (!dto.Povrsina.HasValue || dto.Povrsina <= 0)
-                    throw new ArgumentException("Površina mora biti uneta za setvu.");
+                if (dto.TipRadnje == RadnjaTip.Setva)
+                {
+                    if (p.Povrsina <= 0)
+                        throw new ArgumentException($"Površina za parcelu {p.IdParcela} mora biti veća od 0.");
 
-                var slobodno = await GetSlobodnaPovrsinaAsync(dto.IdParcela.Value);
-                if (dto.Povrsina > slobodno)
-                    throw new ArgumentException($"Nema dovoljno slobodne površine. Dostupno: {slobodno:F2} ha.");
-            }
+                    var slobodno = await GetSlobodnaPovrsinaAsync(p.IdParcela);
+                    
+                    // Ako radimo update, moramo uzeti u obzir da mi već zauzimamo deo te površine
+                    // Ali za Add je prosto:
+                    if (p.Povrsina > slobodno)
+                        throw new ArgumentException($"Nema dovoljno slobodne površine na parceli {p.NazivParcele}. Dostupno: {slobodno:F2} ha.");
+                }
 
-            if (dto.TipRadnje == RadnjaTip.Zetva)
-            {
-                if (!dto.Prinos.HasValue || dto.Prinos <= 0)
-                    throw new ArgumentException("Prinos mora biti unet za žetvu.");
+                if (dto.TipRadnje == RadnjaTip.Zetva)
+                {
+                    // Provera prinosa se odnosi na celu radnju (ukupno), ne mora po parceli
+                    if (!dto.Prinos.HasValue || dto.Prinos <= 0)
+                        throw new ArgumentException("Prinos mora biti unet za žetvu.");
 
-                var aktivnaSetva = await _parcelaKulturaService.GetNezavrsenaSetva(dto.IdParcela.Value, dto.IdKultura.Value);
-                if (aktivnaSetva == null)
-                    throw new ArgumentException("Nema aktivne setve za ovu kulturu na parceli.");
+                    var aktivnaSetva = await _parcelaKulturaService.GetNezavrsenaSetva(p.IdParcela, dto.IdKultura.Value);
+                    if (aktivnaSetva == null)
+                        throw new ArgumentException($"Nema aktivne setve za ovu kulturu na parceli {p.NazivParcele}.");
+                }
             }
         }
 
-        private async Task ObradiLogikuSetveZetve_Add(RadnjaDTO dto, Radnja entity)
+        private async Task ObradiLogikuSetveZetve_Add(RadnjaDTO dto, Guid idRadnja)
         {
-            if (dto.TipRadnje == RadnjaTip.Setva)
+            // PROLAZIMO KROZ SVE PARCELE U LISTI
+            if (dto.Parcele != null)
             {
-                var pkDto = new ParcelaKulturaDTO
+                foreach (var p in dto.Parcele)
                 {
-                    IdParcela = dto.IdParcela,
-                    IdKultura = dto.IdKultura,
-                    Povrsina = dto.Povrsina ?? 0,
-                    DatumSetve = dto.DatumIzvrsenja,
-                    IdSetvaRadnja = entity.Id
-                };
-                await _parcelaKulturaService.Add(pkDto);
+                    if (dto.TipRadnje == RadnjaTip.Setva)
+                    {
+                        // Kreiramo DTO za svaku parcelu pojedinačno
+                        var pkDto = new ParcelaKulturaDTO
+                        {
+                            IdParcela = p.IdParcela,
+                            IdKultura = dto.IdKultura,
+                            // KLJUČNA IZMENA: Uzimamo površinu baš za tu parcelu iz liste
+                            Povrsina = p.Povrsina,
+                            DatumSetve = dto.DatumIzvrsenja,
+                            IdSetvaRadnja = idRadnja
+                        };
+                        await _parcelaKulturaService.Add(pkDto);
+                    }
+                    else if (dto.TipRadnje == RadnjaTip.Zetva)
+                    {
+                        // Zatvaramo setvu na OVOJ parceli iz liste
+                        var aktivneSetve = await _parcelaKulturaService.GetSveNezavrseneSetve(p.IdParcela, dto.IdKultura.Value);
+                        foreach (var setva in aktivneSetve)
+                        {
+                            setva.DatumZetve = dto.DatumIzvrsenja;
+                            setva.IdZetvaRadnja = idRadnja;
+                            await _parcelaKulturaService.Update(setva);
+                        }
+                    }
+                }
             }
-            else if (dto.TipRadnje == RadnjaTip.Zetva)
-            {
-                var aktivneSetve = await _parcelaKulturaService.GetSveNezavrseneSetve(dto.IdParcela.Value, dto.IdKultura.Value);
-                foreach (var setva in aktivneSetve)
-                {
-                    setva.DatumZetve = dto.DatumIzvrsenja;
-                    setva.IdZetvaRadnja = entity.Id;
-                    await _parcelaKulturaService.Update(setva);
-                }
 
-                if (dto.Prinos.HasValue && dto.Prinos.Value > 0)
-                {
-                    await _kulturaService.AzurirajPosleZetve(dto.IdKultura!.Value, (decimal)dto.Prinos.Value);
-                }
+            // Prinos se i dalje dodaje samo jednom (ukupno za celu radnju/kulturu)
+            if (dto.TipRadnje == RadnjaTip.Zetva && dto.Prinos.HasValue && dto.Prinos.Value > 0)
+            {
+                // Kastujemo u decimal ako tvoj servis za kulture tako zahteva
+                await _kulturaService.AzurirajPosleZetve(dto.IdKultura!.Value, (decimal)dto.Prinos.Value);
             }
         }
 
@@ -259,34 +290,68 @@ namespace MojAtar.Core.Services
         {
             if (staraRadnja.TipRadnje == RadnjaTip.Setva)
             {
-                // Tvoja logika za ažuriranje setve (provera slobodne površine, ažuriranje ParcelaKultura)
-                // ... (Kopirano iz tvoje Update metode, skraćeno radi preglednosti)
-                var pkList = await _parcelaKulturaService.GetAllByParcelaId(dto.IdParcela.Value);
-                var target = pkList.FirstOrDefault(x => x.IdSetvaRadnja == staraRadnja.Id);
+                // 1. Učitaj sve zapise setve koji su povezani sa ovom radnjom
+                var postojecePK = await _parcelaKulturaService.GetAllBySetvaRadnjaId((Guid)staraRadnja.Id);
+                var noveParceleIds = dto.Parcele.Select(p => p.IdParcela).ToList();
 
-                if (target != null)
+                // A. BRISANJE (ako je neka parcela izbačena, mada je kod tebe disabled)
+                var zaBrisanje = postojecePK.Where(pk => !noveParceleIds.Contains(pk.IdParcela!.Value)).ToList();
+                foreach (var pk in zaBrisanje)
                 {
-                    // Ovde ide provera slobodne površine ponovo ako se površina menja
-                    // ...
-                    target.Povrsina = dto.Povrsina ?? target.Povrsina;
-                    target.DatumSetve = dto.DatumIzvrsenja;
-                    await _parcelaKulturaService.Update(target);
+                    if (pk.Id.HasValue) await _parcelaKulturaService.Delete(pk.Id.Value);
+                }
+
+                // B. UPDATE i DODAVANJE
+                foreach (var p in dto.Parcele)
+                {
+                    var target = postojecePK.FirstOrDefault(x => x.IdParcela == p.IdParcela);
+
+                    if (target != null)
+                    {
+                        // Ako zapis postoji, ažuriramo površinu (jer je korisnik možda promenio u input polju)
+                        if (target.Povrsina != p.Povrsina || target.DatumSetve != dto.DatumIzvrsenja)
+                        {
+                            target.Povrsina = p.Povrsina;
+                            target.DatumSetve = dto.DatumIzvrsenja;
+                            await _parcelaKulturaService.Update(target);
+                        }
+                    }
+                    else
+                    {
+                        // Ako je u Edit modu nekako dodata nova parcela
+                        var noviPk = new ParcelaKulturaDTO
+                        {
+                            IdParcela = p.IdParcela,
+                            IdKultura = dto.IdKultura,
+                            Povrsina = p.Povrsina,
+                            DatumSetve = dto.DatumIzvrsenja,
+                            IdSetvaRadnja = staraRadnja.Id
+                        };
+                        await _parcelaKulturaService.Add(noviPk);
+                    }
                 }
             }
             else if (staraRadnja.TipRadnje == RadnjaTip.Zetva)
             {
-                var staraZetva = (Zetva)staraRadnja;
-                decimal stariPrinos = (decimal)staraZetva.Prinos;
-                decimal noviPrinos = dto.Prinos.HasValue ? (decimal)dto.Prinos.Value : stariPrinos;
+                // Logika za prinos (magacin)
+                double stariPrinos = (staraRadnja as Zetva)?.Prinos ?? 0;
+                double noviPrinos = dto.Prinos ?? stariPrinos;
 
-                if (noviPrinos < stariPrinos)
+                if (noviPrinos != stariPrinos)
                 {
-                    decimal razlika = stariPrinos - noviPrinos;
-                    bool moze = await _kulturaService.MozeSmanjenje(staraZetva.IdKultura!.Value, razlika);
-                    if (!moze) throw new Exception("Nije moguće smanjiti prinos — stanje kulture bi otišlo u negativno.");
+                    await _kulturaService.AzurirajPosleIzmeneZetve(staraRadnja.IdKultura!.Value, (decimal)stariPrinos, (decimal)noviPrinos);
                 }
 
-                await _kulturaService.AzurirajPosleIzmeneZetve(staraZetva.IdKultura!.Value, stariPrinos, noviPrinos);
+                // Ažuriranje datuma žetve na svim zatvorenim setvama ove radnje
+                var aktivne = await _parcelaKulturaService.GetSveZaZetvu((Guid)staraRadnja.Id);
+                foreach (var pk in aktivne)
+                {
+                    if (pk.DatumZetve != dto.DatumIzvrsenja)
+                    {
+                        pk.DatumZetve = dto.DatumIzvrsenja;
+                        await _parcelaKulturaService.Update(pk);
+                    }
+                }
             }
         }
 
@@ -304,27 +369,48 @@ namespace MojAtar.Core.Services
         {
             if (radnja.TipRadnje == RadnjaTip.Setva)
             {
-                var pk = await _parcelaKulturaService.GetBySetvaRadnjaId((Guid)radnja.Id);
-                if (pk != null)
+                // 1. Dohvatamo SVE zapise iz ParcelaKultura koji su nastali ovom setvom
+                // (Koristimo onaj novi metod iz ParcelaKulturaService)
+                var pkList = await _parcelaKulturaService.GetAllBySetvaRadnjaId((Guid)radnja.Id);
+
+                if (pkList != null && pkList.Any())
                 {
-                    if (pk.IdZetvaRadnja != null)
+                    // 2. Sigurnosna provera: Da li je BILO KOJA od ovih parcela već požnjevena?
+                    // Ako jeste, ne smemo obrisati setvu jer bi žetva ostala bez svog "roditelja".
+                    // Korisnik mora prvo obrisati žetvu.
+                    var imaZetve = pkList.Any(pk => pk.IdZetvaRadnja != null || pk.DatumZetve != null);
+
+                    if (imaZetve)
                     {
-                        // Ovo je kompleksno (kaskadno brisanje žetve), zadržavamo tvoju logiku
-                        // ... (Kopiraj logiku iz tvoje DeleteById metode)
+                        throw new Exception("Nije moguće obrisati setvu jer je na jednoj ili više parcela već evidentirana žetva. Prvo morate obrisati žetvu.");
                     }
-                    await _parcelaKulturaService.DeleteIfNotCompleted(pk.IdParcela!.Value, pk.IdKultura!.Value, pk.IdSetvaRadnja!.Value);
+
+                    // 3. Ako nema žetve, bezbedno je obrisati sve zapise o setvi
+                    foreach (var pk in pkList)
+                    {
+                        // Pozivamo Delete metodu servisa (pretpostavljamo da PK DTO ima Id)
+                        if (pk.Id.HasValue)
+                        {
+                            await _parcelaKulturaService.Delete(pk.Id.Value);
+                        }
+                    }
                 }
             }
             else if (radnja.TipRadnje == RadnjaTip.Zetva)
             {
+                // Logika za Žetvu ostaje ista (kako si je i napisao)
                 var zetva = (Zetva)radnja;
-                bool moze = await _kulturaService.MozeBrisanjeZetve(zetva.IdKultura!.Value, (decimal)zetva.Prinos);
-                if (!moze) throw new Exception("Nije moguće obrisati žetvu (deo prinosa je prodat).");
 
+                // Provera stanja u magacinu
+                bool moze = await _kulturaService.MozeBrisanjeZetve(zetva.IdKultura!.Value, (decimal)zetva.Prinos);
+                if (!moze) throw new Exception("Nije moguće obrisati žetvu (deo prinosa je već prodat ili potrošen).");
+
+                // Vraćamo stanje u magacinu (smanjujemo za iznos prinosa koji brišemo)
                 var kultura = await _kulturaService.GetById(zetva.IdKultura!.Value);
                 kultura.RaspolozivoZaProdaju -= (decimal)zetva.Prinos;
                 await _kulturaService.Update(kultura.Id, kultura);
 
+                // Oslobađamo parcele (Setujemo DatumZetve i IdZetvaRadnja na null)
                 var pkList = await _parcelaKulturaService.GetSveZaZetvu((Guid)radnja.Id);
                 foreach (var pk in pkList)
                 {
@@ -336,8 +422,6 @@ namespace MojAtar.Core.Services
         }
 
         // --- OSTALE METODE (Get, GetAll...) ---
-        // Ove metode ostaju uglavnom iste, samo ih kopiraj.
-        // Dodajemo samo jednu bitnu za popunjavanje DTO-a sa vezama:
 
         public async Task<RadnjaDTO> GetForEdit(Guid id, Guid idKorisnik)
         {
@@ -349,11 +433,12 @@ namespace MojAtar.Core.Services
             radnja.PrikljucneMasine = await _radnjaPrikljucnaMasinaService.GetAllByRadnjaId(id);
             radnja.Resursi = await _radnjaResursService.GetAllByRadnjaId(id);
 
-            // Specifično za setvu (površina)
-            if (radnja.TipRadnje == RadnjaTip.Setva)
+            radnja.Parcele = await _radnjaParcelaService.GetAllByRadnjaId(id);
+
+            // Ukupna površina za prikaz (sumiramo sve parcele)
+            if (radnja.Parcele != null)
             {
-                var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(id);
-                if (pk != null) radnja.Povrsina = pk.Povrsina;
+                radnja.UkupnaPovrsina = radnja.Parcele.Sum(p => p.Povrsina);
             }
 
             return radnja;
@@ -365,24 +450,21 @@ namespace MojAtar.Core.Services
             // 1. Dohvatanje entiteta iz baze
             var radnjeEntities = await _radnjaRepository.GetAllByKorisnikPaged(idKorisnik, skip, take);
 
-            // 2. Odmah mapiramo u DTO listu kako bismo mogli da manipulisemo poljem Povrsina
+            // 2. Mapiranje u DTO
             var radnjeDtos = radnjeEntities.Select(x => x.ToRadnjaDTO()).ToList();
 
             // 3. Dopunjavanje podataka (Enrichment)
             foreach (var dto in radnjeDtos)
             {
-                // Proveravamo da li je Setva, jer samo ona vuče površinu iz tabele ParcelaKultura
-                if (dto.TipRadnje == RadnjaTip.Setva && dto.Id.HasValue)
+                if (dto.Id.HasValue)
                 {
-                    // Pozivamo servis da nađe vezni zapis
-                    var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(dto.Id.Value);
-
-                    if (pk != null)
-                    {
-                        // *** OVO JE NEDOSTAJALO ***
-                        // Dodeljujemo pronađenu površinu DTO objektu
-                        dto.Povrsina = pk.Povrsina;
-                    }
+                    // Učitavamo parcele da bismo prikazali imena i ukupnu površinu u tabeli
+                    // Paznja: Ovo može biti sporo ako ima puno radnji (N+1 problem).
+                    // Ako ti treba samo površina, bolje je to rešiti u Repozitorijumu kroz Include/Select.
+                    // Ali prateći tvoj patern:
+                    var parcele = await _radnjaParcelaService.GetAllByRadnjaId(dto.Id.Value);
+                    dto.Parcele = parcele;
+                    dto.UkupnaPovrsina = parcele.Sum(p => p.Povrsina);
                 }
             }
 
@@ -427,23 +509,30 @@ namespace MojAtar.Core.Services
 
         public async Task<List<RadnjaDTO>> GetAllByParcelaPaged(Guid idParcela, int skip, int take)
         {
-            // 1. Prvo izvucemo osnovne podatke iz repozitorijuma
+            // 1. Prvo izvučemo osnovne podatke iz repozitorijuma
             var radnje = await _radnjaRepository.GetAllByParcelaPaged(idParcela, skip, take);
 
-            // 2. Odmah mapiramo u DTO da bismo mogli da menjamo property Povrsina
+            // 2. Mapiramo u DTO
             var radnjeDtos = radnje.Select(x => x.ToRadnjaDTO()).ToList();
 
-            // 3. Prolazimo kroz listu i za svaku SETVU dovlacimo povrsinu
+            // 3. Prolazimo kroz listu i dovlačimo specifičnu površinu za OVU parcelu
             foreach (var dto in radnjeDtos)
             {
-                if (dto.TipRadnje == RadnjaTip.Setva && dto.Id.HasValue)
+                if (dto.Id.HasValue)
                 {
-                    // Pozivamo servis za veznu tabelu da nadje zapis po ID-ju radnje
-                    var pk = await _parcelaKulturaService.GetBySetvaRadnjaId(dto.Id.Value);
+                    // Pozivamo servis za veznu tabelu da nađe zapis po ID-ju radnje i ID-ju parcele
+                    // (Ovu metodu smo dodali u RadnjaParcelaService u prethodnom koraku)
+                    var radnjaParcelaDto = await _radnjaParcelaService.GetByRadnjaAndParcela(dto.Id.Value, idParcela);
 
-                    if (pk != null)
+                    if (radnjaParcelaDto != null)
                     {
-                        dto.Povrsina = pk.Povrsina;
+                        // A) Ubacujemo taj jedan zapis u listu, tako da dto.Parcele sadrži info o ovoj parceli
+                        dto.Parcele = new List<RadnjaParcelaDTO> { radnjaParcelaDto };
+
+                        // B) Koristimo postojeće polje 'UkupnaPovrsina' da bismo tu upisali površinu OVE parcele.
+                        // Ovo radimo da bi na Frontendu lako prikazao brojku u koloni "Površina", 
+                        // umesto da moraš da kopaš po listi (dto.Parcele[0].Povrsina).
+                        dto.UkupnaPovrsina = radnjaParcelaDto.Povrsina;
                     }
                 }
             }

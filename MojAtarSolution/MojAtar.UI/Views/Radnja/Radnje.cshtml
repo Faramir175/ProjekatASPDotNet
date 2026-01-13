@@ -20,42 +20,51 @@
                     <div class="card h-100 shadow border-0">
                         <div class="card-body">
                             <h5 class="card-title">@radnja.TipRadnje</h5>
-                            <p class="card-text mb-1">
-                                <strong>Parcela:</strong> @radnja.Parcela?.Naziv
+
+                            <p>
+                                <strong>Parcela:</strong>
+                                @if (radnja.Parcele != null && radnja.Parcele.Any())
+                                {
+                                    // Spajamo nazive zarezom (npr. "Njiva 1, Njiva 2")
+                                    @string.Join(", ", radnja.Parcele.Select(p => p.NazivParcele))
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
                             </p>
-                            <p class="card-text mb-1">
-                                <strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")
-                            </p>
-                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
-                            {
-                                <p class="card-text mb-1">
-                                    <strong>Posejana površina:</strong> @radnja.Povrsina ha
-                                </p>
-                            }
-                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
-                            {
-                                <p class="card-text mb-1">
-                                    <strong>Prinos:</strong> @radnja.Prinos kg
-                                </p>
-                            }
-                            <p class="card-text mb-1">
-                                <strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")
-                            </p>
-                            <p class="card-text mb-1">
-                                <strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD
-                            </p>
+
+                            <p><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
+                            <p><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
+                            <p><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD</p>
+
                             @if (radnja.Napomena != null)
                             {
-                                <p class="card-text mb-1"><strong>Napomena:</strong> @radnja.Napomena</p>
+                                <p><strong>Napomena:</strong> @radnja.Napomena</p>
+                            }
+
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                            {
+                                <p><strong>Prinos:</strong> @radnja.Prinos kg</p>
+                            }
+
+                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                            {
+                                <p><strong>Posejana površina:</strong> @(radnja.UkupnaPovrsina?.ToString("0.##") ?? "0") ha</p>
+                            }
+                            @if (radnja.TipRadnje != MojAtar.Core.Domain.Enums.RadnjaTip.Setva && radnja.UkupnaPovrsina > 0)
+                            {
+                                <p><strong>Obrađena površina:</strong> @(radnja.UkupnaPovrsina?.ToString("0.##") ?? "0") ha</p>
                             }
                         </div>
+
                         <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
-                            <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">
+                            <form asp-action="Izmeni" asp-controller="Radnja" asp-route-id="@radnja.Id" method="get" class="flex-fill">
                                 <button type="submit" class="btn btn-sm btn-warning w-100">
                                     <i class="bi bi-pencil-square"></i> Izmeni
                                 </button>
                             </form>
-                            <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                            <form asp-action="Obrisi" asp-controller="Radnja" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
                                 <button type="submit" class="btn btn-sm btn-danger w-100">
                                     <i class="bi bi-trash3"></i> Obriši
                                 </button>

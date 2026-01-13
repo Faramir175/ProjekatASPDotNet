@@ -2,78 +2,101 @@
 
 @{
     ViewData["Title"] = "Radnje";
-    var nazivParcele = Model.FirstOrDefault()?.Parcela?.Naziv ?? "Nepoznata parcela";
+    // Naziv parcele uzimamo iz ViewBag-a ako smo ga poslali, ili probamo iz modela (prva parcela iz prve radnje)
+    // Napomena: Ovo iz modela je rizično ako je lista prazna, zato je bolje poslati ViewBag.NazivParcele iz kontrolera.
+    // Za sad ostavljam fallback logiku:
+    var nazivParcele = ViewBag.NazivParcele as string
+                       ?? Model.FirstOrDefault()?.Parcele?.FirstOrDefault()?.NazivParcele
+                       ?? "Izabrana parcela";
 }
 
 <div class="container mt-5">
     <div class="container-glass">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">📋 Radnje za parcelu <strong>@nazivParcele</strong></h2>
-            <a asp-action="Dodaj" class="btn btn-success">
+            <a asp-action="Dodaj" asp-route-fromParcelaId="@ViewBag.IdParcela" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Dodaj novu radnju
             </a>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var radnja in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow border-0">
-                        <div class="card-body">
-                            <h5 class="card-title">@radnja.TipRadnje</h5>
-                            <p class="card-text mb-1"><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
-                            <p class="card-text mb-1"><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD</p>
-                            @if(radnja.Napomena!=null)
-                            {
-                                <p class="card-text mb-1"><strong>Napomena:</strong> @radnja.Napomena</p>
-                            }
-                            <p class="card-text mb-1"><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
-                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
-                            {
-                                <p class="card-text"><strong>Prinos:</strong> @radnja.Prinos kg</p>
-                            }
-                            @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
-                            {
-                                <p class="card-text mb-1"><strong>Posejana površina:</strong> @radnja.Povrsina ha</p>
-                            }
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
-                            <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">
-                                <button type="submit" class="btn btn-sm btn-warning w-100">
-                                    <i class="bi bi-pencil-square"></i> Izmeni
-                                </button>
-                            </form>
-                            <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
-                                <button type="submit" class="btn btn-sm btn-danger w-100">
-                                    <i class="bi bi-trash3"></i> Obriši
-                                </button>
-                            </form>
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center">
+                Nema zabeleženih radnji za ovu parcelu.
+            </div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                @foreach (var radnja in Model)
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow border-0">
+                            <div class="card-body">
+                                <h5 class="card-title">@radnja.TipRadnje</h5>
+                                <p class="card-text mb-1"><strong>Datum:</strong> @radnja.DatumIzvrsenja.ToString("dd.MM.yyyy")</p>
+                                <p class="card-text mb-1"><strong>Trošak:</strong> @radnja.UkupanTrosak.ToString("0.00") RSD</p>
+
+                                @if (radnja.Napomena != null)
+                                {
+                                    <p class="card-text mb-1"><strong>Napomena:</strong> @radnja.Napomena</p>
+                                }
+
+                                <p class="card-text mb-1"><strong>Kultura:</strong> @(radnja.Kultura?.Naziv ?? "-")</p>
+
+                                @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)
+                                {
+                                    <p class="card-text"><strong>Prinos:</strong> @radnja.Prinos kg</p>
+                                }
+
+                                @if (radnja.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                                {
+                                    <p class="card-text mb-1"><strong>Posejana površina:</strong> @(radnja.UkupnaPovrsina?.ToString("0.##") ?? "0") ha</p>
+                                }
+                                else if (radnja.UkupnaPovrsina > 0)
+                                {
+                                    <p class="card-text mb-1"><strong>Obrađena površina:</strong> @(radnja.UkupnaPovrsina?.ToString("0.##") ?? "0") ha</p>
+                                }
+                            </div>
+
+                            <div class="card-footer bg-transparent border-top-0 d-flex flex-wrap gap-2">
+                                <form asp-action="Izmeni" asp-route-id="@radnja.Id" method="get" class="flex-fill">
+                                    <button type="submit" class="btn btn-sm btn-warning w-100">
+                                        <i class="bi bi-pencil-square"></i> Izmeni
+                                    </button>
+                                </form>
+                                <form asp-action="Obrisi" asp-route-id="@radnja.Id" method="post" onsubmit="return confirm('Da li ste sigurni?');" class="flex-fill">
+                                    <button type="submit" class="btn btn-sm btn-danger w-100">
+                                        <i class="bi bi-trash3"></i> Obriši
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+
             <div class="d-flex justify-content-between align-items-center mt-4 w-100">
-                <!-- Strelica levo -->
                 <a class="btn btn-success @(ViewBag.Skip <= 9 ? "disabled" : "")"
                    asp-action="RadnjePoParceli"
+                   asp-route-idParcela="@ViewBag.IdParcela"
                    asp-route-skip="@(ViewBag.Skip - 18)"
                    asp-route-take="9">
                     <i class="bi bi-arrow-left"></i> Prethodna
                 </a>
 
-                <span "fw-bold text-center flex-grow-1">
+                <span class="fw-bold text-center flex-grow-1">
                     Stranica @(Math.Ceiling((decimal)(ViewBag.Skip / 9.0))) od @(Math.Ceiling((decimal)ViewBag.TotalCount / 9))
                 </span>
 
-
-                <!-- Strelica desno -->
                 <a class="btn btn-success @(ViewBag.Skip >= ViewBag.TotalCount ? "disabled" : "")"
                    asp-action="RadnjePoParceli"
+                   asp-route-idParcela="@ViewBag.IdParcela"
                    asp-route-skip="@(ViewBag.Skip)"
                    asp-route-take="9">
                     Sledeće <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
-        </div>
+        }
     </div>
 </div>

@@ -51,19 +51,7 @@ namespace MojAtar.Core.Services
 
             foreach (var r in poslednjeRadnje)
             {
-                double? povrsinaZaSetvu = null;
-
-                if (r.TipRadnje == RadnjaTip.Setva && r.Id.HasValue)
-                {
-                    // Ovo je ok jer se izvršava sekvencijalno unutar petlje
-                    var parcelaKultura = await _parcelaKulturaRepo.GetBySetvaRadnjaId(r.Id.Value);
-                    if (parcelaKultura != null)
-                    {
-                        povrsinaZaSetvu = (double?)parcelaKultura.Povrsina;
-                    }
-                }
-
-                radnjaDTOs.Add(r.ToRadnjaDTO(povrsina: (decimal?)povrsinaZaSetvu));
+                radnjaDTOs.Add(r.ToRadnjaDTO());
             }
 
             return new PocetnaDTO

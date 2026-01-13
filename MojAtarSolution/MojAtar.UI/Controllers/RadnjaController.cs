@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MojAtar.Core.Domain;
 using MojAtar.Core.DTO;
 using MojAtar.Core.ServiceContracts;
 using System.Security.Claims;
@@ -18,7 +19,6 @@ namespace MojAtar.UI.Controllers
         private readonly IResursService _resursService;
         private readonly ICenaResursaService _cenaResursaService;
 
-        // Manje zavisnosti jer su ostale prešle u servis
         public RadnjaController(
             IRadnjaService radnjaService,
             IKulturaService kulturaService,
@@ -44,7 +44,6 @@ namespace MojAtar.UI.Controllers
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
             Guid userId = Guid.Parse(userIdStr);
 
-            // Servis vraća sve spremno (uključujući površinu za setvu ako si je mapirao u servisu)
             var radnje = await _radnjaService.GetAllByKorisnikPaged(userId, skip, take);
 
             ViewBag.Skip = skip + take;
@@ -60,11 +59,13 @@ namespace MojAtar.UI.Controllers
             ViewBag.Skip = skip + take;
             ViewBag.IdParcela = idParcela;
             ViewBag.TotalCount = await _radnjaService.GetCountByParcela(idParcela);
+            var parcela = await _parcelaService.GetById(idParcela);
+            ViewBag.NazivParcele = parcela?.Naziv ?? "Nepoznata parcela";
             return View(radnje);
         }
 
         [HttpGet("dodaj")]
-        public async Task<IActionResult> Dodaj()
+        public async Task<IActionResult> Dodaj(Guid? fromParcelaId)
         {
             string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
@@ -72,17 +73,16 @@ namespace MojAtar.UI.Controllers
 
             await UcitajViewBagove(userId);
 
-            // Inicijalno slobodna površina za prvu parcelu
-            var parcele = await _parcelaService.GetAllForUser(userId);
-            if (parcele.Any())
-            {
-                ViewBag.SlobodnaPovrsina = await _radnjaService.GetSlobodnaPovrsinaAsync(parcele.First().Id!.Value);
-            }
-
-            // Cene resursa (ovo može i u posebnu AJAX metodu, ali ok je i ovde)
+            // Resursi i cene
             var resursi = await _resursService.GetAllForUser(userId);
             var ceneResursa = resursi.ToDictionary(r => r.Id.ToString(), r => r.AktuelnaCena);
             ViewBag.CeneResursa = ceneResursa;
+
+            // Ako dolazimo sa određene parcele, prosleđujemo ID da bi View mogao eventualno da je automatski selektuje (opciono)
+            ViewBag.FromParcelaId = fromParcelaId;
+
+            // NAPOMENA: Ovde više NE učitavamo "SlobodnaPovrsina" za prvu parcelu
+            // jer korisnik sada bira parcele dinamički preko checkbox-ova.
 
             return View(new RadnjaDTO());
         }
@@ -102,8 +102,10 @@ namespace MojAtar.UI.Controllers
 
             try
             {
-                // Sva logika je sada u servisu!
+                // BITNO: Ovde se poziva servis. Servis treba da pročita dto.Parcele listu
+                // i da za svaku parcelu, ako je Setva, kreira ParcelaKultura zapis.
                 await _radnjaService.Add(dto);
+
                 TempData["SuccessMessage"] = "Radnja je uspešno dodata!";
                 return RedirectToAction("Radnje");
             }
@@ -122,17 +124,24 @@ namespace MojAtar.UI.Controllers
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
             Guid userId = Guid.Parse(userIdStr);
 
-            // Servis vraća popunjen DTO sa svim vezama
+            // Servis vraća popunjen DTO sa listom Parcela
             var radnja = await _radnjaService.GetForEdit(id, userId);
             if (radnja == null) return NotFound();
 
-            // Sigurnosna provera (da li parcela pripada korisniku?) - može i u servisu, ali ok je i ovde
-            var parcela = await _parcelaService.GetById(radnja.IdParcela);
-            if (parcela == null || parcela.IdKorisnik != userId) return Unauthorized();
+            // Provera vlasništva - prolazimo kroz parcele da vidimo da li pripadaju useru
+            if (radnja.Parcele != null && radnja.Parcele.Any())
+            {
+                // Uzimamo prvu parcelu kao referencu za proveru vlasništva
+                var idPrveParcele = radnja.Parcele.First().IdParcela;
+                var parcela = await _parcelaService.GetById(idPrveParcele);
+
+                if (parcela == null || parcela.IdKorisnik != userId)
+                    return Unauthorized();
+            }
 
             await UcitajViewBagove(userId);
 
-            // Cene resursa na datum izvršenja
+            // Cene resursa na datum izvršenja (za preračun troškova u istoriji)
             var resursi = await _resursService.GetAllForUser(userId);
             var ceneResursa = new Dictionary<string, double>();
             foreach (var res in resursi)
@@ -160,8 +169,11 @@ namespace MojAtar.UI.Controllers
 
             try
             {
-                // Servis prima liste za brisanje i sve odrađuje
+                // BITNO: Servis ovde treba da prođe kroz dto.Parcele.
+                // Pošto je ovo Izmena, verovatno samo ažuriraš površinu u ParcelaKultura tabeli 
+                // jer parcele ne mogu da se menjaju (disabled checkbox).
                 await _radnjaService.Update(id, dto, ObrisaneRadneMasineId, ObrisanePrikljucneMasineId, ObrisaniResursiId);
+
                 TempData["SuccessMessage"] = "Izmene su uspešno sačuvane!";
                 return RedirectToAction("Radnje");
             }
@@ -176,7 +188,6 @@ namespace MojAtar.UI.Controllers
         [HttpPost("obrisi/{id}")]
         public async Task<IActionResult> Obrisi(Guid id)
         {
-            // Opciono: Provera vlasništva pre brisanja
             try
             {
                 await _radnjaService.DeleteById(id);
@@ -189,9 +200,11 @@ namespace MojAtar.UI.Controllers
             return RedirectToAction("Radnje");
         }
 
+        // AJAX Metoda za JS
         [HttpGet("slobodnaPovrsina/{idParcela}")]
         public async Task<IActionResult> GetSlobodnaPovrsina(Guid idParcela)
         {
+            // Servis računa koliko je slobodno na toj parceli
             var slobodno = await _radnjaService.GetSlobodnaPovrsinaAsync(idParcela);
             return Json(new { slobodno });
         }

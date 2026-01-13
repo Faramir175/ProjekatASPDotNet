@@ -105,5 +105,18 @@ namespace MojAtar.Core.Services
                 }
             }
         }
+
+        public async Task<RadnjaParcelaDTO?> GetByRadnjaAndParcela(Guid idRadnja, Guid idParcela)
+        {
+            var entity = await _repo.GetByRadnjaAndParcela(idRadnja, idParcela);
+            if (entity == null) return null;
+
+            return new RadnjaParcelaDTO
+            {
+                IdParcela = entity.IdParcela,
+                Povrsina = entity.Povrsina,
+                NazivParcele = entity.Parcela?.Naziv
+            };
+        }
     }
 }

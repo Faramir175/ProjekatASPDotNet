@@ -27,9 +27,15 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>@(Model.Id == null ? "Dodaj Radnju" : "Izmeni Radnju")</h2>
 
-            @if (Model.IdParcela != null)
+            @if (ViewBag.FromParcelaId != null)
             {
-                <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.IdParcela" class="btn btn-secondary">
+                <a asp-action="RadnjePoParceli" asp-route-idParcela="@ViewBag.FromParcelaId" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Nazad
+                </a>
+            }
+            else if (Model.Id != null && Model.Parcele != null && Model.Parcele.Any())
+            {
+                <a asp-action="RadnjePoParceli" asp-route-idParcela="@Model.Parcele.First().IdParcela" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Nazad
                 </a>
             }
@@ -62,28 +68,132 @@
                     <div id="obrisanePrikljucneContainer"></div>
                     <div id="obrisaniResursiContainer"></div>
 
-                    @if (Model.Id == null)
-                    {
-                        <div class="mb-3">
-                            <label class="form-label" for="IdParcela">Parcela</label>
-                            <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList" id="parcelaSelect">
-                                <option value="">-- Izaberite parcelu --</option>
-                            </select>
-                            <span asp-validation-for="IdParcela" class="text-danger"></span>
+                    <div class="mb-4">
+                        <label class="form-label h5 d-block mb-2">Parcele</label>
+
+                        <div class="scrollable-list">
+                            @{
+                                // Mapiramo postojeće parcele da ih lako pronađemo po ID-u
+                                var postojeceParcele = Model.Parcele?.ToDictionary(p => p.IdParcela, p => p)
+                                ?? new Dictionary<Guid, MojAtar.Core.DTO.RadnjaParcelaDTO>();
+                            }
+
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+                            {
+                                var pId = Guid.Parse(item.Value);
+                                var isChecked = postojeceParcele.ContainsKey(pId);
+                                var podaciOParceli = isChecked ? postojeceParcele[pId] : null;
+
+                                <div class="parcela-item d-flex flex-wrap align-items-center justify-content-between">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               @(isChecked ? "checked" : "") disabled>
+                                        <label class="form-check-label fw-bold" style="opacity: 1;">
+                                            @item.Text
+                                        </label>
+                                    </div>
+
+                                    @if (isChecked)
+                                    {
+                                        <div class="parcela-detalji d-flex gap-2 align-items-center">
+                                            @if (Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva)
+                                            {
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-light">Površina (ha)</span>
+                                                    <input type="text" class="form-control detail-input"
+                                                           value="@(podaciOParceli?.Povrsina.ToString() ?? "-")"
+                                                           readonly style="background-color: #fff;" />
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
                         </div>
-                    }
-                    else
-                    {
-                        <div class="mb-3">
-                            <label class="form-label" for="IdParcela">Parcela</label>
-                            <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList" disabled>
-                                <option value="">-- Izaberite parcelu --</option>
-                            </select>
-                            <input type="hidden" asp-for="IdParcela" />
-                            <span asp-validation-for="IdParcela" class="text-danger"></span>
-                            <small class="text-muted">Parcela se ne može menjati nakon kreiranja radnje.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Napomena" class="form-label">Napomena</label>
+                        <textarea asp-for="Napomena" class="form-control" rows="3" readonly></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Kultura</label>
+                        <select asp-for="IdKultura" class="form-control" asp-items="ViewBag.KultureSelectList" disabled>
+                            <option value="">-- Kultura --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label h5 d-block mb-2">Parcele</label>
+                        <small class="text-muted d-block mb-3">
+                            @(Model.Id == null ? "Izaberite parcele na kojima se radnja obavlja." : "Parcele se ne mogu menjati tokom izmene, samo podaci.")
+                        </small>
+
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            @{
+                                // Pripremamo podatke o već selektovanim parcelama
+                                var selektovaneParcele = Model.Parcele?.ToDictionary(p => p.IdParcela, p => p)
+                                ?? new Dictionary<Guid, MojAtar.Core.DTO.RadnjaParcelaDTO>();
+                            }
+
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+                            {
+                                var pId = Guid.Parse(item.Value);
+                                var isChecked = selektovaneParcele.ContainsKey(pId);
+
+                                <div class="form-check masina-card shadow-sm p-2 bg-light rounded" style="min-width: 150px;">
+                                    <input class="form-check-input parcela-checkbox" type="checkbox"
+                                           id="p_@pId"
+                                           value="@pId"
+                                           data-naziv="@item.Text"
+                                           @(isChecked ? "checked" : "")
+                                           @(Model.Id != null ? "disabled" : "")>
+
+                                    <label class="form-check-label fw-bold" for="p_@pId" style="@(Model.Id != null ? "opacity:0.7" : "")">
+                                        @item.Text
+                                    </label>
+                                </div>
+                            }
                         </div>
-                    }
+
+                        <div id="parceleDetaljiContainer">
+                            @{
+                                int pIndex = 0;
+                            }
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+                            {
+                                var pId = Guid.Parse(item.Value);
+                                var isChecked = selektovaneParcele.ContainsKey(pId);
+                                var existingData = isChecked ? selektovaneParcele[pId] : null;
+
+                                // Renderujemo detalje SAMO za one koji su već u modelu (za Edit) ili koji su checked
+                                if (isChecked)
+                                {
+                                    <div class="mb-3 parcela-row" id="unos-parcela-@pId">
+                                        <label class="form-label fw-bold text-success">
+                                            <i class="bi bi-geo-alt-fill"></i> @item.Text
+                                        </label>
+
+                                        <input type="hidden" name="Parcele[@pIndex].IdParcela" value="@pId" class="p-id-input" />
+
+                                        <div class="p-povrsina-wrapper mt-1">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Površina (ha)</span>
+                                                <input type="number" step="0.0001" min="0.0001"
+                                                       name="Parcele[@pIndex].Povrsina"
+                                                       class="form-control p-povrsina-input"
+                                                       value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
+                                                       placeholder="Unesite površinu" />
+                                            </div>
+                                            <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
+                                        </div>
+                                    </div>
+                                    pIndex++;
+                                }
+                            }
+                        </div>
+                    </div>
 
                     @if (Model.Id == null)
                     {
@@ -136,15 +246,6 @@
                         <select asp-for="IdKultura" class="form-control" asp-items="ViewBag.KultureSelectList">
                             <option value="">-- Izaberite kulturu --</option>
                         </select>
-                    </div>
-
-                    <div class="mb-3" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
-                        <label asp-for="Povrsina" class="form-label">Površina za setvu (ha)</label>
-                        <input asp-for="Povrsina" class="form-control" type="number" step="0.0001" min="0.0001" />
-                        <span asp-validation-for="Povrsina" class="text-danger"></span>
-                        <small id="slobodnaPovrsinaLabel" class="text-muted d-block mt-1">
-                            Dostupna površina: -
-                        </small>
                     </div>
 
 
@@ -310,28 +411,76 @@
                 <div id="obrisanePrikljucneContainer"></div>
                 <div id="obrisaniResursiContainer"></div>
 
-                @if (Model.Id == null)
-                {
-                    <div class="mb-3">
-                        <label class="form-label" for="IdParcela">Parcela</label>
-                        <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList" id="parcelaSelect">
-                            <option value="">-- Izaberite parcelu --</option>
-                        </select>
-                        <span asp-validation-for="IdParcela" class="text-danger"></span>
+                <div class="mb-4">
+                    <label class="form-label h5 d-block mb-2">Parcele</label>
+                    <small class="text-muted d-block mb-3">
+                        @(Model.Id == null ? "Izaberite parcele na kojima se radnja obavlja." : "Parcele se ne mogu menjati tokom izmene, samo podaci.")
+                    </small>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        @{
+                            // Pripremamo podatke o već selektovanim parcelama
+                            var selektovaneParcele = Model.Parcele?.ToDictionary(p => p.IdParcela, p => p)
+                            ?? new Dictionary<Guid, MojAtar.Core.DTO.RadnjaParcelaDTO>();
+                        }
+
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+                        {
+                            var pId = Guid.Parse(item.Value);
+                            var isChecked = selektovaneParcele.ContainsKey(pId);
+
+                            <div class="form-check masina-card shadow-sm p-2 bg-light rounded" style="min-width: 150px;">
+                                <input class="form-check-input parcela-checkbox" type="checkbox"
+                                       id="p_@pId"
+                                       value="@pId"
+                                       data-naziv="@item.Text"
+                                       @(isChecked ? "checked" : "")
+                                       @(Model.Id != null ? "disabled" : "")>
+
+                                <label class="form-check-label fw-bold" for="p_@pId" style="@(Model.Id != null ? "opacity:0.7" : "")">
+                                    @item.Text
+                                </label>
+                            </div>
+                        }
                     </div>
-                }
-                else
-                {
-                    <div class="mb-3">
-                        <label class="form-label" for="IdParcela">Parcela</label>
-                        <select asp-for="IdParcela" class="form-control" asp-items="ViewBag.ParceleSelectList" disabled>
-                            <option value="">-- Izaberite parcelu --</option>
-                        </select>
-                        <input type="hidden" asp-for="IdParcela" />
-                        <span asp-validation-for="IdParcela" class="text-danger"></span>
-                        <small class="text-muted">Parcela se ne može menjati nakon kreiranja radnje.</small>
+
+                    <div id="parceleDetaljiContainer">
+                        @{
+                            int pIndex = 0;
+                        }
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+                        {
+                            var pId = Guid.Parse(item.Value);
+                            var isChecked = selektovaneParcele.ContainsKey(pId);
+                            var existingData = isChecked ? selektovaneParcele[pId] : null;
+
+                            // Renderujemo detalje SAMO za one koji su već u modelu (za Edit) ili koji su checked
+                            if (isChecked)
+                            {
+                                <div class="mb-3 parcela-row" id="unos-parcela-@pId">
+                                    <label class="form-label fw-bold text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> @item.Text
+                                    </label>
+
+                                    <input type="hidden" name="Parcele[@pIndex].IdParcela" value="@pId" class="p-id-input" />
+
+                                    <div class="p-povrsina-wrapper mt-1">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Površina (ha)</span>
+                                            <input type="number" step="0.0001" min="0.0001"
+                                                   name="Parcele[@pIndex].Povrsina"
+                                                   class="form-control p-povrsina-input"
+                                                   value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
+                                                   placeholder="Unesite površinu" />
+                                        </div>
+                                        <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
+                                    </div>
+                                </div>
+                                pIndex++;
+                            }
+                        }
                     </div>
-                }
+                </div>
 
                 @if (Model.Id == null)
                 {
@@ -385,16 +534,6 @@
                         <option value="">-- Izaberite kulturu --</option>
                     </select>
                 </div>
-
-                <div class="mb-3" id="povrsinaDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Setva ? "block" : "none")">
-                    <label asp-for="Povrsina" class="form-label">Površina za setvu (ha)</label>
-                    <input asp-for="Povrsina" class="form-control" type="number" step="0.0001" min="0.0001" />
-                    <span asp-validation-for="Povrsina" class="text-danger"></span>
-                    <small id="slobodnaPovrsinaLabel" class="text-muted d-block mt-1">
-                        Dostupna površina: -
-                    </small>
-                </div>
-
 
                 <div class="mb-3" id="prinosDiv" style="display:@(Model.TipRadnje == MojAtar.Core.Domain.Enums.RadnjaTip.Zetva ? "block" : "none")">
                     <label asp-for="Prinos" class="form-label">Prinos (kg)</label>
@@ -551,341 +690,345 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-                const tipRadnjeSelect = document.getElementById("TipRadnje");
-                const prinosDiv = document.getElementById("prinosDiv");
-                const povrsinaDiv = document.getElementById("povrsinaDiv");
 
-                const SETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)";
-                const ZETVA_VALUE = "@((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)";
+            // --- KONSTANTE I ELEMENTI ---
+            const tipRadnjeSelect = document.getElementById("TipRadnje");
+            const prinosDiv = document.getElementById("prinosDiv");
+            const TIP_SETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva);
+            const TIP_ZETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva);
 
-                // Funkcija za Dodaj stranicu
-                function toggleZetvaSetvaDodaj() {
-                    if (tipRadnjeSelect) {
-                        if (tipRadnjeSelect.value === SETVA_VALUE) {
-                            povrsinaDiv.style.display = "block";
-                            prinosDiv.style.display = "none";
-                        } else if (tipRadnjeSelect.value === ZETVA_VALUE) {
-                            povrsinaDiv.style.display = "none";
-                            prinosDiv.style.display = "block";
+            // =========================================================
+            // 1. LOGIKA ZA PRIKAZ POLJA POVRŠINE (SETVA) I PRINOSA (ŽETVA)
+            // =========================================================
+            function azurirajPrikazPolja() {
+                const tip = parseInt(tipRadnjeSelect.value);
+                const isSetva = (tip === TIP_SETVA);
+                const isZetva = (tip === TIP_ZETVA);
+
+                // A) Upravljanje poljima za površinu unutar svake parcele
+                document.querySelectorAll('.parcela-row').forEach(row => {
+                    // Pronađi elemente unutar ovog reda
+                    const wrapper = row.querySelector('.p-povrsina-wrapper');
+                    const input = row.querySelector('.p-povrsina-input');
+                    const pId = row.id.replace('unos-parcela-', ''); // vadimo GUID
+                    const slobodnaLbl = document.getElementById(`lbl-slobodno-${pId}`);
+
+                    // Ako je red vidljiv (parcela selektovana), primeni logiku setve
+                    if (row.style.display !== 'none') {
+                        if (isSetva) {
+                            wrapper.style.display = "block";
+                            input.disabled = false; // Mora biti enabled da bi se poslao
+
+                            // Učitaj slobodnu površinu ako već nije učitana
+                            dohvatiSlobodnuPovrsinu(pId, slobodnaLbl);
                         } else {
-                            povrsinaDiv.style.display = "none";
-                            prinosDiv.style.display = "none";
+                            wrapper.style.display = "none";
+                            input.disabled = true; // Onemogući da ne šalje null/0 bezveze
+                            if(slobodnaLbl) slobodnaLbl.textContent = "";
                         }
                     }
-                }
+                });
 
-                // Funkcija za Izmeni stranicu
-                function toggleZetvaSetvaIzmeni() {
-                    if (tipRadnjeSelect) {
-                        // Kod izmeni select je disabled, vrednost dolazi iz modela
-                        const tipRadnje = "@((int)Model.TipRadnje)";
-                        if (tipRadnje === SETVA_VALUE) {
-                            povrsinaDiv.style.display = "block";
-                            prinosDiv.style.display = "none";
-                        } else if (tipRadnje === ZETVA_VALUE) {
-                            povrsinaDiv.style.display = "none";
-                            prinosDiv.style.display = "block";
-                        } else {
-                            povrsinaDiv.style.display = "none";
-                            prinosDiv.style.display = "none";
-                        }
+                // B) Upravljanje poljem za Prinos (Žetva)
+                if (prinosDiv) {
+                    if (isZetva) {
+                        prinosDiv.style.display = "block";
+                        const pInput = document.getElementById("Prinos");
+                        if(pInput) pInput.disabled = false;
+                    } else {
+                        prinosDiv.style.display = "none";
+                        const pInput = document.getElementById("Prinos");
+                        if(pInput) pInput.disabled = true;
                     }
                 }
+            }
 
-                // Pozivanje prema tipu stranice
-                @if (Model.Id == null)
-                {
-                        <text>
-                            tipRadnjeSelect?.addEventListener("change", toggleZetvaSetvaDodaj);
-                            toggleZetvaSetvaDodaj();
-                        </text>
-                }
-                else
-                {
-                        <text>
-                            toggleZetvaSetvaIzmeni();
-                        </text>
-                }
+            // AJAX funkcija za slobodnu površinu
+            async function dohvatiSlobodnuPovrsinu(id, labelElement) {
+                if(!id || !labelElement) return;
+                if(labelElement.textContent.includes("Slobodno") || labelElement.textContent.includes("Greška")) return; // Ne zovi ponovo
 
-            // RADNE MAŠINE (Your existing logic for machines is fine for showing/hiding)
-            let masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;
-            const masineMap = new Map();
-
-            document.querySelectorAll('.masina-checkbox:checked').forEach(checkbox => {
-                const id = checkbox.value;
-                const existingDiv = document.getElementById(`unos-masina-${id}`);
-                if (existingDiv && !masineMap.has(id)) {
-                    masineMap.set(id, masineBrojac++);
+                labelElement.textContent = "Računam...";
+                try {
+                    const response = await fetch(`/radnje/slobodnaPovrsina/${id}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        labelElement.textContent = `Slobodno za setvu: ${data.slobodno.toFixed(4)} ha`;
+                    } else {
+                        labelElement.textContent = "";
+                    }
+                } catch {
+                    labelElement.textContent = "";
                 }
+            }
+
+            // Event listener za promenu tipa radnje
+            if (tipRadnjeSelect) {
+                tipRadnjeSelect.addEventListener("change", azurirajPrikazPolja);
+            }
+
+            // =========================================================
+            // 2. LOGIKA ZA ODABIR PARCELA (CHECKBOX KARTICE)
+            // =========================================================
+            document.querySelectorAll('.parcela-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
+                    const pId = this.value;
+                    // Pronađi odgovarajući div za unos detalja (on je već u HTML-u)
+                    const detaljiRow = document.getElementById(`unos-parcela-${pId}`);
+
+                    if (!detaljiRow) return;
+
+                    if (this.checked) {
+                        // Prikaži red
+                        detaljiRow.style.display = "block";
+
+                        // Enable-uj ID parcele (obavezno!)
+                        const idInput = detaljiRow.querySelector('.p-id-input');
+                        if(idInput) idInput.disabled = false;
+
+                        // Proveri da li treba prikazati površinu (ako je Setva)
+                        azurirajPrikazPolja();
+                    } else {
+                        // Sakrij red
+                        detaljiRow.style.display = "none";
+
+                        // Disable-uj sve inpute unutra da se ne šalju na server
+                        detaljiRow.querySelectorAll('input').forEach(input => input.disabled = true);
+                    }
+                });
             });
 
-            document.querySelectorAll('.masina-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
+
+            // =========================================================
+            // 3. LOGIKA ZA MAŠINE I RESURSE (Ovo je tvoj stari kod, malo sređen)
+            // =========================================================
+
+            // --- RADNE MAŠINE ---
+            let masineBrojac = document.querySelectorAll('#masineDetaljiContainer input[name^="RadneMasine["]').length;
+            const masineMap = new Map();
+            // Inicijalno mapiranje postojećih
+            document.querySelectorAll('.masina-checkbox:checked').forEach(checkbox => {
+                 const id = checkbox.value;
+                 if(!masineMap.has(id)) masineMap.set(id, masineBrojac++); // samo da ne pucaju indexi
+            });
+
+            document.querySelectorAll('.masina-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
                     const id = this.value;
                     const naziv = this.getAttribute('data-naziv');
                     const container = document.getElementById("masineDetaljiContainer");
-                    const existing = document.getElementById(`unos-masina-${id}`);
+                    let existing = document.getElementById(`unos-masina-${id}`);
 
-                    if (this.checked) {
-                        if (existing) {
+                    if(this.checked) {
+                        if(existing) {
                             existing.style.display = "block";
                             existing.querySelectorAll("input").forEach(i => i.disabled = false);
                         } else {
                             const index = masineBrojac++;
                             masineMap.set(id, index);
-
                             const div = document.createElement("div");
-                            div.classList.add("mb-3");
+                            div.className = "mb-3";
                             div.id = `unos-masina-${id}`;
                             div.innerHTML = `
-                                        <label class="form-label">Radna mašina: ${naziv} – broj sati</label>
+                                <label class="form-label">Radna mašina: ${naziv} – broj sati</label>
                                 <input type="hidden" name="RadneMasine[${index}].IdRadnaMasina" value="${id}" />
                                 <input type="number" name="RadneMasine[${index}].BrojRadnihSati" class="form-control" step="1" min="1" required />
                             `;
                             container.appendChild(div);
                         }
+                        // Brisanje iz liste za brisanje
                         const removed = document.getElementById(`obrisana-masina-${id}`);
-                        if (removed) removed.remove();
+                        if(removed) removed.remove();
                     } else {
-                        if (existing) {
+                        if(existing) {
                             existing.style.display = "none";
                             existing.querySelectorAll("input").forEach(i => i.disabled = true);
 
-                            const deletedContainer = document.getElementById("obrisaneMasineContainer");
-                            if (deletedContainer && !document.getElementById(`obrisana-masina-${id}`)) {
-                                const hiddenInput = document.createElement("input");
-                                hiddenInput.type = "hidden";
-                                hiddenInput.name = "ObrisaneRadneMasineId[]";
-                                hiddenInput.value = id;
-                                hiddenInput.id = `obrisana-masina-${id}`;
-                                deletedContainer.appendChild(hiddenInput);
+                            // Dodaj u listu za brisanje
+                            const delCont = document.getElementById("obrisaneMasineContainer");
+                            if(delCont && !document.getElementById(`obrisana-masina-${id}`)) {
+                                const hid = document.createElement("input");
+                                hid.type="hidden"; hid.name="ObrisaneRadneMasineId[]"; hid.value=id; hid.id=`obrisana-masina-${id}`;
+                                delCont.appendChild(hid);
                             }
                         }
                     }
                 });
             });
 
-            // PRIKLJUČNE MAŠINE (Your existing logic for machines is fine for showing/hiding)
-            let prikljucneBrojac = document.querySelectorAll('#prikljucneDetaljiContainer input[name^="PrikljucneMasine["]').length;
-            const prikljucneMap = new Map();
+            // --- PRIKLJUČNE MAŠINE ---
+            let prikBrojac = document.querySelectorAll('#prikljucneDetaljiContainer input[name^="PrikljucneMasine["]').length;
 
-            document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
-                const id = checkbox.value;
-                const existing = document.getElementById(`unos-prikljucna-${id}`);
-                if (existing && !prikljucneMap.has(id)) {
-                    prikljucneMap.set(id, prikljucneBrojac++);
-                }
-            });
-
-            document.querySelectorAll('.prikljucna-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
+            document.querySelectorAll('.prikljucna-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
                     const id = this.value;
                     const container = document.getElementById("prikljucneDetaljiContainer");
                     const existing = document.getElementById(`unos-prikljucna-${id}`);
 
-                    if (this.checked) {
-                        if (!document.getElementById(`unos-prikljucna-${id}`)) {
+                    if(this.checked) {
+                        if(!existing) {
                             const input = document.createElement("input");
                             input.type = "hidden";
-                            input.name = `PrikljucneMasine[${prikljucneBrojac}].IdPrikljucnaMasina`;
+                            input.name = `PrikljucneMasine[${prikBrojac++}].IdPrikljucnaMasina`;
                             input.id = `unos-prikljucna-${id}`;
-                            input.value = id; // Ensure value is set for the hidden input
+                            input.value = id;
                             container.appendChild(input);
-                            prikljucneBrojac++; // Increment for new additions
                         }
                         const removed = document.getElementById(`obrisana-prikljucna-${id}`);
-                        if (removed) removed.remove();
+                        if(removed) removed.remove();
                     } else {
-                        if (existing) {
-                            existing.remove();
-                            const deletedContainer = document.getElementById("obrisanePrikljucneContainer");
-                            if (deletedContainer && !document.getElementById(`obrisana-prikljucna-${id}`)) {
-                                const hiddenInput = document.createElement("input");
-                                hiddenInput.type = "hidden";
-                                hiddenInput.name = "ObrisanePrikljucneMasineId[]";
-                                hiddenInput.value = id;
-                                hiddenInput.id = `obrisana-prikljucna-${id}`;
-                                deletedContainer.appendChild(hiddenInput);
-                            }
-                        }
+                        if(existing) existing.remove();
+                         const delCont = document.getElementById("obrisanePrikljucneContainer");
+                         if(delCont && !document.getElementById(`obrisana-prikljucna-${id}`)) {
+                             const hid = document.createElement("input");
+                             hid.type="hidden"; hid.name="ObrisanePrikljucneMasineId[]"; hid.value=id; hid.id=`obrisana-prikljucna-${id}`;
+                             delCont.appendChild(hid);
+                         }
                     }
                 });
             });
 
-
-            // ==================================================================
-            // ISPRAVLJENA LOGIKA ZA RESURSE I IZRAČUNAVANJE TROŠKA
-            // ==================================================================
+            // --- RESURSI I TROŠKOVI ---
             const ceneResursa = @Html.Raw(Json.Serialize(ViewBag.CeneResursa));
-            const resursDetaljiContainer = document.getElementById("resursDetaljiContainer");
-
-            // Brojač za indekse novih resursa, počinje od broja već postojećih
             let resursBrojac = @(Model.Resursi?.Count ?? 0);
 
             function izracunajUkupanTrosak() {
                 let ukupno = 0;
-                // Selektuj SVE inpute za količinu unutar kontejnera
-                const sviKolicinaInputi = resursDetaljiContainer.querySelectorAll('.resurs-kolicina-input');
-
-                sviKolicinaInputi.forEach(kolicinaInput => {
-                    // Jednostavna i pouzdana provera: ako input NIJE onemogućen, dodaj u trošak
-                    if (!kolicinaInput.disabled) {
-                        const kolicina = parseFloat(kolicinaInput.value) || 0;
-                        const parentDiv = kolicinaInput.closest('div[id^="unos-resurs-"]');
-                        if (parentDiv) {
-                            const resursId = parentDiv.id.replace('unos-resurs-', '');
-                            const cena = parseFloat(ceneResursa[resursId]) || 0;
-                            ukupno += kolicina * cena;
+                document.querySelectorAll('.resurs-kolicina-input').forEach(inp => {
+                    if(!inp.disabled) {
+                        const val = parseFloat(inp.value) || 0;
+                        const parent = inp.closest('div[id^="unos-resurs-"]');
+                        if(parent) {
+                            const rId = parent.id.replace('unos-resurs-', '');
+                            const cena = parseFloat(ceneResursa[rId]) || 0;
+                            ukupno += val * cena;
                         }
                     }
                 });
-
                 document.getElementById("ukupanTrosak").innerText = ukupno.toFixed(2);
-                const hiddenUkupanTrosakInput = document.querySelector('input[name="UkupanTrosak"]');
-                if (hiddenUkupanTrosakInput) {
-                    hiddenUkupanTrosakInput.value = ukupno.toFixed(2);
-                }
+                const hidTotal = document.querySelector('input[name="UkupanTrosak"]');
+                if(hidTotal) hidTotal.value = ukupno.toFixed(2);
             }
 
-            // Koristimo "event delegation" - jedan listener na kontejneru umesto mnogo njih na inputima
-            resursDetaljiContainer.addEventListener('input', function (e) {
-                // Ako je događaj potekao od inputa za količinu, preračunaj trošak
-                if (e.target && e.target.classList.contains('resurs-kolicina-input')) {
-                    izracunajUkupanTrosak();
-                }
-            });
+            // Listener za promene količine
+            const resursContainer = document.getElementById("resursDetaljiContainer");
+            if(resursContainer) {
+                resursContainer.addEventListener('input', function(e) {
+                    if(e.target.classList.contains('resurs-kolicina-input')) izracunajUkupanTrosak();
+                });
+            }
 
-            document.querySelectorAll('.resurs-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
+            document.querySelectorAll('.resurs-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
                     const id = this.value;
                     const naziv = this.getAttribute('data-naziv');
-                    let existingDiv = document.getElementById(`unos-resurs-${id}`);
-                    const obrisaniResursiContainer = document.getElementById("obrisaniResursiContainer");
+                    let existing = document.getElementById(`unos-resurs-${id}`);
+                    const delCont = document.getElementById("obrisaniResursiContainer");
 
-                    if (this.checked) {
-                        // Ako polja već postoje (jer su bila deselektovana), samo ih prikaži i omogući
-                        if (existingDiv) {
-                            existingDiv.style.display = 'block';
-                            existingDiv.querySelectorAll("input").forEach(i => i.disabled = false);
+                    if(this.checked) {
+                        if(existing) {
+                            existing.style.display = "block";
+                            existing.querySelectorAll("input").forEach(i => i.disabled = false);
                         } else {
-                            // Ako ne postoje, kreiraj ih
-                            existingDiv = document.createElement("div");
-                            existingDiv.classList.add("mb-3");
-                            existingDiv.id = `unos-resurs-${id}`;
-                            const index = resursBrojac++; // Koristi i inkrementiraj brojač
-                            existingDiv.innerHTML = `
-                                        <label class="form-label">Resurs: ${naziv} – količina</label>
-                                        <input type="hidden" name="Resursi[${index}].IdResurs" value="${id}" />
-                                        <input type="number" name="Resursi[${index}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />`;
-                            resursDetaljiContainer.appendChild(existingDiv);
+                            existing = document.createElement("div");
+                            existing.className = "mb-3";
+                            existing.id = `unos-resurs-${id}`;
+                            const idx = resursBrojac++;
+                            existing.innerHTML = `
+                                <label class="form-label">Resurs: ${naziv} – količina</label>
+                                <input type="hidden" name="Resursi[${idx}].IdResurs" value="${id}" />
+                                <input type="number" name="Resursi[${idx}].Kolicina" class="form-control mb-2 resurs-kolicina-input" step="0.1" min="0" required />
+                            `;
+                            resursContainer.appendChild(existing);
                         }
-                        // Ukloni iz liste za brisanje ako je bio dodat
-                        const hiddenInputZaBrisanje = document.getElementById(`obrisan-resurs-${id}`);
-                        if (hiddenInputZaBrisanje) {
-                            hiddenInputZaBrisanje.remove();
+                        const removed = document.getElementById(`obrisan-resurs-${id}`);
+                        if(removed) removed.remove();
+                    } else {
+                         if(existing) {
+                            existing.style.display = "none";
+                            existing.querySelectorAll("input").forEach(i => i.disabled = true);
                         }
-                    } else { // Ako je checkbox deselektovan
-                        if (existingDiv) {
-                            // Sakrij i OBAVEZNO onemogući polja. Onemogućena polja se ne šalju sa formom.
-                            existingDiv.style.display = 'none';
-                            existingDiv.querySelectorAll("input").forEach(i => i.disabled = true);
-                        }
-                        // Dodaj u listu za brisanje na serveru (samo ako već nije tamo)
-                        if (!document.getElementById(`obrisan-resurs-${id}`)) {
-                            const hiddenInput = document.createElement("input");
-                            hiddenInput.type = "hidden";
-                            hiddenInput.name = "ObrisaniResursiId[]";
-                            hiddenInput.value = id;
-                            hiddenInput.id = `obrisan-resurs-${id}`;
-                            obrisaniResursiContainer.appendChild(hiddenInput);
+                        if(delCont && !document.getElementById(`obrisan-resurs-${id}`)) {
+                             const hid = document.createElement("input");
+                             hid.type="hidden"; hid.name="ObrisaniResursiId[]"; hid.value=id; hid.id=`obrisan-resurs-${id}`;
+                             delCont.appendChild(hid);
                         }
                     }
-                    // Nakon SVAKE promene, ponovo izračunaj ukupan trošak
                     izracunajUkupanTrosak();
                 });
             });
 
-            // Inicijalno izračunavanje troška prilikom učitavanja stranice
+            // Inicijalni pozivi
+            azurirajPrikazPolja();
             izracunajUkupanTrosak();
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const parcelaSelect = document.getElementById("parcelaSelect");
-            const label = document.getElementById("slobodnaPovrsinaLabel");
 
-            parcelaSelect?.addEventListener("change", async function () {
-                const id = this.value;
-                if (!id) {
-                    label.textContent = "Dostupna površina: -";
-                    return;
+
+            // =========================================================
+            // 4. KLIJENTSKA VALIDACIJA (Ažurirana za parcele)
+            // =========================================================
+            document.querySelector("form").addEventListener("submit", function (e) {
+                let valid = true;
+                const tipRadnje = parseInt(document.getElementById("TipRadnje")?.value);
+
+                // Reset errors
+                document.querySelectorAll(".is-invalid").forEach(i => i.classList.remove("is-invalid"));
+
+                // A) Validacija Parcela
+                // Mora biti bar jedna parcela selektovana
+                const selektovaneParcele = document.querySelectorAll('.parcela-checkbox:checked');
+                if (selektovaneParcele.length === 0) {
+                    alert("Morate izabrati barem jednu parcelu.");
+                    valid = false;
                 }
 
-                try {
-                    const response = await fetch(`/radnje/slobodnaPovrsina/${id}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        label.textContent = `Dostupna površina: ${data.slobodno.toFixed(4)} ha`;
-                    } else {
-                        label.textContent = "Greška prilikom učitavanja.";
+                // Ako je SETVA, svaka selektovana parcela mora imati unetu površinu
+                if (tipRadnje === TIP_SETVA) {
+                    selektovaneParcele.forEach(chk => {
+                        const pId = chk.value;
+                        const row = document.getElementById(`unos-parcela-${pId}`);
+                        const inputPovrsina = row.querySelector('.p-povrsina-input');
+
+                        if (!inputPovrsina.value || parseFloat(inputPovrsina.value) <= 0) {
+                            inputPovrsina.classList.add("is-invalid");
+                            valid = false;
+                        }
+                    });
+                }
+
+                // B) Validacija Žetve (Prinos)
+                if (tipRadnje === TIP_ZETVA) {
+                    const prinos = document.querySelector("[name='Prinos']");
+                    if (!prinos.value || parseFloat(prinos.value) <= 0) {
+                        prinos.classList.add("is-invalid");
+                        valid = false;
                     }
-                } catch {
-                    label.textContent = "Greška prilikom učitavanja.";
+                }
+
+                // C) Validacija Mašina (Sati)
+                document.querySelectorAll('.masina-checkbox:checked').forEach(chk => {
+                    const id = chk.value;
+                    const input = document.querySelector(`#unos-masina-${id} input[name*='BrojRadnihSati']`);
+                    if (input && (!input.value || parseFloat(input.value) <= 0)) {
+                        input.classList.add("is-invalid");
+                        valid = false;
+                    }
+                });
+
+                // D) Validacija Resursa (Količina)
+                document.querySelectorAll('.resurs-checkbox:checked').forEach(chk => {
+                    const id = chk.value;
+                    const input = document.querySelector(`#unos-resurs-${id} input[name*='Kolicina']`);
+                    if (input && (!input.value || parseFloat(input.value) <= 0)) {
+                        input.classList.add("is-invalid");
+                        valid = false;
+                    }
+                });
+
+                if (!valid) {
+                    e.preventDefault();
+                    // alert("Proverite unete podatke."); // Opciono
                 }
             });
-        });
-        // =====================
-        // Klijentska validacija
-        // =====================
-        document.querySelector("form").addEventListener("submit", function (e) {
-            let valid = true;
-            const tipRadnje = parseInt(document.getElementById("TipRadnje")?.value);
-            const povrsina = document.querySelector("[name='Povrsina']");
-            const prinos = document.querySelector("[name='Prinos']");
-            const masinaInputs = document.querySelectorAll('.masina-checkbox:checked');
-            const resursInputs = document.querySelectorAll('.resurs-checkbox:checked');
-
-            // Resetuje staru vizuelnu validaciju
-            document.querySelectorAll(".is-invalid").forEach(i => i.classList.remove("is-invalid"));
-
-            // Setva → površina obavezna
-            if (tipRadnje === @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva)) {
-                if (!povrsina.value || parseFloat(povrsina.value) <= 0) {
-                    povrsina.classList.add("is-invalid");
-                    valid = false;
-                }
-            }
-
-            // Žetva → prinos obavezan
-            if (tipRadnje === @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva)) {
-                if (!prinos.value || parseFloat(prinos.value) <= 0) {
-                    prinos.classList.add("is-invalid");
-                    valid = false;
-                }
-            }
-
-            // Radne mašine → mora imati unesene sate
-            masinaInputs.forEach(chk => {
-                const id = chk.value;
-                const input = document.querySelector(`#unos-masina-${id} input[name*='BrojRadnihSati']`);
-                if (input && (!input.value || parseFloat(input.value) <= 0)) {
-                    input.classList.add("is-invalid");
-                    valid = false;
-                }
-            });
-
-            // Resursi → mora imati unetu količinu
-            resursInputs.forEach(chk => {
-                const id = chk.value;
-                const input = document.querySelector(`#unos-resurs-${id} input[name*='Kolicina']`);
-                if (input && (!input.value || parseFloat(input.value) <= 0)) {
-                    input.classList.add("is-invalid");
-                    valid = false;
-                }
-            });
-
-            if (!valid) {
-                e.preventDefault();
-                alert("Molimo popunite obavezna polja za izabrane opcije.");
-            }
         });
     </script>
 }

@@ -80,6 +80,9 @@ builder.Services.AddScoped<ICenaKultureService, CenaKultureService>();
 builder.Services.AddScoped<IProdajaRepository, ProdajaRepository>();
 builder.Services.AddScoped<IProdajaService, ProdajaService>();
 
+builder.Services.AddScoped<IRadnjaParcelaRepository, RadnjaParcelaRepository>();
+builder.Services.AddScoped<IRadnjaParcelaService, RadnjaParcelaService>();
+
 builder.Services.AddScoped<IPocetnaService, PocetnaService>();
 
 var app = builder.Build();

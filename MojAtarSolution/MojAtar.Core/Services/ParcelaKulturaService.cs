@@ -94,6 +94,11 @@ namespace MojAtar.Core.Services
             var entity = await _parcelaKulturaRepository.GetBySetvaRadnjaId(idSetvaRadnja);
             return entity?.ToParcelaKulturaDTO(); 
         }
+        public async Task<List<ParcelaKulturaDTO>> GetAllBySetvaRadnjaId(Guid idSetvaRadnja)
+        {
+            var list = await _parcelaKulturaRepository.GetAllBySetvaRadnjaId(idSetvaRadnja);
+            return list.Select(x => x.ToParcelaKulturaDTO()).ToList();
+        }
 
         public async Task<List<ParcelaKulturaDTO>> GetSveZaZetvu(Guid idZetvaRadnja)
         {

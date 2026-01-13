@@ -21,5 +21,7 @@ namespace MojAtar.Core.ServiceContracts
 
         // Дохватање свих за приказ (Edit форма)
         Task<List<RadnjaParcelaDTO>> GetAllByRadnjaId(Guid idRadnja);
+
+        Task<RadnjaParcelaDTO?> GetByRadnjaAndParcela(Guid idRadnja, Guid idParcela);
     }
 }

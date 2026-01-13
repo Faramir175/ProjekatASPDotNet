@@ -19,6 +19,7 @@ namespace MojAtar.Core.Domain.RepositoryContracts
         Task<List<Parcela_Kultura>> GetSveNezavrseneSetve(Guid idParcela, Guid idKultura);
         Task<Parcela_Kultura?> GetBySetvaRadnjaId(Guid idSetvaRadnja);
         Task<List<Parcela_Kultura>> GetSveZaZetvu(Guid idZetvaRadnja);
+        Task<List<Parcela_Kultura>> GetAllBySetvaRadnjaId(Guid idSetvaRadnja);
 
 
     }
