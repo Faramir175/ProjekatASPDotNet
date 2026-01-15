@@ -29,6 +29,6 @@ namespace MojAtar.Core.Domain
 
         // Veze sa drugim tabelama
         public ICollection<Parcela_Kultura> ParceleKulture { get; set; }
-        public ICollection<Radnja> Radnje { get; set; }
+        public virtual ICollection<RadnjaParcela> RadnjeParcele { get; set; } = new List<RadnjaParcela>();
     }
 }

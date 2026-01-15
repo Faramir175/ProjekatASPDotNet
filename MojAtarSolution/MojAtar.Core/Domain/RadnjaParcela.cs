@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,16 +13,16 @@ namespace MojAtar.Core.Domain
         [Key]
         public Guid Id { get; set; }
 
-        // Veza ka Radnji
         public Guid IdRadnja { get; set; }
-        public Radnja Radnja { get; set; }
 
-        // Veza ka Parceli
+        [ForeignKey("IdRadnja")] // Ovde treba da stoji, pokazuje na IdRadnja
+        public virtual Radnja Radnja { get; set; }
+
         public Guid IdParcela { get; set; }
-        public Parcela Parcela { get; set; }
 
-        // Koliko je TE parcele obrađeno u ovoj radnji?
-        // (Npr. Parcela ima 5ha, ali smo u ovoj radnji posejali samo 3ha)
+        [ForeignKey("IdParcela")] // Ovde treba da stoji, pokazuje na IdParcela
+        public virtual Parcela Parcela { get; set; }
+
         public decimal Povrsina { get; set; }
     }
 }

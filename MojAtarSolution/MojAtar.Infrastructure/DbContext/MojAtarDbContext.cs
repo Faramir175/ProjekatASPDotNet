@@ -189,7 +189,7 @@ namespace MojAtar.Infrastructure.MojAtar
             // Ostavićemo Cascade da bude konzistentno sa tvojim prethodnim kodom.
             modelBuilder.Entity<RadnjaParcela>()
                 .HasOne(rp => rp.Parcela)
-                .WithMany() // Parcela ne mora nužno da ima listu RadnjaParcela ako ti ne treba
+                .WithMany(p => p.RadnjeParcele) // Parcela ne mora nužno da ima listu RadnjaParcela ako ti ne treba
                 .HasForeignKey(rp => rp.IdParcela)
                 .OnDelete(DeleteBehavior.Restrict);
         }

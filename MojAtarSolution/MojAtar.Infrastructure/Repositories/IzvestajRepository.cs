@@ -16,55 +16,53 @@ namespace MojAtar.Infrastructure.Repositories
         }
 
         public async Task<List<ParcelaIzvestajDTO>> GetIzvestaj(
-                    Guid korisnikId,
-                    DateTime? odDatuma,
-                    DateTime? doDatuma,
-                    Guid? idParcele,
-                    bool sveParcele)
+            Guid korisnikId,
+            DateTime? odDatuma,
+            DateTime? doDatuma,
+            Guid? idParcele,
+            bool sveParcele)
         {
-            // 1. Osnovni upit za parcele korisnika
+            // 1. Osnovni upit
             var query = _dbContext.Parcele
-                .AsNoTracking() // Dobra praksa za read-only upite (ubrzava)
+                .AsNoTracking()
                 .Where(p => p.IdKorisnik == korisnikId);
 
-            // 2. Filtriranje po specifičnoj parceli ako nije izabrano "sve"
+            // 2. Filtriranje po parceli
             if (!sveParcele && idParcele.HasValue)
             {
                 query = query.Where(p => p.Id == idParcele);
             }
 
-            // 3. Filtriranje parcela koje uopšte imaju radnje u tom periodu
-            // Ovo sprečava da vučemo prazne parcele
-            query = query.Where(p => p.Radnje.Any(r =>
-                (!odDatuma.HasValue || r.DatumIzvrsenja >= odDatuma) &&
-                (!doDatuma.HasValue || r.DatumIzvrsenja <= doDatuma)));
+            // 3. Filtriranje parcela preko nove vezne tabele RadnjeParcele
+            query = query.Where(p => p.RadnjeParcele.Any(rp =>
+                (!odDatuma.HasValue || rp.Radnja.DatumIzvrsenja >= odDatuma) &&
+                (!doDatuma.HasValue || rp.Radnja.DatumIzvrsenja <= doDatuma)));
 
-            // 4. Glavna projekcija (Select) - Ovde se dešava magija i rešava CS8122
+            // 4. Glavna projekcija
             var rezultat = await query.Select(p => new ParcelaIzvestajDTO
             {
                 Id = p.Id.Value,
                 NazivParcele = p.Naziv,
 
-                // Filtriramo i mapiramo radnje direktno u upitu
-                Radnje = p.Radnje
-                    .Where(r => (!odDatuma.HasValue || r.DatumIzvrsenja >= odDatuma) &&
-                                (!doDatuma.HasValue || r.DatumIzvrsenja <= doDatuma))
-                    .Select(r => new RadnjaIzvestajDTO
+                // Pristupamo radnjama preko vezne tabele rp.Radnja
+                Radnje = p.RadnjeParcele
+                    .Where(rp => (!odDatuma.HasValue || rp.Radnja.DatumIzvrsenja >= odDatuma) &&
+                                 (!doDatuma.HasValue || rp.Radnja.DatumIzvrsenja <= doDatuma))
+                    .Select(rp => new RadnjaIzvestajDTO
                     {
-                        Id = r.Id.Value,
-                        NazivRadnje = r.TipRadnje.ToString(),
-                        Datum = r.DatumIzvrsenja,
-                        Kultura = r.Kultura != null ? r.Kultura.Naziv : string.Empty, // Null check za svaki slučaj
-                        IdKultura = r.IdKultura ?? Guid.Empty,
-                        Trosak = (decimal)r.UkupanTrosak,
+                        Id = rp.Radnja.Id.Value,
+                        NazivRadnje = rp.Radnja.TipRadnje.ToString(),
+                        Datum = rp.Radnja.DatumIzvrsenja,
+                        Kultura = rp.Radnja.Kultura != null ? rp.Radnja.Kultura.Naziv : string.Empty,
+                        IdKultura = rp.Radnja.IdKultura ?? Guid.Empty,
 
-                        // FIX ZA CS8122: Koristimo 'as' casting i null-coalescing operator
-                        // Ako r nije Zetva, (r as Zetva) je null.
-                        // Ako je Zetva ali je Prinos null, vraća 0.
-                        Prinos = (decimal?)((r as Zetva).Prinos) ?? 0,
+                        // BITNO: Ovde uzimamo UkupanTrosak radnje, ili možeš računati proporcionalno površini
+                        Trosak = (decimal)rp.Radnja.UkupanTrosak,
 
-                        // Mapiranje ugnježdenih kolekcija
-                        RadneMasine = r.RadnjeRadneMasine.Select(rm => new RadnjaRadnaMasinaDTO
+                        // Casting za Žetvu preko navigacije rp.Radnja
+                        Prinos = (decimal?)((rp.Radnja as Zetva).Prinos) ?? 0,
+
+                        RadneMasine = rp.Radnja.RadnjeRadneMasine.Select(rm => new RadnjaRadnaMasinaDTO
                         {
                             IdRadnja = rm.IdRadnja,
                             IdRadnaMasina = rm.IdRadnaMasina,
@@ -72,7 +70,7 @@ namespace MojAtar.Infrastructure.Repositories
                             BrojRadnihSati = rm.BrojRadnihSati
                         }).ToList(),
 
-                        Resursi = r.RadnjeResursi.Select(rr => new RadnjaResursDTO
+                        Resursi = rp.Radnja.RadnjeResursi.Select(rr => new RadnjaResursDTO
                         {
                             IdRadnja = rr.IdRadnja,
                             IdResurs = rr.IdResurs,

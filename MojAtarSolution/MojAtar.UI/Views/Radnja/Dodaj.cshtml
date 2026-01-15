@@ -160,40 +160,48 @@
                         <div id="parceleDetaljiContainer">
                             @{
                                 int pIndex = 0;
+                                // Moramo konvertovati u listu da bismo mogli sigurno da iteriramo
+                                var listaParcela = ((IEnumerable<SelectListItem>)ViewBag.ParceleSelectList).ToList();
                             }
-                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+
+                            @for (int i = 0; i < listaParcela.Count; i++)
                             {
+                                var item = listaParcela[i];
                                 var pId = Guid.Parse(item.Value);
+
+                                // Proveravamo da li je čekirano (samo za Edit mod)
                                 var isChecked = selektovaneParcele.ContainsKey(pId);
                                 var existingData = isChecked ? selektovaneParcele[pId] : null;
 
-                                // Renderujemo detalje SAMO za one koji su već u modelu (za Edit) ili koji su checked
-                                if (isChecked)
-                                {
-                                    <div class="mb-3 parcela-row" id="unos-parcela-@pId">
-                                        <label class="form-label fw-bold text-success">
-                                            <i class="bi bi-geo-alt-fill"></i> @item.Text
-                                        </label>
+                                // BITNO: Renderujemo SVE, ali sakrivamo one koje nisu čekirane
+                                // Takodje dodajemo 'disabled' na inpute da se ne šalju ako nisu čekirani
+                                <div class="mb-3 parcela-row" id="unos-parcela-@pId" style="display: @(isChecked ? "block" : "none");">
 
-                                        <input type="hidden" name="Parcele[@pIndex].IdParcela" value="@pId" class="p-id-input" />
+                                    <label class="form-label fw-bold text-success">
+                                        <i class="bi bi-geo-alt-fill"></i> @item.Text
+                                    </label>
 
-                                        <div class="p-povrsina-wrapper mt-1">
-                                            <div class="input-group">
-                                                <span class="input-group-text">Površina (ha)</span>
-                                                <input type="number" step="0.0001" min="0.0001"
-                                                       name="Parcele[@pIndex].Povrsina"
-                                                       class="form-control p-povrsina-input"
-                                                       value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
-                                                       placeholder="Unesite površinu" />
-                                            </div>
-                                            <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
+                                    <input type="hidden"
+                                           name="Parcele[@i].IdParcela"
+                                           value="@pId"
+                                           class="p-id-input"
+                                           @(isChecked ? "" : "disabled") />
+
+                                    <div class="p-povrsina-wrapper mt-1">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Površina (ha)</span>
+                                            <input type="number" step="0.0001" min="0.0001"
+                                                   name="Parcele[@i].Povrsina"
+                                                   class="form-control p-povrsina-input"
+                                                   value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
+                                                   placeholder="Unesite površinu"
+                                                   @(isChecked ? "" : "disabled") />
                                         </div>
+                                        <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
                                     </div>
-                                    pIndex++;
-                                }
+                                </div>
                             }
                         </div>
-                    </div>
 
                     @if (Model.Id == null)
                     {
@@ -447,40 +455,48 @@
                     <div id="parceleDetaljiContainer">
                         @{
                             int pIndex = 0;
+                            // Moramo konvertovati u listu da bismo mogli sigurno da iteriramo
+                            var listaParcela = ((IEnumerable<SelectListItem>)ViewBag.ParceleSelectList).ToList();
                         }
-                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.ParceleSelectList)
+
+                        @for (int i = 0; i < listaParcela.Count; i++)
                         {
+                            var item = listaParcela[i];
                             var pId = Guid.Parse(item.Value);
+
+                            // Proveravamo da li je čekirano (samo za Edit mod)
                             var isChecked = selektovaneParcele.ContainsKey(pId);
                             var existingData = isChecked ? selektovaneParcele[pId] : null;
 
-                            // Renderujemo detalje SAMO za one koji su već u modelu (za Edit) ili koji su checked
-                            if (isChecked)
-                            {
-                                <div class="mb-3 parcela-row" id="unos-parcela-@pId">
-                                    <label class="form-label fw-bold text-success">
-                                        <i class="bi bi-geo-alt-fill"></i> @item.Text
-                                    </label>
+                            // BITNO: Renderujemo SVE, ali sakrivamo one koje nisu čekirane
+                            // Takodje dodajemo 'disabled' na inpute da se ne šalju ako nisu čekirani
+                            <div class="mb-3 parcela-row" id="unos-parcela-@pId" style="display: @(isChecked ? "block" : "none");">
 
-                                    <input type="hidden" name="Parcele[@pIndex].IdParcela" value="@pId" class="p-id-input" />
+                                <label class="form-label fw-bold text-success">
+                                    <i class="bi bi-geo-alt-fill"></i> @item.Text
+                                </label>
 
-                                    <div class="p-povrsina-wrapper mt-1">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Površina (ha)</span>
-                                            <input type="number" step="0.0001" min="0.0001"
-                                                   name="Parcele[@pIndex].Povrsina"
-                                                   class="form-control p-povrsina-input"
-                                                   value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
-                                                   placeholder="Unesite površinu" />
-                                        </div>
-                                        <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
+                                <input type="hidden"
+                                       name="Parcele[@i].IdParcela"
+                                       value="@pId"
+                                       class="p-id-input"
+                                       @(isChecked ? "" : "disabled") />
+
+                                <div class="p-povrsina-wrapper mt-1">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Površina (ha)</span>
+                                        <input type="number" step="0.0001" min="0.0001"
+                                               name="Parcele[@i].Povrsina"
+                                               class="form-control p-povrsina-input"
+                                               value="@(existingData?.Povrsina.ToString().Replace(",", ".") ?? "")"
+                                               placeholder="Unesite površinu"
+                                               @(isChecked ? "" : "disabled") />
                                     </div>
+                                    <small class="text-muted slobodna-lbl" id="lbl-slobodno-@pId"></small>
                                 </div>
-                                pIndex++;
-                            }
+                            </div>
                         }
                     </div>
-                </div>
 
                 @if (Model.Id == null)
                 {
@@ -691,112 +707,108 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            // --- KONSTANTE I ELEMENTI ---
-            const tipRadnjeSelect = document.getElementById("TipRadnje");
-            const prinosDiv = document.getElementById("prinosDiv");
-            const TIP_SETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva);
-            const TIP_ZETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva);
+                // --- KONSTANTE I ELEMENTI ---
+                const tipRadnjeSelect = document.getElementById("TipRadnje");
+                const prinosDiv = document.getElementById("prinosDiv");
+                const TIP_SETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Setva);
+                const TIP_ZETVA = @((int)MojAtar.Core.Domain.Enums.RadnjaTip.Zetva);
 
-            // =========================================================
-            // 1. LOGIKA ZA PRIKAZ POLJA POVRŠINE (SETVA) I PRINOSA (ŽETVA)
-            // =========================================================
-            function azurirajPrikazPolja() {
-                const tip = parseInt(tipRadnjeSelect.value);
-                const isSetva = (tip === TIP_SETVA);
-                const isZetva = (tip === TIP_ZETVA);
+                // =========================================================
+                // 1. LOGIKA ZA PRIKAZ POLJA (CENTRALIZOVANA)
+                // =========================================================
+                function azurirajPrikazPolja() {
+                    const tip = parseInt(tipRadnjeSelect.value);
+                    const isSetva = (tip === TIP_SETVA);
+                    const isZetva = (tip === TIP_ZETVA);
 
-                // A) Upravljanje poljima za površinu unutar svake parcele
-                document.querySelectorAll('.parcela-row').forEach(row => {
-                    // Pronađi elemente unutar ovog reda
-                    const wrapper = row.querySelector('.p-povrsina-wrapper');
-                    const input = row.querySelector('.p-povrsina-input');
-                    const pId = row.id.replace('unos-parcela-', ''); // vadimo GUID
-                    const slobodnaLbl = document.getElementById(`lbl-slobodno-${pId}`);
+                    // Prolazimo direktno kroz CHECKBOX-ove jer su oni "glavni"
+                    document.querySelectorAll('.parcela-checkbox').forEach(chk => {
+                        const pId = chk.value;
+                        const row = document.getElementById(`unos-parcela-${pId}`);
 
-                    // Ako je red vidljiv (parcela selektovana), primeni logiku setve
-                    if (row.style.display !== 'none') {
-                        if (isSetva) {
-                            wrapper.style.display = "block";
-                            input.disabled = false; // Mora biti enabled da bi se poslao
+                        if (!row) return;
 
-                            // Učitaj slobodnu površinu ako već nije učitana
-                            dohvatiSlobodnuPovrsinu(pId, slobodnaLbl);
+                        const wrapper = row.querySelector('.p-povrsina-wrapper');
+                        const inputPovrsina = row.querySelector('.p-povrsina-input');
+                        const idInput = row.querySelector('.p-id-input');
+                        const slobodnaLbl = document.getElementById(`lbl-slobodno-${pId}`);
+
+                        if (chk.checked) {
+                            // 1. AKO JE SELEKTOVANO:
+                            // Prikazujemo red i omogućavamo slanje ID-a parcele
+                            row.style.display = "block";
+                            if(idInput) idInput.disabled = false;
+
+                            // Specifična logika za SETVU
+                            if (isSetva) {
+                                wrapper.style.display = "block";
+                                inputPovrsina.disabled = false; // Bitan fix za validaciju!
+
+                                // Pozivamo servis samo ako treba
+                                dohvatiSlobodnuPovrsinu(pId, slobodnaLbl);
+                            } else {
+                                // Za Žetvu ili ostalo, sklanjamo unos površine (jer je automatski)
+                                wrapper.style.display = "none";
+                                inputPovrsina.disabled = true;
+                                if(slobodnaLbl) slobodnaLbl.textContent = "";
+                            }
                         } else {
+                            // 2. AKO NIJE SELEKTOVANO:
+                            // Sakrivamo sve i onemogućavamo sve inpute da se ne šalju na server
+                            row.style.display = "none";
+                            if(idInput) idInput.disabled = true;
                             wrapper.style.display = "none";
-                            input.disabled = true; // Onemogući da ne šalje null/0 bezveze
-                            if(slobodnaLbl) slobodnaLbl.textContent = "";
+                            inputPovrsina.disabled = true;
+                        }
+                    });
+
+                    // Logika za globalni prinos (ŽETVA) - ovo ne diramo, radi kako želiš
+                    if (prinosDiv) {
+                        const pInput = document.getElementById("Prinos");
+                        if (isZetva) {
+                            prinosDiv.style.display = "block";
+                            if(pInput) pInput.disabled = false;
+                        } else {
+                            prinosDiv.style.display = "none";
+                            if(pInput) pInput.disabled = true;
                         }
                     }
-                });
-
-                // B) Upravljanje poljem za Prinos (Žetva)
-                if (prinosDiv) {
-                    if (isZetva) {
-                        prinosDiv.style.display = "block";
-                        const pInput = document.getElementById("Prinos");
-                        if(pInput) pInput.disabled = false;
-                    } else {
-                        prinosDiv.style.display = "none";
-                        const pInput = document.getElementById("Prinos");
-                        if(pInput) pInput.disabled = true;
-                    }
                 }
-            }
 
-            // AJAX funkcija za slobodnu površinu
-            async function dohvatiSlobodnuPovrsinu(id, labelElement) {
-                if(!id || !labelElement) return;
-                if(labelElement.textContent.includes("Slobodno") || labelElement.textContent.includes("Greška")) return; // Ne zovi ponovo
+                // AJAX funkcija (ostaje ista)
+                async function dohvatiSlobodnuPovrsinu(id, labelElement) {
+                    if(!id || !labelElement) return;
+                    if(labelElement.textContent.includes("Slobodno") || labelElement.textContent.includes("Greška")) return;
 
-                labelElement.textContent = "Računam...";
-                try {
-                    const response = await fetch(`/radnje/slobodnaPovrsina/${id}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        labelElement.textContent = `Slobodno za setvu: ${data.slobodno.toFixed(4)} ha`;
-                    } else {
+                    labelElement.textContent = "Računam...";
+                    try {
+                        const response = await fetch(`/radnje/slobodnaPovrsina/${id}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            labelElement.textContent = `Slobodno za setvu: ${data.slobodno.toFixed(4)} ha`;
+                        } else {
+                            labelElement.textContent = "";
+                        }
+                    } catch {
                         labelElement.textContent = "";
                     }
-                } catch {
-                    labelElement.textContent = "";
                 }
-            }
 
-            // Event listener za promenu tipa radnje
-            if (tipRadnjeSelect) {
-                tipRadnjeSelect.addEventListener("change", azurirajPrikazPolja);
-            }
+                // Listener za promenu Tipa Radnje
+                if (tipRadnjeSelect) {
+                    tipRadnjeSelect.addEventListener("change", azurirajPrikazPolja);
+                }
 
-            // =========================================================
-            // 2. LOGIKA ZA ODABIR PARCELA (CHECKBOX KARTICE)
-            // =========================================================
-            document.querySelectorAll('.parcela-checkbox').forEach(chk => {
-                chk.addEventListener('change', function() {
-                    const pId = this.value;
-                    // Pronađi odgovarajući div za unos detalja (on je već u HTML-u)
-                    const detaljiRow = document.getElementById(`unos-parcela-${pId}`);
-
-                    if (!detaljiRow) return;
-
-                    if (this.checked) {
-                        // Prikaži red
-                        detaljiRow.style.display = "block";
-
-                        // Enable-uj ID parcele (obavezno!)
-                        const idInput = detaljiRow.querySelector('.p-id-input');
-                        if(idInput) idInput.disabled = false;
-
-                        // Proveri da li treba prikazati površinu (ako je Setva)
-                        azurirajPrikazPolja();
-                    } else {
-                        // Sakrij red
-                        detaljiRow.style.display = "none";
-
-                        // Disable-uj sve inpute unutra da se ne šalju na server
-                        detaljiRow.querySelectorAll('input').forEach(input => input.disabled = true);
-                    }
+                // =========================================================
+                // 2. LOGIKA ZA ODABIR PARCELA (CHECKBOX LISTENER)
+                // =========================================================
+                // Ovde je bio problem - sada samo pozivamo glavnu funkciju
+                document.querySelectorAll('.parcela-checkbox').forEach(chk => {
+                    chk.addEventListener('change', azurirajPrikazPolja);
                 });
-            });
+
+                // Inicijalni poziv (bitno za Edit mod)
+                azurirajPrikazPolja();
 
 
             // =========================================================
